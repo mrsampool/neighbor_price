@@ -1,40 +1,14 @@
 #!/usr/bin/env python3
 import requests
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.orm import DeclarativeBase
-from sqlalchemy import Integer, String
-from sqlalchemy.orm import Mapped, mapped_column
 from io import StringIO
 import pandas as pd
 
-
-class Base(DeclarativeBase):
-    pass
-
-
-db = SQLAlchemy(model_class=Base)
+from components.zillow_neighborhoods.zillow_neighborhood_data_gateway import ZillowNeighborhoodDataGateway
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///NeighborCost.sqlite3'
 
-db.init_app(app)
-
-
-class ZillowNeighborhoodRecord(db.Model):
-    region_id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    size_rank: Mapped[int] = mapped_column(Integer, nullable=True)
-    region_name: Mapped[str] = mapped_column(String, nullable=True)
-    region_type: Mapped[str] = mapped_column(String, nullable=True)
-    state_name: Mapped[str] = mapped_column(String, nullable=True)
-    state: Mapped[str] = mapped_column(String, nullable=True)
-    city: Mapped[str] = mapped_column(String, nullable=True)
-    metro: Mapped[str] = mapped_column(String, nullable=True)
-    county_name: Mapped[str] = mapped_column(String, nullable=True)
-
-
-with app.app_context():
-    db.create_all()
+zn_gateway = ZillowNeighborhoodDataGateway(app)
 
 
 def get_neighborhoods_df():
@@ -46,9 +20,9 @@ def get_neighborhoods_df():
     return content_df
 
 
-def create_neighborhoods_from_df(neighborhoods_df):
-    for i, neighborhood in neighborhoods_df.iterrows():
-        n = ZillowNeighborhoodRecord(
+def create_neighborhoods_from_df(n_df):
+    for i, neighborhood in n_df.iterrows():
+        zn_gateway.create_neighborhood_record(
             region_id=neighborhood['RegionID'],
             size_rank=neighborhood['SizeRank'],
             region_name=neighborhood['RegionName'],
@@ -59,9 +33,6 @@ def create_neighborhoods_from_df(neighborhoods_df):
             metro=neighborhood['Metro'],
             county_name=neighborhood['CountyName'],
         )
-        with app.app_context():
-            db.session.add(n)
-            db.session.commit()
 
 
 if __name__ == "__main__":
