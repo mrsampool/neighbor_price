@@ -9,11 +9,14 @@ from src.components.zillow_neighborhoods.zhvi_neighborhood_record import ZhviNei
 class TestZhviNeighborhoodDataGateway(unittest.TestCase):
 
     def setUp(self) -> None:
-        self.app = Flask(__name__)
         db_uri = os.getenv("TEST_ZHVI_DB_URI")
-        if db_uri is None:
+        if db_uri is None or db_uri == "":
             logging.fatal("Missing required ENV: $TEST_ZHVI_DB_URI")
-        self.gateway = ZhviNeighborhoodDataGateway(app=self.app, db_uri=db_uri)
+
+        self.app = Flask(__name__)
+        self.app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
+
+        self.gateway = ZhviNeighborhoodDataGateway(app=self.app)
         with self.app.app_context():
             db.session.execute(db.delete(ZhviNeighborhoodRecord))
             db.session.commit()

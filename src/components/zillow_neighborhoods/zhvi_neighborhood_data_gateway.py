@@ -10,9 +10,8 @@ class Base(DeclarativeBase):
 
 
 class ZhviNeighborhoodDataGateway:
-    def __init__(self, app, db_uri):
+    def __init__(self, app):
         self.app = app
-        self.app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
         db.init_app(self.app)
         with self.app.app_context():
             db.create_all()
