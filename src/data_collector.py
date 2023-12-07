@@ -4,7 +4,7 @@ import os
 import logging
 
 from components.zhvi_csv_client.zhvi_csv_client import ZhviCsvClient
-from components.zillow_neighborhoods.zillow_neighborhood_data_gateway import ZhviNeighborhoodDataGateway
+from components.zillow_neighborhoods.zhvi_neighborhood_data_gateway import ZhviNeighborhoodDataGateway
 
 app = Flask(__name__)
 
@@ -12,16 +12,16 @@ app = Flask(__name__)
 class Config:
     def __init__(self):
         self.zhvi_csv_url = os.getenv("ZHVI_CSV_URL")
-        if self.zhvi_csv_url is "":
+        if self.zhvi_csv_url is None:
             logging.fatal("Missing required ENV: $ZHVI_CSV_URL")
 
         self.zhvi_neighborhood_csv_path = os.getenv("ZHVI_NEIGHBORHOOD_CSV_PATH")
-        if self.zhvi_neighborhood_csv_path is "":
+        if self.zhvi_neighborhood_csv_path is None:
             logging.fatal("Missing required ENV: $ZHVI_NEIGHBORHOOD_CSV_PATH")
 
         self.zhvi_db_uri = os.getenv("ZHVI_DB_URI")
-        if self.zhvi_db_uri is "":
-            logging.fatal("Missing required ENV: $ZHVI_NEIGHBORHOOD_CSV_PATH")
+        if self.zhvi_db_uri is None:
+            logging.fatal("Missing required ENV: $ZHVI_DB_URI")
 
 
 if __name__ == "__main__":

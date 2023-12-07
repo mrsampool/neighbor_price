@@ -2,7 +2,7 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase
 
-from src.components.zillow_neighborhoods.zillow_neighborhood_record import ZillowNeighborhoodRecord, db
+from src.components.zillow_neighborhoods.zhvi_neighborhood_record import ZhviNeighborhoodRecord, db
 
 
 class Base(DeclarativeBase):
@@ -19,7 +19,7 @@ class ZhviNeighborhoodDataGateway:
 
     def create_neighborhood_record(
             self,
-            record: ZillowNeighborhoodRecord = None,
+            record: ZhviNeighborhoodRecord = None,
             region_id: int = 0,
             size_rank: int = 0,
             region_name: str = "",
@@ -31,7 +31,7 @@ class ZhviNeighborhoodDataGateway:
             county_name: str = ""
     ):
         if record is None:
-            record = ZillowNeighborhoodRecord(
+            record = ZhviNeighborhoodRecord(
                 region_id=region_id,
                 size_rank=size_rank,
                 region_name=region_name,

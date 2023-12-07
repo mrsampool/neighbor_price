@@ -5,7 +5,7 @@ from sqlalchemy.orm import Mapped, mapped_column
 db = SQLAlchemy()
 
 
-class ZillowNeighborhoodRecord(db.Model):
+class ZhviNeighborhoodRecord(db.Model):
     region_id: Mapped[int] = mapped_column(Integer, primary_key=True)
     size_rank: Mapped[int] = mapped_column(Integer, nullable=True)
     region_name: Mapped[str] = mapped_column(String, nullable=True)

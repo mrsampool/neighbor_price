@@ -2,7 +2,7 @@ import requests
 import pandas as pd
 from io import StringIO
 
-from src.components.zillow_neighborhoods.zillow_neighborhood_record import ZillowNeighborhoodRecord
+from src.components.zillow_neighborhoods.zhvi_neighborhood_record import ZhviNeighborhoodRecord
 
 
 class ZhviCsvClient:
@@ -24,7 +24,7 @@ class ZhviCsvClient:
         self.get_zhvi_df_from_path(self.zhvi_neighborhood_csv_path)
 
     def create_zhvi_neighborhood_from_df_row(self, df_row):
-        return ZillowNeighborhoodRecord(
+        return ZhviNeighborhoodRecord(
             region_id=df_row['RegionID'],
             size_rank=df_row['SizeRank'],
             region_name=df_row['RegionName'],
