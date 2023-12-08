@@ -3,8 +3,8 @@ from flask import Flask
 import os
 import logging
 
-from components.zhvi_csv_client.zhvi_csv_client import ZhviCsvClient
-from components.zillow_neighborhoods.zhvi_neighborhood_data_gateway import ZhviNeighborhoodDataGateway
+from components.zhvi_csv_client.zhvi_csv_client import ZhviCsvClient, create_zhvi_neighborhood_from_df_row
+from components.zhvi_neighborhoods.zhvi_neighborhood_data_gateway import ZhviNeighborhoodDataGateway
 
 app = Flask(__name__)
 
@@ -37,5 +37,5 @@ if __name__ == "__main__":
 
     neighborhoods_df = csv_client.get_zhvi_neighborhoods_df()
     for neighborhood in neighborhoods_df.iterrrows():
-        neighborhood_record = csv_client.create_zhvi_neighborhood_from_df_row(neighborhood)
+        neighborhood_record = create_zhvi_neighborhood_from_df_row(neighborhood)
         zn_data_gateway.create_neighborhood_record(record=neighborhood_record)

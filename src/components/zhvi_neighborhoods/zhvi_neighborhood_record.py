@@ -1,6 +1,9 @@
+from typing import List
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Integer, String
 from sqlalchemy.orm import Mapped, mapped_column
+
+from src.components.zhvi_history.zhvi_history_item import ZhviHistoryItem
 
 db = SQLAlchemy()
 
@@ -17,7 +20,8 @@ class ZhviNeighborhoodRecord:
             state: str = None,
             city: str = None,
             metro: str = None,
-            county_name: str = None
+            county_name: str = None,
+            zhvi_history: List[ZhviHistoryItem] = []
     ):
         if document is not None:
             self.region_id: int = document["region_id"]
@@ -29,6 +33,7 @@ class ZhviNeighborhoodRecord:
             self.city: str = document["city"]
             self.metro: str = document["metro"]
             self.county_name: str = document["county_name"]
+            self.zhvi_history: List[ZhviHistoryItem] = document["zhvi_history"]
         else:
             self.region_id: int = region_id
             self.size_rank: int = size_rank
@@ -39,6 +44,7 @@ class ZhviNeighborhoodRecord:
             self.city: str = city
             self.metro: str = metro
             self.county_name: str = county_name
+            self.zhvi_history: List[ZhviHistoryItem] = zhvi_history
 
     def to_doc(self):
         return {
@@ -50,5 +56,6 @@ class ZhviNeighborhoodRecord:
             "state": self.state,
             "city": self.city,
             "metro": self.metro,
-            "county_name": self.county_name
+            "county_name": self.county_name,
+            "zhvi_history": self.zhvi_history
         }
