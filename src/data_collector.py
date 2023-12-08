@@ -33,7 +33,7 @@ if __name__ == "__main__":
         zvhi_neighborhood_csv_path=c.zhvi_neighborhood_csv_path
     )
 
-    zn_data_gateway = ZhviNeighborhoodDataGateway(app, db_uri=c.zhvi_db_uri)
+    zn_data_gateway = ZhviNeighborhoodDataGateway(app)
 
     neighborhoods_df = csv_client.get_zhvi_neighborhoods_df()
     for neighborhood in neighborhoods_df.iterrrows():

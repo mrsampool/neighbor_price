@@ -1,20 +1,21 @@
 #!/usr/bin/env python3
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase
+import pymongo
 
-from src.components.zillow_neighborhoods.zhvi_neighborhood_record import ZhviNeighborhoodRecord, db
+from src.components.zhvi_neighborhoods.zhvi_neighborhood_record import ZhviNeighborhoodRecord, db
 
+DB_COLLECTION_NEIGHBORHOODS = "neighborhoods"
 
 class Base(DeclarativeBase):
     pass
 
 
-class ZhviNeighborhoodDataGateway:
-    def __init__(self, app):
-        self.app = app
-        db.init_app(self.app)
-        with self.app.app_context():
-            db.create_all()
+class ZhviNeighborhoodDataGateway():
+    def __init__(self, db_uri: str, db_name: str):
+        self.client = pymongo.MongoClient(db_uri)
+        self.db = self.client[db_name]
+        self.collection = self.db[DB_COLLECTION_NEIGHBORHOODS]
 
     def create_neighborhood_record(
             self,
@@ -41,6 +42,4 @@ class ZhviNeighborhoodDataGateway:
                 metro=metro,
                 county_name=county_name,
             )
-        with self.app.app_context():
-            db.session.add(record)
-            db.session.commit()
+        self.collection.insert_one(record.to_doc())
