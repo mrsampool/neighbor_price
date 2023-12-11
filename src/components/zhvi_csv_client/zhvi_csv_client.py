@@ -1,6 +1,7 @@
 import requests
 import pandas as pd
 from io import StringIO
+from datetime import datetime
 
 from src.components.zhvi_neighborhoods.zhvi_neighborhood_record import ZhviNeighborhoodRecord
 from src.components.zhvi_history.zhvi_history_item import ZhviHistoryItem
@@ -11,7 +12,7 @@ def create_zhvi_neighborhood_from_df_row(df_row):
     zhvi_history = []
     zhvi_history_df = df_row.iloc[9:]
     for date, zhvi_value in zhvi_history_df.items():
-        zhvi_history.append(ZhviHistoryItem(date=date, zhvi_value=zhvi_value))
+        zhvi_history.append(ZhviHistoryItem(date=datetime.strptime(date, '%Y-%m-%d'), zhvi_value=zhvi_value))
 
     return ZhviNeighborhoodRecord(
         region_id=region_id,

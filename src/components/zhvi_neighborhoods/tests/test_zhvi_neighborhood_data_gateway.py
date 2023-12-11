@@ -27,7 +27,7 @@ class TestZhviNeighborhoodDataGateway(unittest.TestCase):
         db = client[db_name]
         self.collection = db[DB_COLLECTION_NEIGHBORHOODS]
 
-    def test_create_neighborhoods_from_df(self):
+    def test_create_neighborhood_record(self):
         record = ZhviNeighborhoodRecord(
             region_id=1,
             size_rank=1,

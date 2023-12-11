@@ -1,12 +1,13 @@
 import unittest
 import pandas as pd
+from datetime import date
 from src.components.zhvi_csv_client.zhvi_csv_client import create_zhvi_neighborhood_from_df_row
 
 
 class TestZhviCsvClient(unittest.TestCase):
 
     def test_create_zhvi_neighborhood_from_df_row(self):
-        neighborhood_df_row = pd.read_csv('../../../../data/zhvi_neighborhoods.csv')
+        neighborhood_df_row = pd.read_csv('./data/zhvi_neighborhoods.csv')
 
         actual = create_zhvi_neighborhood_from_df_row(df_row=neighborhood_df_row.loc[0])
         self.assertEqual(actual.region_id, 112345)
@@ -21,7 +22,7 @@ class TestZhviCsvClient(unittest.TestCase):
 
         actual_history = actual.zhvi_history
         actual_history_1 = actual_history[0]
-        self.assertEqual(actual_history_1.date, "2000-01-31")
-        self.assertEqual(actual_history_1.zhvi_value, "75553.2814897809")
+        self.assertEqual(date.isoformat(actual_history_1.date), "2000-01-31")
+        self.assertEqual(actual_history_1.zhvi_value, 75553.2814897809)
 
 
