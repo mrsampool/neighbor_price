@@ -1,6 +1,4 @@
 #!/usr/bin/env python3
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.orm import DeclarativeBase
 import pymongo
 from typing import List
 
@@ -9,11 +7,8 @@ from src.components.zhvi_history.zhvi_history_item import ZhviHistoryItem
 
 DB_COLLECTION_NEIGHBORHOODS = "neighborhoods"
 
-class Base(DeclarativeBase):
-    pass
 
-
-class ZhviNeighborhoodDataGateway():
+class ZhviNeighborhoodDataGateway:
     def __init__(self, db_uri: str, db_name: str):
         self.client = pymongo.MongoClient(db_uri)
         self.db = self.client[db_name]
