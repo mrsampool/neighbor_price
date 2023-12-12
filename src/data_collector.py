@@ -24,8 +24,7 @@ class Config:
             logging.fatal("Missing required ENV: $ZHVI_DB_URI")
 
 
-if __name__ == "__main__":
-
+def handler():
     c = Config()
 
     csv_client = ZhviCsvClient(
@@ -39,3 +38,7 @@ if __name__ == "__main__":
     for neighborhood in neighborhoods_df.iterrrows():
         neighborhood_record = create_zhvi_neighborhood_from_df_row(neighborhood)
         zn_data_gateway.create_neighborhood_record(record=neighborhood_record)
+
+
+if __name__ == "__main__":
+    handler()
