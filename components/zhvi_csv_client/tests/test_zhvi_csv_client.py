@@ -25,11 +25,3 @@ class TestZhviCsvClient(unittest.TestCase):
         self.assertEqual(date.isoformat(actual_history_1.date), "2000-01-31")
         self.assertEqual(actual_history_1.zhvi_value, 75553.2814897809)
 
-    def test_create_zhvi_metro_from_df_row(self):
-        metro_df_row = pd.read_csv('./data/zhvi_metros.csv')
-
-        actual = create_zhvi_metro_from_df_row(df_row=metro_df_row.loc[0])
-    def test_create_zhvi_state_from_df_row(self):
-        state_df_row = pd.read_csv('./data/zhvi_states.csv')
-
-        actual = create_zhvi_state_from_df_row(df_row=state_df_row.loc[0])

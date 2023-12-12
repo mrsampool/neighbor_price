@@ -3,34 +3,34 @@ import unittest
 import logging
 import os
 import pymongo
-from components.zhvi_neighborhoods.zhvi_neighborhood_data_gateway import (
-    ZhviNeighborhoodDataGateway,
-    DB_COLLECTION_NEIGHBORHOODS
+from components.zhvi.zhvi_data_gateway import (
+    ZhviDataGateway,
+    DB_COLLECTION_ZHVI
 )
 from components.zhvi.zhvi_history_item import ZhviHistoryItem
-from components.zhvi_neighborhoods.zhvi_neighborhood_record import ZhviNeighborhoodRecord
+from components.zhvi.zhvi_record import ZhviRecord
 
 
 class TestZhviNeighborhoodDataGateway(unittest.TestCase):
 
     def setUp(self) -> None:
-        db_uri = os.getenv("TEST_ZHVI_DB_URI")
+        db_uri = os.getenv("ZHVI_DB_URI")
         if db_uri is None or db_uri == "":
-            logging.fatal("Missing required ENV: $TEST_ZHVI_DB_URI")
+            logging.fatal("Missing required ENV: $ZHVI_DB_URI")
 
-        db_name = os.getenv("TEST_ZHVI_DB_NAME")
+        db_name = os.getenv("ZHVI_DB_NAME")
         if db_name is None or db_name == "":
-            logging.fatal("Missing required ENV: $TEST_ZHVI_DB_NAME")
+            logging.fatal("Missing required ENV: $ZHVI_DB_NAME")
 
-        self.gateway = ZhviNeighborhoodDataGateway(db_uri=db_uri, db_name=db_name)
+        self.gateway = ZhviDataGateway(db_uri=db_uri, db_name=db_name)
 
         client = pymongo.MongoClient(db_uri)
         db = client[db_name]
-        self.collection = db[DB_COLLECTION_NEIGHBORHOODS]
+        self.collection = db[DB_COLLECTION_ZHVI]
 
     def test_create_neighborhood_record(self):
         self.collection.drop()
-        record = ZhviNeighborhoodRecord(
+        record = ZhviRecord(
             region_id=1,
             size_rank=1,
             region_name="test_region_name",
