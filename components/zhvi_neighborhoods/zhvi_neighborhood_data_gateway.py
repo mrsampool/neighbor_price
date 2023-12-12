@@ -2,8 +2,8 @@
 import pymongo
 from typing import List
 
-from src.components.zhvi_neighborhoods.zhvi_neighborhood_record import ZhviNeighborhoodRecord
-from src.components.zhvi_history.zhvi_history_item import ZhviHistoryItem
+from components.zhvi_neighborhoods.zhvi_neighborhood_record import ZhviNeighborhoodRecord
+from components.zhvi_history.zhvi_history_item import ZhviHistoryItem
 
 DB_COLLECTION_NEIGHBORHOODS = "neighborhoods"
 

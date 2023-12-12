@@ -3,8 +3,8 @@ import pandas as pd
 from io import StringIO
 from datetime import datetime
 
-from src.components.zhvi_neighborhoods.zhvi_neighborhood_record import ZhviNeighborhoodRecord
-from src.components.zhvi_history.zhvi_history_item import ZhviHistoryItem
+from components.zhvi_neighborhoods.zhvi_neighborhood_record import ZhviNeighborhoodRecord
+from components.zhvi_history.zhvi_history_item import ZhviHistoryItem
 
 
 def create_zhvi_neighborhood_from_df_row(df_row):

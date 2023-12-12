@@ -1,7 +1,7 @@
 import unittest
 import pandas as pd
 from datetime import date
-from src.components.zhvi_csv_client.zhvi_csv_client import create_zhvi_neighborhood_from_df_row
+from components.zhvi_csv_client.zhvi_csv_client import create_zhvi_neighborhood_from_df_row
 
 
 class TestZhviCsvClient(unittest.TestCase):

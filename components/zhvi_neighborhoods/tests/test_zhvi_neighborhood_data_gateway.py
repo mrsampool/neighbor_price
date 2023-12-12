@@ -3,13 +3,12 @@ import unittest
 import logging
 import os
 import pymongo
-from flask import Flask
-from src.components.zhvi_neighborhoods.zhvi_neighborhood_data_gateway import (
+from components.zhvi_neighborhoods.zhvi_neighborhood_data_gateway import (
     ZhviNeighborhoodDataGateway,
     DB_COLLECTION_NEIGHBORHOODS
 )
-from src.components.zhvi_history.zhvi_history_item import ZhviHistoryItem
-from src.components.zhvi_neighborhoods.zhvi_neighborhood_record import ZhviNeighborhoodRecord
+from components.zhvi_history.zhvi_history_item import ZhviHistoryItem
+from components.zhvi_neighborhoods.zhvi_neighborhood_record import ZhviNeighborhoodRecord
 
 
 class TestZhviNeighborhoodDataGateway(unittest.TestCase):
