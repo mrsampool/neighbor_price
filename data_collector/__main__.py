@@ -59,6 +59,20 @@ def handler():
         neighborhood_record = create_zhvi_neighborhood_from_df_row(neighborhood)
         zn_data_gateway.create_neighborhood_record(record=neighborhood_record)
 
+    metros_df = csv_client.get_zhvi_metros_df()
+    for _, metro in metros_df.iterrows():
+        # TODO: implement create_zhvi_metro_from_df_row
+        metro_record = create_zhvi_metro_from_df_row(metro)
+        # TODO: implement create_metro_record
+        zn_data_gateway.create_metro_record(record=metro_record)
+
+    states_df = csv_client.get_zhvi_states_df()
+    for _, state in states_df.iterrows():
+        # TODO: implement create_zhvi_metro_from_df_row
+        state_record = create_zhvi_state_from_df_row(state)
+        # TODO: implement create_state_record
+        zn_data_gateway.create_state_record(record=state_record)
+
 
 if __name__ == "__main__":
     handler()

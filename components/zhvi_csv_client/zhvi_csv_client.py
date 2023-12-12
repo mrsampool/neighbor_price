@@ -27,6 +27,13 @@ def create_zhvi_neighborhood_from_df_row(df_row):
         zhvi_history=zhvi_history
     )
 
+def create_zhvi_metro_from_df_row(df_row):
+    # TODO: implement create_zhvi_metro_from_df_row
+
+
+def create_zhvi_state_from_df_row(df_row):
+    # TODO: implement create_zhvi_metro_from_df_row
+
 
 class ZhviCsvClient:
     def __init__(
