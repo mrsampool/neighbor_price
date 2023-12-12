@@ -1,7 +1,6 @@
-include test_env.sh
-
 .PHONY: test
 test:
+	source .env_test; \
 	source venv/bin/activate; \
 	python -m unittest; \
 

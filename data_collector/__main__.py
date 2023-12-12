@@ -26,6 +26,11 @@ class Config:
         if self.zhvi_db_uri is None:
             logging.fatal("Missing required ENV: $ZHVI_DB_URI")
 
+        self.zhvi_db_name = os.getenv("ZHVI_DB_NAME")
+        logging.info(f"using ZHVI_DB_NAME: {self.zhvi_db_name}")
+        if self.zhvi_db_name is None:
+            logging.fatal("Missing required ENV: $ZHVI_DB_NAME")
+
 
 def handler():
     c = Config()
@@ -35,7 +40,7 @@ def handler():
         zvhi_neighborhood_csv_path=c.zhvi_neighborhood_csv_path
     )
 
-    zn_data_gateway = ZhviNeighborhoodDataGateway(db_uri=c.zhvi_db_uri, db_name='neighbor_price')
+    zn_data_gateway = ZhviNeighborhoodDataGateway(db_uri=c.zhvi_db_uri, db_name=c.zhvi_db_name)
 
     neighborhoods_df = csv_client.get_zhvi_neighborhoods_df()
     for _, neighborhood in neighborhoods_df.iterrows():
