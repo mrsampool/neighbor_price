@@ -45,7 +45,7 @@ class ZhviNeighborhoodDataGateway:
             )
 
         doc_history = []
-        for item in self.zhvi_history:
+        for item in record.zhvi_history:
             item_doc = {
                 "date": item.date,
                 "zhvi_value": item.zhvi_value
