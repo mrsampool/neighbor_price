@@ -11,7 +11,7 @@ db = SQLAlchemy()
 class ZhviNeighborhoodRecord:
     def __init__(
             self,
-            document = None,
+            document=None,
             region_id: int = None,
             size_rank: int = None,
             region_name: str = None,
@@ -45,17 +45,3 @@ class ZhviNeighborhoodRecord:
             self.metro: str = metro
             self.county_name: str = county_name
             self.zhvi_history: List[ZhviHistoryItem] = zhvi_history
-
-    def to_doc(self):
-        return {
-            "region_id": self.region_id,
-            "size_rank": self.size_rank,
-            "region_name": self.region_name,
-            "region_type": self.region_type,
-            "state_name": self.state_name,
-            "state": self.state,
-            "city": self.city,
-            "metro": self.metro,
-            "county_name": self.county_name,
-            "zhvi_history": self.zhvi_history
-        }

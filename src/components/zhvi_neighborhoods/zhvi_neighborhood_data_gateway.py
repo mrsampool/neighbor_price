@@ -31,8 +31,10 @@ class ZhviNeighborhoodDataGateway():
             city: str = "",
             metro: str = "",
             county_name: str = "",
-            zhvi_history: List[ZhviHistoryItem] = []
+            zhvi_history: List[ZhviHistoryItem] = None
     ):
+        if zhvi_history is None:
+            zhvi_history = []
         if record is None:
             record = ZhviNeighborhoodRecord(
                 region_id=region_id,
@@ -46,4 +48,25 @@ class ZhviNeighborhoodDataGateway():
                 county_name=county_name,
                 zhvi_history=zhvi_history
             )
-        self.collection.insert_one(record.to_doc())
+
+        doc_history = []
+        for item in self.zhvi_history:
+            item_doc = {
+                "date": item.date,
+                "zhvi_value": item.zhvi_value
+            }
+            doc_history.append(item_doc)
+
+        doc = {
+            "region_id": record.region_id,
+            "size_rank": record.size_rank,
+            "region_name": record.region_name,
+            "region_type": record.region_type,
+            "state_name": record.state_name,
+            "state": record.state,
+            "city": record.city,
+            "metro": record.metro,
+            "county_name": record.county_name,
+            "zhvi_history": doc_history
+        }
+        self.collection.insert_one(doc)
