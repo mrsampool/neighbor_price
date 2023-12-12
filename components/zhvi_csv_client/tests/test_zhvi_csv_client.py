@@ -1,7 +1,7 @@
 import unittest
 import pandas as pd
 from datetime import date
-from components.zhvi_csv_client.zhvi_csv_client import create_zhvi_neighborhood_from_df_row
+from components.zhvi_csv_client.zhvi_csv_client import create_zhvi_record_from_df_row
 
 
 class TestZhviCsvClient(unittest.TestCase):
@@ -9,7 +9,7 @@ class TestZhviCsvClient(unittest.TestCase):
     def test_create_zhvi_neighborhood_from_df_row(self):
         neighborhood_df_row = pd.read_csv('./data/zhvi_neighborhoods.csv')
 
-        actual = create_zhvi_neighborhood_from_df_row(df_row=neighborhood_df_row.loc[0])
+        actual = create_zhvi_record_from_df_row(df_row=neighborhood_df_row.loc[0])
         self.assertEqual(actual.region_id, 112345)
         self.assertEqual(actual.size_rank, 0)
         self.assertEqual(actual.region_name, "Maryvale")

@@ -2,21 +2,21 @@
 import pymongo
 from typing import List
 
-from components.zhvi_neighborhoods.zhvi_neighborhood_record import ZhviNeighborhoodRecord
-from components.zhvi_history.zhvi_history_item import ZhviHistoryItem
+from components.zhvi.zhvi_record import ZhviRecord
+from components.zhvi.zhvi_history_item import ZhviHistoryItem
 
 DB_COLLECTION_NEIGHBORHOODS = "neighborhoods"
 
 
-class ZhviNeighborhoodDataGateway:
+class ZhviDataGateway:
     def __init__(self, db_uri: str, db_name: str):
         self.client = pymongo.MongoClient(db_uri)
         self.db = self.client[db_name]
         self.collection = self.db[DB_COLLECTION_NEIGHBORHOODS]
 
-    def create_neighborhood_record(
+    def create_zhvi_record(
             self,
-            record: ZhviNeighborhoodRecord = None,
+            record: ZhviRecord = None,
             region_id: int = 0,
             size_rank: int = 0,
             region_name: str = "",
@@ -31,7 +31,7 @@ class ZhviNeighborhoodDataGateway:
         if zhvi_history is None:
             zhvi_history = []
         if record is None:
-            record = ZhviNeighborhoodRecord(
+            record = ZhviRecord(
                 region_id=region_id,
                 size_rank=size_rank,
                 region_name=region_name,

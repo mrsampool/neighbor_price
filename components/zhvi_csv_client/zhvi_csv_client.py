@@ -3,36 +3,29 @@ import pandas as pd
 from io import StringIO
 from datetime import datetime
 
-from components.zhvi_neighborhoods.zhvi_neighborhood_record import ZhviNeighborhoodRecord
-from components.zhvi_history.zhvi_history_item import ZhviHistoryItem
+from components.zhvi.zhvi_record import ZhviRecord
+from components.zhvi.zhvi_history_item import ZhviHistoryItem
 
 
-def create_zhvi_neighborhood_from_df_row(df_row):
+def create_zhvi_record_from_df_row(df_row):
     region_id = df_row['RegionID']
     zhvi_history = []
     zhvi_history_df = df_row.iloc[9:]
     for date, zhvi_value in zhvi_history_df.items():
         zhvi_history.append(ZhviHistoryItem(date=datetime.strptime(date, '%Y-%m-%d'), zhvi_value=zhvi_value))
 
-    return ZhviNeighborhoodRecord(
+    return ZhviRecord(
         region_id=region_id,
-        size_rank=df_row['SizeRank'],
-        region_name=df_row['RegionName'],
-        region_type=df_row['RegionType'],
-        state_name=df_row['StateName'],
-        state=df_row['State'],
-        city=df_row['City'],
-        metro=df_row['Metro'],
-        county_name=df_row['CountyName'],
+        size_rank=df_row.get('SizeRank'),
+        region_name=df_row.get('RegionName'),
+        region_type=df_row.get('RegionType'),
+        state_name=df_row.get('StateName'),
+        state=df_row.get('State'),
+        city=df_row.get('City'),
+        metro=df_row.get('Metro'),
+        county_name=df_row.get('CountyName'),
         zhvi_history=zhvi_history
     )
-
-def create_zhvi_metro_from_df_row(df_row):
-    # TODO: implement create_zhvi_metro_from_df_row
-
-
-def create_zhvi_state_from_df_row(df_row):
-    # TODO: implement create_zhvi_metro_from_df_row
 
 
 class ZhviCsvClient:

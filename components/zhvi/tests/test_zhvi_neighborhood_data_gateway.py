@@ -7,7 +7,7 @@ from components.zhvi_neighborhoods.zhvi_neighborhood_data_gateway import (
     ZhviNeighborhoodDataGateway,
     DB_COLLECTION_NEIGHBORHOODS
 )
-from components.zhvi_history.zhvi_history_item import ZhviHistoryItem
+from components.zhvi.zhvi_history_item import ZhviHistoryItem
 from components.zhvi_neighborhoods.zhvi_neighborhood_record import ZhviNeighborhoodRecord
 
 
@@ -51,7 +51,7 @@ class TestZhviNeighborhoodDataGateway(unittest.TestCase):
                 ),
             ]
         )
-        self.gateway.create_neighborhood_record(record)
+        self.gateway.create_zhvi_record(record)
 
         documents = self.collection.find()
         actual_document = documents[0]

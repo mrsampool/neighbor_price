@@ -3,8 +3,8 @@ from flask import Flask
 import os
 import logging
 
-from components.zhvi_csv_client.zhvi_csv_client import ZhviCsvClient, create_zhvi_neighborhood_from_df_row
-from components.zhvi_neighborhoods.zhvi_neighborhood_data_gateway import ZhviNeighborhoodDataGateway
+from components.zhvi_csv_client.zhvi_csv_client import ZhviCsvClient, create_zhvi_record_from_df_row
+from components.zhvi.zhvi_data_gateway import ZhviDataGateway
 
 app = Flask(__name__)
 
@@ -52,26 +52,22 @@ def handler():
         zvhi_state_csv_path=c.zhvi_state_csv_path,
     )
 
-    zn_data_gateway = ZhviNeighborhoodDataGateway(db_uri=c.zhvi_db_uri, db_name=c.zhvi_db_name)
+    zhvi_data_gateway = ZhviDataGateway(db_uri=c.zhvi_db_uri, db_name=c.zhvi_db_name)
 
     neighborhoods_df = csv_client.get_zhvi_neighborhoods_df()
     for _, neighborhood in neighborhoods_df.iterrows():
-        neighborhood_record = create_zhvi_neighborhood_from_df_row(neighborhood)
-        zn_data_gateway.create_neighborhood_record(record=neighborhood_record)
+        neighborhood_record = create_zhvi_record_from_df_row(neighborhood)
+        zhvi_data_gateway.create_zhvi_record(record=neighborhood_record)
 
     metros_df = csv_client.get_zhvi_metros_df()
     for _, metro in metros_df.iterrows():
-        # TODO: implement create_zhvi_metro_from_df_row
-        metro_record = create_zhvi_metro_from_df_row(metro)
-        # TODO: implement create_metro_record
-        zn_data_gateway.create_metro_record(record=metro_record)
+        metro_record = create_zhvi_record_from_df_row(metro)
+        zhvi_data_gateway.create_zhvi_record(record=metro_record)
 
     states_df = csv_client.get_zhvi_states_df()
     for _, state in states_df.iterrows():
-        # TODO: implement create_zhvi_metro_from_df_row
-        state_record = create_zhvi_state_from_df_row(state)
-        # TODO: implement create_state_record
-        zn_data_gateway.create_state_record(record=state_record)
+        state_record = create_zhvi_record_from_df_row(state)
+        zhvi_data_gateway.create_zhvi_record(record=state_record)
 
 
 if __name__ == "__main__":

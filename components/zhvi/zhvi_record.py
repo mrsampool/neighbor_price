@@ -1,12 +1,9 @@
 from typing import List
-from flask_sqlalchemy import SQLAlchemy
 
-from components.zhvi_history.zhvi_history_item import ZhviHistoryItem
-
-db = SQLAlchemy()
+from components.zhvi.zhvi_history_item import ZhviHistoryItem
 
 
-class ZhviNeighborhoodRecord:
+class ZhviRecord:
     def __init__(
             self,
             document=None,
