@@ -17,3 +17,10 @@ collect:
 	source .env; \
 	source venv/bin/activate; \
 	python -m data_collector; \
+
+.PHONY: analyze
+analyze:
+	python3 -m venv venv; \
+	source .env; \
+	source venv/bin/activate; \
+	python -m data_analyzer; \

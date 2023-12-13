@@ -3,6 +3,8 @@ from flask import Flask
 import os
 import logging
 from data_collector.data_collector import DataCollector
+import pika
+import json
 
 from components.zhvi_csv_client.zhvi_csv_client import ZhviCsvClient
 from components.zhvi.zhvi_data_gateway import ZhviDataGateway
@@ -63,6 +65,18 @@ def handler():
     data_collector = DataCollector(
         csv_client=csv_client,
         zhvi_data_gateway=zhvi_data_gateway,
+    )
+
+    conn = pika.BlockingConnection(pika.ConnectionParameters("localhost"))
+    channel = conn.channel()
+    channel.queue_declare(queue="transactions")
+
+    channel.basic_publish(
+        exchange="",
+        routing_key="transactions",
+        body=json.dumps({
+            "my message": "hi!",
+        }).encode('utf-8')
     )
 
     data_collector.collect_neighborhoods_data()
