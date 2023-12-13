@@ -37,22 +37,24 @@ class DataCollector:
         self.csv_client = csv_client
         self.zhvi_data_gateway = zhvi_data_gateway
 
-    def _collect_zhvi_data(self, data_type: str):
-
-        logging.info(f"collecting ZHVI {data_type} data")
+    def _fetch_zhvi_df_by_data_type(self, data_type: str):
         match data_type:
             case "neighborhoods":
-                df = self.csv_client.get_zhvi_neighborhoods_df()
+                return self.csv_client.get_zhvi_neighborhoods_df()
             case "metros":
-                df = self.csv_client.get_zhvi_metros_df()
+                return self.csv_client.get_zhvi_metros_df()
             case "states":
-                df = self.csv_client.get_zhvi_states_df()
+                return self.csv_client.get_zhvi_states_df()
             case _:
                 logging.error(f"invalid ZHVI data type: {data_type}")
                 return
 
-        total_rows = len(df.index)
+    def _collect_zhvi_data(self, data_type: str):
 
+        logging.info(f"collecting ZHVI {data_type} data")
+
+        df = self._fetch_zhvi_df_by_data_type(data_type=data_type)
+        total_rows = len(df.index)
         logging.info(f"collected ZHVI data for {total_rows} {data_type}. saving to database...")
 
         for i, df_row in df.iterrows():

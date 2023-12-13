@@ -44,8 +44,7 @@ class Config:
 
 
 def handler():
-
-    logging.basicConfig(level=20)
+    logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=20)
 
     c = Config()
 
