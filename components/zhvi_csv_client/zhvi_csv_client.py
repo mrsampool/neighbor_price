@@ -1,31 +1,6 @@
 import requests
 import pandas as pd
 from io import StringIO
-from datetime import datetime
-
-from components.zhvi.zhvi_record import ZhviRecord
-from components.zhvi.zhvi_history_item import ZhviHistoryItem
-
-
-def create_zhvi_record_from_df_row(df_row):
-    region_id = df_row['RegionID']
-    zhvi_history = []
-    zhvi_history_df = df_row.iloc[9:]
-    for date, zhvi_value in zhvi_history_df.items():
-        zhvi_history.append(ZhviHistoryItem(date=datetime.strptime(date, '%Y-%m-%d'), zhvi_value=zhvi_value))
-
-    return ZhviRecord(
-        region_id=region_id,
-        size_rank=df_row.get('SizeRank'),
-        region_name=df_row.get('RegionName'),
-        region_type=df_row.get('RegionType'),
-        state_name=df_row.get('StateName'),
-        state=df_row.get('State'),
-        city=df_row.get('City'),
-        metro=df_row.get('Metro'),
-        county_name=df_row.get('CountyName'),
-        zhvi_history=zhvi_history
-    )
 
 
 class ZhviCsvClient:

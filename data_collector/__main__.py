@@ -2,8 +2,9 @@
 from flask import Flask
 import os
 import logging
+from data_collector.data_collector import DataCollector
 
-from components.zhvi_csv_client.zhvi_csv_client import ZhviCsvClient, create_zhvi_record_from_df_row
+from components.zhvi_csv_client.zhvi_csv_client import ZhviCsvClient
 from components.zhvi.zhvi_data_gateway import ZhviDataGateway
 
 app = Flask(__name__)
@@ -43,6 +44,9 @@ class Config:
 
 
 def handler():
+
+    logging.basicConfig(level=20)
+
     c = Config()
 
     csv_client = ZhviCsvClient(
@@ -52,22 +56,19 @@ def handler():
         zvhi_state_csv_path=c.zhvi_state_csv_path,
     )
 
-    zhvi_data_gateway = ZhviDataGateway(db_uri=c.zhvi_db_uri, db_name=c.zhvi_db_name)
+    zhvi_data_gateway = ZhviDataGateway(
+        db_uri=c.zhvi_db_uri,
+        db_name=c.zhvi_db_name
+    )
 
-    neighborhoods_df = csv_client.get_zhvi_neighborhoods_df()
-    for _, neighborhood in neighborhoods_df.iterrows():
-        neighborhood_record = create_zhvi_record_from_df_row(neighborhood)
-        zhvi_data_gateway.create_zhvi_record(record=neighborhood_record)
+    data_collector = DataCollector(
+        csv_client=csv_client,
+        zhvi_data_gateway=zhvi_data_gateway,
+    )
 
-    metros_df = csv_client.get_zhvi_metros_df()
-    for _, metro in metros_df.iterrows():
-        metro_record = create_zhvi_record_from_df_row(metro)
-        zhvi_data_gateway.create_zhvi_record(record=metro_record)
-
-    states_df = csv_client.get_zhvi_states_df()
-    for _, state in states_df.iterrows():
-        state_record = create_zhvi_record_from_df_row(state)
-        zhvi_data_gateway.create_zhvi_record(record=state_record)
+    data_collector.collect_neighborhoods_data()
+    data_collector.collect_metros_data()
+    data_collector.collect_states_data()
 
 
 if __name__ == "__main__":
