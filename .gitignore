@@ -3,3 +3,4 @@ venv
 *.sqlite3
 .env
 .env_test
+/.docker-data/
