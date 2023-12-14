@@ -1,42 +1,18 @@
 import logging
-from datetime import datetime
 
 from components.zhvi_csv_client.zhvi_csv_client import ZhviCsvClient
 from components.zhvi.zhvi_data_gateway import ZhviDataGateway
-from components.zhvi.zhvi_record import ZhviRecord
-from components.zhvi.zhvi_history_item import ZhviHistoryItem
 
 from components.event_manager.event_manager import EventManager
 from components.event_manager.event_body import EventBody
-
-
-def create_zhvi_record_from_df_row(df_row):
-    region_id = df_row['RegionID']
-    zhvi_history = []
-    zhvi_history_df = df_row.iloc[9:]
-    for date, zhvi_value in zhvi_history_df.items():
-        zhvi_history.append(ZhviHistoryItem(date=datetime.strptime(date, '%Y-%m-%d'), zhvi_value=zhvi_value))
-
-    return ZhviRecord(
-        region_id=region_id,
-        size_rank=df_row.get('SizeRank'),
-        region_name=df_row.get('RegionName'),
-        region_type=df_row.get('RegionType'),
-        state_name=df_row.get('StateName'),
-        state=df_row.get('State'),
-        city=df_row.get('City'),
-        metro=df_row.get('Metro'),
-        county_name=df_row.get('CountyName'),
-        zhvi_history=zhvi_history
-    )
 
 
 class DataCollector:
     def __init__(
             self,
             csv_client: ZhviCsvClient,
-            zhvi_data_gateway: ZhviDataGateway,
             event_manager: EventManager,
+            zhvi_data_gateway: ZhviDataGateway = None,
     ):
         self.csv_client = csv_client
         self.zhvi_data_gateway = zhvi_data_gateway
@@ -60,10 +36,11 @@ class DataCollector:
 
         df = self._fetch_zhvi_df_by_data_type(data_type=data_type)
         total_rows = len(df.index)
-        logging.info(f"collected ZHVI data for {total_rows} {data_type}. saving to database...")
+        logging.info(f"collected raw ZHVI data for {total_rows} {data_type}. saving to database...")
 
+        logging.info(f"publishing collected {data_type} ZHVI data...")
         for i, df_row in df.iterrows():
-            row_csv = df_row.to_csv()
+            row_csv = df_row.transpose().to_csv()
             self.event_manager.publish(body=EventBody(name="collected zhvi record", data=row_csv))
 
     def collect_neighborhoods_data(self):

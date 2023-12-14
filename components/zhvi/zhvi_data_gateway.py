@@ -5,14 +5,14 @@ from typing import List
 from components.zhvi.zhvi_record import ZhviRecord
 from components.zhvi.zhvi_history_item import ZhviHistoryItem
 
-DB_COLLECTION_ZHVI = "zvhi"
+DB_COLLECTION_ZHVI_RECORDS = "zvhi_records"
 
 
 class ZhviDataGateway:
     def __init__(self, db_uri: str, db_name: str):
         self.client = pymongo.MongoClient(db_uri)
         self.db = self.client[db_name]
-        self.collection = self.db[DB_COLLECTION_ZHVI]
+        self.collection = self.db[DB_COLLECTION_ZHVI_RECORDS]
 
     def create_zhvi_record(
             self,

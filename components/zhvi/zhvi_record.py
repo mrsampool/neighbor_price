@@ -1,4 +1,6 @@
+import logging
 from typing import List
+from datetime import datetime
 
 from components.zhvi.zhvi_history_item import ZhviHistoryItem
 
@@ -7,6 +9,7 @@ class ZhviRecord:
     def __init__(
             self,
             document=None,
+            pd_series=None,
             region_id: int = None,
             size_rank: int = None,
             region_name: str = None,
@@ -29,6 +32,29 @@ class ZhviRecord:
             self.metro: str = document["metro"]
             self.county_name: str = document["county_name"]
             self.zhvi_history: List[ZhviHistoryItem] = document["zhvi_history"]
+
+        elif pd_series is not None:
+            self.region_id: int = pd_series.loc['RegionID'].iloc[0]
+            self.size_rank: int = pd_series.loc['SizeRank'].iloc[0]
+            self.region_name: str = pd_series.loc['RegionName'].iloc[0]
+            self.region_type: str = pd_series.loc['RegionType'].iloc[0]
+            self.state_name: str = pd_series.loc['StateName'].iloc[0]
+
+            cols = pd_series.index.values
+            if 'State' in cols:
+                self.state: str = pd_series.loc['State'].iloc[0]
+            if 'City' in cols:
+                self.city: str = pd_series.loc['City'].iloc[0]
+            if 'Metro' in cols:
+                self.metro: str = pd_series.loc['Metro'].iloc[0]
+            if 'CountyName' in cols:
+                self.county_name: str = pd_series.loc['CountyName'].iloc[0]
+            zhvi_history = []
+            zhvi_history_df = pd_series.iloc[9:]
+            for date, zhvi_value in zhvi_history_df.iterrows():
+                zhvi_history.append(ZhviHistoryItem(date=datetime.strptime(date, '%Y-%m-%d'), zhvi_value=zhvi_value.iloc[0]))
+            self.zhvi_history = zhvi_history
+
         else:
             self.region_id: int = region_id
             self.size_rank: int = size_rank

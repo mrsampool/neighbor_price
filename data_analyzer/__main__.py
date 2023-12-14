@@ -6,6 +6,8 @@ import sys
 import logging
 
 from components.event_manager.event_manager import EventManager
+from components.zhvi.zhvi_data_gateway import ZhviDataGateway
+from data_analyzer.data_analyzer import DataAnalyzer
 
 
 class Config:
@@ -20,24 +22,29 @@ class Config:
         if self.event_lvhi_queue is None:
             logging.fatal("Missing required ENV: $EVENT_ZHVI_QUEUE")
 
+        self.zhvi_db_uri = os.getenv("ZHVI_DB_URI")
+        logging.info(f"using ZHVI_DB_URI: {self.zhvi_db_uri}")
+        if self.zhvi_db_uri is None:
+            logging.fatal("Missing required ENV: $ZHVI_DB_URI")
+
+        self.zhvi_db_name = os.getenv("ZHVI_DB_NAME")
+        logging.info(f"using ZHVI_DB_NAME: {self.zhvi_db_name}")
+        if self.zhvi_db_name is None:
+            logging.fatal("Missing required ENV: $ZHVI_DB_NAME")
+
 
 def main():
     logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=20)
 
     c = Config()
 
-    event_manager = EventManager(
-        host=c.event_host,
-        queue_name=c.event_lvhi_queue
-    )
-
-    def callback(ch, method, properties, body):
-        body = json.loads(body)
-        print(" [x] Received %r" % body)
+    zhvi_data_gateway = ZhviDataGateway(db_uri=c.zhvi_db_uri, db_name=c.zhvi_db_name)
+    event_manager = EventManager(host=c.event_host, queue_name=c.event_lvhi_queue)
+    data_analyzer = DataAnalyzer(event_manager=event_manager, zhvi_data_gateway=zhvi_data_gateway)
 
     print(' [*] Waiting for messages. To exit press CTRL+C')
 
-    event_manager.consume(callback=callback)
+    data_analyzer.analyze()
 
 
 if __name__ == '__main__':

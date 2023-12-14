@@ -5,7 +5,7 @@ import os
 import pymongo
 from components.zhvi.zhvi_data_gateway import (
     ZhviDataGateway,
-    DB_COLLECTION_ZHVI
+    DB_COLLECTION_ZHVI_RECORDS
 )
 from components.zhvi.zhvi_history_item import ZhviHistoryItem
 from components.zhvi.zhvi_record import ZhviRecord
@@ -26,7 +26,7 @@ class TestZhviNeighborhoodDataGateway(unittest.TestCase):
 
         client = pymongo.MongoClient(db_uri)
         db = client[db_name]
-        self.collection = db[DB_COLLECTION_ZHVI]
+        self.collection = db[DB_COLLECTION_ZHVI_RECORDS]
 
     def test_create_neighborhood_record(self):
         self.collection.drop()
