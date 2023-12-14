@@ -8,6 +8,7 @@ import json
 
 from components.zhvi_csv_client.zhvi_csv_client import ZhviCsvClient
 from components.zhvi.zhvi_data_gateway import ZhviDataGateway
+from components.event_manager.event_manager import EventManager
 
 app = Flask(__name__)
 
@@ -44,6 +45,16 @@ class Config:
         if self.zhvi_state_csv_path is None:
             logging.fatal("Missing required ENV: $ZHVI_STATE_CSV_PATH")
 
+        self.event_host = os.getenv("EVENT_HOST")
+        logging.info(f"using EVENT_HOST: {self.event_host}")
+        if self.event_host is None:
+            logging.fatal("Missing required ENV: $EVENT_HOST")
+
+        self.event_lvhi_queue = os.getenv("EVENT_ZHVI_QUEUE")
+        logging.info(f"using EVENT_ZHVI_QUEUE: {self.event_lvhi_queue}")
+        if self.event_lvhi_queue is None:
+            logging.fatal("Missing required ENV: $EVENT_ZHVI_QUEUE")
+
 
 def handler():
     logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=20)
@@ -62,21 +73,15 @@ def handler():
         db_name=c.zhvi_db_name
     )
 
+    event_manager = EventManager(
+        host=c.event_host,
+        queue_name=c.event_lvhi_queue
+    )
+
     data_collector = DataCollector(
         csv_client=csv_client,
         zhvi_data_gateway=zhvi_data_gateway,
-    )
-
-    conn = pika.BlockingConnection(pika.ConnectionParameters("localhost"))
-    channel = conn.channel()
-    channel.queue_declare(queue="transactions")
-
-    channel.basic_publish(
-        exchange="",
-        routing_key="transactions",
-        body=json.dumps({
-            "my message": "hi!",
-        }).encode('utf-8')
+        event_manager=event_manager
     )
 
     data_collector.collect_neighborhoods_data()

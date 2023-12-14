@@ -6,6 +6,9 @@ from components.zhvi.zhvi_data_gateway import ZhviDataGateway
 from components.zhvi.zhvi_record import ZhviRecord
 from components.zhvi.zhvi_history_item import ZhviHistoryItem
 
+from components.event_manager.event_manager import EventManager
+from components.event_manager.event_body import EventBody
+
 
 def create_zhvi_record_from_df_row(df_row):
     region_id = df_row['RegionID']
@@ -32,10 +35,12 @@ class DataCollector:
     def __init__(
             self,
             csv_client: ZhviCsvClient,
-            zhvi_data_gateway: ZhviDataGateway
+            zhvi_data_gateway: ZhviDataGateway,
+            event_manager: EventManager,
     ):
         self.csv_client = csv_client
         self.zhvi_data_gateway = zhvi_data_gateway
+        self.event_manager = event_manager
 
     def _fetch_zhvi_df_by_data_type(self, data_type: str):
         match data_type:
@@ -58,10 +63,8 @@ class DataCollector:
         logging.info(f"collected ZHVI data for {total_rows} {data_type}. saving to database...")
 
         for i, df_row in df.iterrows():
-            zhvi_record = create_zhvi_record_from_df_row(df_row)
-            self.zhvi_data_gateway.create_zhvi_record(record=zhvi_record)
-            if i % 100 == 0:
-                logging.info(f"saving {data_type}... {total_rows - i} remaining...")
+            row_csv = df_row.to_csv()
+            self.event_manager.publish(body=EventBody(name="collected zhvi record", data=row_csv))
 
     def collect_neighborhoods_data(self):
         self._collect_zhvi_data(data_type="neighborhoods")

@@ -3,22 +3,41 @@ import json
 import os
 import pika
 import sys
+import logging
+
+from components.event_manager.event_manager import EventManager
+
+
+class Config:
+    def __init__(self):
+        self.event_host = os.getenv("EVENT_HOST")
+        logging.info(f"using EVENT_HOST: {self.event_host}")
+        if self.event_host is None:
+            logging.fatal("Missing required ENV: $EVENT_HOST")
+
+        self.event_lvhi_queue = os.getenv("EVENT_ZHVI_QUEUE")
+        logging.info(f"using EVENT_ZHVI_QUEUE: {self.event_lvhi_queue}")
+        if self.event_lvhi_queue is None:
+            logging.fatal("Missing required ENV: $EVENT_ZHVI_QUEUE")
 
 
 def main():
-    connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
-    channel = connection.channel()
+    logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=20)
 
-    channel.queue_declare(queue='transactions')
+    c = Config()
+
+    event_manager = EventManager(
+        host=c.event_host,
+        queue_name=c.event_lvhi_queue
+    )
 
     def callback(ch, method, properties, body):
         body = json.loads(body)
         print(" [x] Received %r" % body)
 
-    channel.basic_consume(queue='transactions', on_message_callback=callback, auto_ack=True)
-
     print(' [*] Waiting for messages. To exit press CTRL+C')
-    channel.start_consuming()
+
+    event_manager.consume(callback=callback)
 
 
 if __name__ == '__main__':
