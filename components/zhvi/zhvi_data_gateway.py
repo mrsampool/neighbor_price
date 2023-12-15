@@ -72,6 +72,9 @@ class ZhviDataGateway:
         return self.collection.find({"region_type": region_type})
 
     def get_region_by_id(self, region_id) -> ZhviRecord:
-        logging.info(region_id)
         doc = self.collection.find_one({"region_id": region_id})
+        return ZhviRecord(document=doc)
+
+    def get_us_doc(self) -> ZhviRecord:
+        doc = self.collection.find_one({"region_type": "country", "region_name": "United States"})
         return ZhviRecord(document=doc)

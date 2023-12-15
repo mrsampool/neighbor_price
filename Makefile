@@ -30,4 +30,4 @@ run:
 	python3 -m venv venv; \
 	source .env; \
 	source venv/bin/activate; \
-	flask run; \
+	python -m neighbor_price; \

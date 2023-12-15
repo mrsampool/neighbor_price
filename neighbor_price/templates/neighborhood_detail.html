@@ -4,25 +4,93 @@
 
 <head>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <title>Chartjs Charts</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <title>NeighborPrice</title>
 </head>
 
 <body>
-    <div style="height: 50vh; width: 50%;">
-        <canvas id="myChart"></canvas>
-    </div>
+    <nav class="navbar navbar-expand-lg bg-info">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#">NeighborPrice</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="#">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Link</a>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Dropdown
+              </a>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="#">Action</a></li>
+                <li><a class="dropdown-item" href="#">Another action</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="#">Something else here</a></li>
+              </ul>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link disabled" aria-disabled="true">Disabled</a>
+            </li>
+          </ul>
+          <form class="d-flex" role="search">
+            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-success" type="submit">Search</button>
+          </form>
+        </div>
+      </div>
+    </nav>
+    <main class="p-3">
+        <h1>{{ neighborhood.region_name }}</h1>
+        <span>{{ neighborhood.city }}, {{ neighborhood.state }}</span>
+        <div class="w100 vh-100">
+            <canvas id="myChart"></canvas>
+        </div>
+    </main>
 
     <script>
-        const labels = {{ labels | tojson}};
+        const dates = {{ dates | tojson }};
 
         const data = {
-            labels: labels,
-            datasets: [{
-                label: 'Sales',
-                backgroundColor: 'rgb(255, 99, 132)',
-                borderColor: 'rgb(255, 99, 132)',
-                data: {{ data | tojson}},
-            }]
+            labels: dates,
+            datasets: [
+                {
+                    label: 'Neighborhood',
+                    backgroundColor: 'hsl(146, 23%, 45%)',
+                    borderColor: 'hsl(146, 23%, 40%)',
+                    data: {{ neighborhood_prices | tojson}}
+                },
+                {
+                    label: 'City',
+                    backgroundColor: 'hsl(205, 23%, 45%)',
+                    borderColor: 'hsl(205, 23%, 40%)',
+                    data: {{ city_prices | tojson}}
+                },
+                {
+                    label: 'Metro',
+                    backgroundColor: 'hsl(262, 23%, 45%)',
+                    borderColor: 'hsl(262, 23%, 40%)',
+                    data: {{ metro_prices | tojson}}
+                },
+                {
+                    label: 'State',
+                    backgroundColor: 'hsl(302, 23%, 45%)',
+                    borderColor: 'hsl(302, 23%, 40%)',
+                    data: {{ state_prices | tojson}}
+                },
+                {
+                    label: 'US',
+                    backgroundColor: 'hsl(12, 23%, 45%)',
+                    borderColor: 'hsl(12, 23%, 40%)',
+                    data: {{ us_prices | tojson}}
+                },
+            ]
         };
 
         const config = {
