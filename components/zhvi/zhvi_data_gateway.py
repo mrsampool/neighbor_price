@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+import logging
+
 import pymongo
 from typing import List
 
@@ -65,3 +67,11 @@ class ZhviDataGateway:
             "zhvi_history": doc_history
         }
         self.collection.update_one({"region_id": record.region_id}, {"$set": doc}, True)
+
+    def get_regions_by_type(self, region_type: str):
+        return self.collection.find({"region_type": region_type})
+
+    def get_region_by_id(self, region_id) -> ZhviRecord:
+        logging.info(region_id)
+        doc = self.collection.find_one({"region_id": region_id})
+        return ZhviRecord(document=doc)

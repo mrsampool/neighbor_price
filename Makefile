@@ -24,3 +24,10 @@ analyze:
 	source .env; \
 	source venv/bin/activate; \
 	python -m data_analyzer; \
+
+.PHONE: run
+run:
+	python3 -m venv venv; \
+	source .env; \
+	source venv/bin/activate; \
+	flask run; \

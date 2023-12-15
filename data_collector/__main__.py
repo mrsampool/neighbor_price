@@ -84,9 +84,9 @@ def handler():
         event_manager=event_manager
     )
 
-    data_collector.collect_neighborhoods_data()
-    data_collector.collect_metros_data()
     data_collector.collect_states_data()
+    data_collector.collect_metros_data()
+    data_collector.collect_neighborhoods_data()
 
 
 if __name__ == "__main__":

@@ -31,7 +31,14 @@ class ZhviRecord:
             self.city: str = document["city"]
             self.metro: str = document["metro"]
             self.county_name: str = document["county_name"]
-            self.zhvi_history: List[ZhviHistoryItem] = document["zhvi_history"]
+            self.zhvi_history = []
+            for history_item in document["zhvi_history"]:
+                self.zhvi_history.append(
+                    ZhviHistoryItem(
+                        date=history_item["date"],
+                        zhvi_value=float(history_item["zhvi_value"])
+                    )
+                )
 
         elif pd_series is not None:
             self.region_id: int = pd_series.loc['RegionID'].iloc[0]
@@ -65,7 +72,13 @@ class ZhviRecord:
             zhvi_history = []
             zhvi_history_df = pd_series.iloc[9:]
             for date, zhvi_value in zhvi_history_df.iterrows():
-                zhvi_history.append(ZhviHistoryItem(date=datetime.strptime(date, '%Y-%m-%d'), zhvi_value=zhvi_value.iloc[0]))
+                if zhvi_value.iloc[0] is not None and zhvi_value.iloc[0] != "":
+                    zhvi_history.append(
+                        ZhviHistoryItem(
+                            date=datetime.strptime(date, '%Y-%m-%d'),
+                            zhvi_value=float(zhvi_value.iloc[0])
+                        )
+                    )
             self.zhvi_history = zhvi_history
 
         else:
