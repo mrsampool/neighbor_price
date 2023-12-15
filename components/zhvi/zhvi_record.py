@@ -41,14 +41,27 @@ class ZhviRecord:
             self.state_name: str = pd_series.loc['StateName'].iloc[0]
 
             cols = pd_series.index.values
+
             if 'State' in cols:
                 self.state: str = pd_series.loc['State'].iloc[0]
+            else:
+                self.state = None
+
             if 'City' in cols:
                 self.city: str = pd_series.loc['City'].iloc[0]
+            else:
+                self.city = None
+
             if 'Metro' in cols:
                 self.metro: str = pd_series.loc['Metro'].iloc[0]
+            else:
+                self.metro = None
+
             if 'CountyName' in cols:
                 self.county_name: str = pd_series.loc['CountyName'].iloc[0]
+            else:
+                self.county_name = None
+
             zhvi_history = []
             zhvi_history_df = pd_series.iloc[9:]
             for date, zhvi_value in zhvi_history_df.iterrows():
