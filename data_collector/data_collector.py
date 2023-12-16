@@ -22,6 +22,8 @@ class DataCollector:
         match data_type:
             case "neighborhoods":
                 return self.csv_client.get_zhvi_neighborhoods_df()
+            case "cities":
+                return self.csv_client.get_zhvi_cities_df()
             case "metros":
                 return self.csv_client.get_zhvi_metros_df()
             case "states":
@@ -45,6 +47,9 @@ class DataCollector:
 
     def collect_neighborhoods_data(self):
         self._collect_zhvi_data(data_type="neighborhoods")
+
+    def collect_cities_data(self):
+        self._collect_zhvi_data(data_type="cities")
 
     def collect_metros_data(self):
         self._collect_zhvi_data(data_type="metros")

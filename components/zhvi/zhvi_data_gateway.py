@@ -4,10 +4,42 @@ import logging
 import pymongo
 from typing import List
 
-from components.zhvi.zhvi_record import ZhviRecord
+from components.zhvi.zhvi_record import ZhviRecord, NestedZhviRecord
 from components.zhvi.zhvi_history_item import ZhviHistoryItem
 
 DB_COLLECTION_ZHVI_RECORDS = "zvhi_records"
+
+state_names_and_abbrev = [
+    {"abbrev": "AZ", "name": "Arizona"},
+    {"abbrev": "CA", "name": "California"},
+    {"abbrev": "CO", "name": "Colorado"},
+    {"abbrev": "FL", "name": "Florida"},
+    {"abbrev": "GA", "name": "Georgia"},
+    {"abbrev": "IL", "name": "Illinois"},
+    {"abbrev": "IN", "name": "Indiana"},
+    {"abbrev": "MA", "name": "Massachusetts"},
+    {"abbrev": "MD", "name": "Maryland"},
+    {"abbrev": "MI", "name": "Michigan"},
+    {"abbrev": "MO", "name": "Missouri"},
+    {"abbrev": "NC", "name": "North Carolina"},
+    {"abbrev": "NJ", "name": "New Jersey"},
+    {"abbrev": "NY", "name": "New York"},
+    {"abbrev": "OH", "name": "Ohio"},
+    {"abbrev": "PN", "name": "Pennsylvania"},
+    {"abbrev": "TN", "name": "Tennessee"},
+    {"abbrev": "TX", "name": "Texas"},
+    {"abbrev": "WA", "name": "Washington"},
+    {"abbrev": "WI", "name": "Wisonsin"},
+    {"abbrev": "VA", "name": "Virginia"}
+]
+
+
+def get_state_name_from_state_abbrev(state_abbrev: str) -> str:
+    return next((state["name"] for state in state_names_and_abbrev if state["abbrev"] == state_abbrev), None)
+
+
+def get_state_abbrev_from_state_name(state_name: str) -> str:
+    return next((state["abbrev"] for state in state_names_and_abbrev if state["name"] == state_name), None)
 
 
 class ZhviDataGateway:
@@ -19,7 +51,7 @@ class ZhviDataGateway:
     def create_zhvi_record(
             self,
             record: ZhviRecord = None,
-            region_id: int = 0,
+            region_id: str = 0,
             size_rank: int = 0,
             region_name: str = "",
             region_type: str = "",
@@ -28,10 +60,20 @@ class ZhviDataGateway:
             city: str = "",
             metro: str = "",
             county_name: str = "",
+            metros: List[NestedZhviRecord] = None,
+            cities: List[NestedZhviRecord] = None,
+            neighborhods: List[NestedZhviRecord] = None,
             zhvi_history: List[ZhviHistoryItem] = None
     ):
         if zhvi_history is None:
             zhvi_history = []
+        if metros is None:
+            metros = []
+        if cities is None:
+            cities = []
+        if neighborhods is None:
+            neighborhods = []
+
         if record is None:
             record = ZhviRecord(
                 region_id=region_id,
@@ -43,6 +85,9 @@ class ZhviDataGateway:
                 city=city,
                 metro=metro,
                 county_name=county_name,
+                metros=metros,
+                cities=cities,
+                neighborhoods=neighborhods,
                 zhvi_history=zhvi_history
             )
 
@@ -54,6 +99,30 @@ class ZhviDataGateway:
             }
             doc_history.append(item_doc)
 
+        metros = []
+        for metro in record.metros:
+            metro_doc = {
+                "region_id": metro.region_id,
+                "region_name": metro.region_name
+            }
+            metros.append(metro_doc)
+
+        cities = []
+        for city in record.cities:
+            city_doc = {
+                "region_id": city.region_id,
+                "region_name": city.region_name
+            }
+            cities.append(city_doc)
+
+        neighborhoods = []
+        for neighborhood in record.neighborhoods:
+            neighborhood_doc = {
+                "region_id": neighborhood.region_id,
+                "region_name": neighborhood.region_name
+            }
+            neighborhoods.append(neighborhood_doc)
+
         doc = {
             "region_id": record.region_id,
             "size_rank": record.size_rank,
@@ -64,9 +133,15 @@ class ZhviDataGateway:
             "city": record.city,
             "metro": record.metro,
             "county_name": record.county_name,
+            "metros": metros,
+            "cities": cities,
+            "neighborhoods": neighborhoods,
             "zhvi_history": doc_history
         }
         self.collection.update_one({"region_id": record.region_id}, {"$set": doc}, True)
+
+    def get_metros_for_state_id(self, state_id: str):
+        state_doc = self.collection.find({"region_id"})
 
     def get_regions_by_type(self, region_type: str):
         return self.collection.find({"region_type": region_type})
@@ -78,3 +153,32 @@ class ZhviDataGateway:
     def get_us_doc(self) -> ZhviRecord:
         doc = self.collection.find_one({"region_type": "country", "region_name": "United States"})
         return ZhviRecord(document=doc)
+
+    def get_all_states(self) -> List[ZhviRecord]:
+        docs = self.collection.find({"region_type": "state"})
+        return list(map(lambda doc: ZhviRecord(document=doc), docs))
+
+    def get_all_metros_for_state_from_name(self, state_name) -> List[ZhviRecord]:
+        state_abbrev = get_state_abbrev_from_state_name(state_name)
+        docs = self.collection.find({"region_type": "msa", "state_name": state_abbrev})
+        return list(map(lambda doc: ZhviRecord(document=doc), docs))
+
+    def get_all_neighborhoods_for_metro_from_name(self, metro_name: str) -> List[ZhviRecord]:
+        docs = self.collection.find({"region_type": "neighborhood", "metro": metro_name})
+        return list(map(lambda doc: ZhviRecord(document=doc), docs))
+
+    def get_all_cities_for_metro_from_name(self, metro_name):
+        metro_without_state = metro_name.split(",")[0].strip()
+        docs = self.collection.find({
+            "region_type": "city",
+            "metro": {"$regex": f"{metro_without_state}", "$options": "i"}
+        })
+        return list(map(lambda doc: ZhviRecord(document=doc), docs))
+
+    def get_all_neighborhoods_for_city_from_name(self, city_name):
+        docs = self.collection.find({
+            "region_type": "neighborhood",
+            "city": city_name
+        })
+        return list(map(lambda doc: ZhviRecord(document=doc), docs))
+

@@ -35,6 +35,11 @@ class Config:
         if self.zhvi_neighborhood_csv_path is None:
             logging.fatal("Missing required ENV: $ZHVI_NEIGHBORHOOD_CSV_PATH")
 
+        self.zhvi_city_csv_path = os.getenv("ZHVI_CITY_CSV_PATH")
+        logging.info(f"using ZHVI_CITY_CSV_PATH: {self.zhvi_city_csv_path}")
+        if self.zhvi_city_csv_path is None:
+            logging.fatal("Missing required ENV: $ZHVI_CITY_CSV_PATH")
+
         self.zhvi_metro_csv_path = os.getenv("ZHVI_METRO_CSV_PATH")
         logging.info(f"using ZHVI_METRO_CSV_PATH: {self.zhvi_metro_csv_path}")
         if self.zhvi_metro_csv_path is None:
@@ -64,6 +69,7 @@ def handler():
     csv_client = ZhviCsvClient(
         zhvi_csv_url=c.zhvi_csv_url,
         zvhi_neighborhood_csv_path=c.zhvi_neighborhood_csv_path,
+        zvhi_city_csv_path=c.zhvi_city_csv_path,
         zvhi_metro_csv_path=c.zhvi_metro_csv_path,
         zvhi_state_csv_path=c.zhvi_state_csv_path,
     )
@@ -84,9 +90,10 @@ def handler():
         event_manager=event_manager
     )
 
-    data_collector.collect_states_data()
-    data_collector.collect_metros_data()
     data_collector.collect_neighborhoods_data()
+    data_collector.collect_cities_data()
+    data_collector.collect_metros_data()
+    data_collector.collect_states_data()
 
 
 if __name__ == "__main__":
