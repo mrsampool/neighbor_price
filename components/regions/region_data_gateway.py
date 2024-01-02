@@ -4,10 +4,10 @@ import logging
 import pymongo
 from typing import List
 
-from components.zhvi.zhvi_record import ZhviRecord, NestedZhviRecord
-from components.zhvi.zhvi_history_item import ZhviHistoryItem
+from components.regions.region_record import RegionRecord, NestedRegionRecord
+from components.regions.region_history_item import RegionHistoryItem
 
-DB_COLLECTION_ZHVI_RECORDS = "zvhi_records"
+DB_COLLECTION_REGION_RECORDS = "zvhi_records"
 
 state_names_and_abbrev = [
     {"abbrev": "AL", "name": "Alaska"},
@@ -72,15 +72,15 @@ def get_state_abbrev_from_state_name(state_name: str) -> str:
     return next((state["abbrev"] for state in state_names_and_abbrev if state["name"] == state_name), None)
 
 
-class ZhviDataGateway:
+class RegionDataGateway:
     def __init__(self, db_uri: str, db_name: str):
         self.client = pymongo.MongoClient(db_uri)
         self.db = self.client[db_name]
-        self.collection = self.db[DB_COLLECTION_ZHVI_RECORDS]
+        self.collection = self.db[DB_COLLECTION_REGION_RECORDS]
 
-    def create_zhvi_record(
+    def create_region_record(
             self,
-            record: ZhviRecord = None,
+            record: RegionRecord = None,
             region_id: str = 0,
             size_rank: int = 0,
             region_name: str = "",
@@ -90,13 +90,13 @@ class ZhviDataGateway:
             city: str = "",
             metro: str = "",
             county_name: str = "",
-            metros: List[NestedZhviRecord] = None,
-            cities: List[NestedZhviRecord] = None,
-            neighborhods: List[NestedZhviRecord] = None,
-            zhvi_history: List[ZhviHistoryItem] = None
+            metros: List[NestedRegionRecord] = None,
+            cities: List[NestedRegionRecord] = None,
+            neighborhods: List[NestedRegionRecord] = None,
+            region_history: List[RegionHistoryItem] = None
     ):
-        if zhvi_history is None:
-            zhvi_history = []
+        if region_history is None:
+            region_history = []
         if metros is None:
             metros = []
         if cities is None:
@@ -105,7 +105,7 @@ class ZhviDataGateway:
             neighborhods = []
 
         if record is None:
-            record = ZhviRecord(
+            record = RegionRecord(
                 region_id=region_id,
                 size_rank=size_rank,
                 region_name=region_name,
@@ -118,14 +118,14 @@ class ZhviDataGateway:
                 metros=metros,
                 cities=cities,
                 neighborhoods=neighborhods,
-                zhvi_history=zhvi_history
+                region_history=region_history
             )
 
         doc_history = []
-        for item in record.zhvi_history:
+        for item in record.region_history:
             item_doc = {
                 "date": item.date,
-                "zhvi_value": item.zhvi_value
+                "region_vale": item.region_value
             }
             doc_history.append(item_doc)
 
@@ -166,7 +166,7 @@ class ZhviDataGateway:
             "metros": metros,
             "cities": cities,
             "neighborhoods": neighborhoods,
-            "zhvi_history": doc_history
+            "region_history": doc_history
         }
         self.collection.update_one({"region_id": record.region_id}, {"$set": doc}, True)
 
@@ -176,38 +176,38 @@ class ZhviDataGateway:
     def get_regions_by_type(self, region_type: str):
         return self.collection.find({"region_type": region_type})
 
-    def get_region_by_id(self, region_id) -> ZhviRecord:
+    def get_region_by_id(self, region_id) -> RegionRecord:
         doc = self.collection.find_one({"region_id": region_id})
-        return ZhviRecord(document=doc)
+        return RegionRecord(document=doc)
 
-    def get_us_doc(self) -> ZhviRecord:
+    def get_us_doc(self) -> RegionRecord:
         doc = self.collection.find_one({"region_type": "country", "region_name": "United States"})
-        return ZhviRecord(document=doc)
+        return RegionRecord(document=doc)
 
-    def get_all_states(self) -> List[ZhviRecord]:
+    def get_all_states(self) -> List[RegionRecord]:
         docs = self.collection.find({"region_type": "state"})
-        return list(map(lambda doc: ZhviRecord(document=doc), docs))
+        return list(map(lambda doc: RegionRecord(document=doc), docs))
 
-    def get_all_metros_for_state_from_name(self, state_name) -> List[ZhviRecord]:
+    def get_all_metros_for_state_from_name(self, state_name) -> List[RegionRecord]:
         state_abbrev = get_state_abbrev_from_state_name(state_name)
         docs = self.collection.find({"region_type": "msa", "state_name": state_abbrev})
-        return list(map(lambda doc: ZhviRecord(document=doc), docs))
+        return list(map(lambda doc: RegionRecord(document=doc), docs))
 
-    def get_all_neighborhoods_for_metro_from_name(self, metro_name: str) -> List[ZhviRecord]:
+    def get_all_neighborhoods_for_metro_from_name(self, metro_name: str) -> List[RegionRecord]:
         docs = self.collection.find({"region_type": "neighborhood", "metro": metro_name})
-        return list(map(lambda doc: ZhviRecord(document=doc), docs))
+        return list(map(lambda doc: RegionRecord(document=doc), docs))
 
     def get_all_cities_for_metro_from_name(self, metro_name):
         docs = self.collection.find({
             "region_type": "city",
             "metro": {"$regex": f"{metro_name}", "$options": "i"}
         })
-        return list(map(lambda doc: ZhviRecord(document=doc), docs))
+        return list(map(lambda doc: RegionRecord(document=doc), docs))
 
     def get_all_neighborhoods_for_city_from_name(self, city_name):
         docs = self.collection.find({
             "region_type": "neighborhood",
             "city": city_name
         })
-        return list(map(lambda doc: ZhviRecord(document=doc), docs))
+        return list(map(lambda doc: RegionRecord(document=doc), docs))
 

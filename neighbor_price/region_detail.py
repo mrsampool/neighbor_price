@@ -3,29 +3,29 @@ from datetime import datetime
 from flask import render_template
 
 from typing import List
-from components.zhvi.zhvi_data_gateway import ZhviDataGateway
-from components.zhvi.zhvi_record import ZhviRecord
-from components.zhvi.zhvi_history_item import ZhviHistoryItem
+from components.regions.region_data_gateway import RegionDataGateway
+from components.regions.region_record import RegionRecord
+from components.regions.region_history_item import RegionHistoryItem
 
 
-def prices_from_zhvi_history(history: List[ZhviHistoryItem]) -> List[float]:
-    return [history.zhvi_value for history in history]
+def prices_from_region_history(history: List[RegionHistoryItem]) -> List[float]:
+    return [history.region_value for history in history]
 
 
-def dates_from_zhvi_history(history: List[ZhviHistoryItem]) -> List[datetime.datetime]:
+def dates_from_region_history(history: List[RegionHistoryItem]) -> List[datetime.datetime]:
     return [history.date for history in history]
 
 
 class RegionDetail:
     def __init__(
             self,
-            zhvi_data_gateway: ZhviDataGateway,
+            region_data_gateway: RegionDataGateway,
             state_id: str = None,
             metro_id: str = None,
             city_id: str = None,
             neighborhood_id: str = None
     ):
-        self.zhvi_data_gateway = zhvi_data_gateway
+        self.region_data_gateway = region_data_gateway
         self.state_id = state_id
         self.metro_id = metro_id
         self.city_id = city_id
@@ -38,44 +38,44 @@ class RegionDetail:
 
     class RegionRecords:
         def __init__(self, rd):
-            self.us: ZhviRecord | None = rd.zhvi_data_gateway.get_us_doc()
+            self.us: RegionRecord | None = rd.region_data_gateway.get_us_doc()
 
-            self.state: ZhviRecord | None = (
-                rd.zhvi_data_gateway.get_region_by_id(region_id=rd.state_id)
+            self.state: RegionRecord | None = (
+                rd.region_data_gateway.get_region_by_id(region_id=rd.state_id)
             ) if rd.state_id is not None else None
 
-            self.metro: ZhviRecord | None = (
-                rd.zhvi_data_gateway.get_region_by_id(region_id=rd.metro_id)
+            self.metro: RegionRecord | None = (
+                rd.region_data_gateway.get_region_by_id(region_id=rd.metro_id)
             ) if rd.metro_id is not None else None
 
-            self.city: ZhviRecord | None = (
-                rd.zhvi_data_gateway.get_region_by_id(region_id=rd.city_id)
+            self.city: RegionRecord | None = (
+                rd.region_data_gateway.get_region_by_id(region_id=rd.city_id)
             ) if rd.city_id is not None else None
 
-            self.neighborhood: ZhviRecord | None = (
-                rd.zhvi_data_gateway.get_region_by_id(region_id=rd.neighborhood_id)
+            self.neighborhood: RegionRecord | None = (
+                rd.region_data_gateway.get_region_by_id(region_id=rd.neighborhood_id)
             ) if rd.neighborhood_id is not None else None
 
         def get_dates(self):
-            if self.neighborhood is not None and len(self.neighborhood.zhvi_history) > 0:
-                return dates_from_zhvi_history(self.neighborhood.zhvi_history)
+            if self.neighborhood is not None and len(self.neighborhood.region_history) > 0:
+                return dates_from_region_history(self.neighborhood.region_history)
 
-            if self.city is not None and len(self.city.zhvi_history) > 0:
-                return dates_from_zhvi_history(self.city.zhvi_history)
+            if self.city is not None and len(self.city.region_history) > 0:
+                return dates_from_region_history(self.city.region_history)
 
-            if self.metro is not None and len(self.metro.zhvi_history) > 0:
-                return dates_from_zhvi_history(self.metro.zhvi_history)
+            if self.metro is not None and len(self.metro.region_history) > 0:
+                return dates_from_region_history(self.metro.region_history)
 
-            if self.state is not None and len(self.state.zhvi_history) > 0:
-                return dates_from_zhvi_history(self.state.zhvi_history)
+            if self.state is not None and len(self.state.region_history) > 0:
+                return dates_from_region_history(self.state.region_history)
 
-            if self.us is not None and len(self.us.zhvi_history) > 0:
-                return dates_from_zhvi_history(self.us.zhvi_history)
+            if self.us is not None and len(self.us.region_history) > 0:
+                return dates_from_region_history(self.us.region_history)
 
     class RegionLinks:
         def __init__(self, rd: RegionDetail):
             if rd.state_id is None:
-                state_records: List[ZhviRecord] = rd.zhvi_data_gateway.get_all_states()
+                state_records: List[RegionRecord] = rd.region_data_gateway.get_all_states()
                 self.links = list(map(
                     lambda record: self.RegionLink(record=record, rd=rd, region_type="state"),
                     state_records
@@ -105,7 +105,7 @@ class RegionDetail:
         class RegionLink:
             def __init__(
                     self,
-                    record: ZhviRecord,
+                    record: RegionRecord,
                     rd: RegionDetail,
                     region_type: str
             ):
@@ -128,22 +128,22 @@ class RegionDetail:
 
     class RegionPrices:
         def __init__(self, rd: RegionDetail):
-            self.neighborhood = prices_from_zhvi_history(
-                rd.region_records.neighborhood.zhvi_history
+            self.neighborhood = prices_from_region_history(
+                rd.region_records.neighborhood.region_history
             ) if rd.region_records.neighborhood is not None else []
 
-            self.city = prices_from_zhvi_history(
-                rd.region_records.city.zhvi_history
+            self.city = prices_from_region_history(
+                rd.region_records.city.region_history
             ) if rd.region_records.city is not None else []
 
-            self.metro = prices_from_zhvi_history(
-                rd.region_records.metro.zhvi_history
+            self.metro = prices_from_region_history(
+                rd.region_records.metro.region_history
             ) if rd.region_records.metro is not None else []
 
-            self.state = prices_from_zhvi_history(
-                rd.region_records.state.zhvi_history
+            self.state = prices_from_region_history(
+                rd.region_records.state.region_history
             ) if rd.region_records.state is not None else []
 
-            self.us = prices_from_zhvi_history(
-                rd.region_records.us.zhvi_history
+            self.us = prices_from_region_history(
+                rd.region_records.us.region_history
             ) if rd.region_records.us is not None else []

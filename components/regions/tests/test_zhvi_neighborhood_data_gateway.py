@@ -3,34 +3,34 @@ import unittest
 import logging
 import os
 import pymongo
-from components.zhvi.zhvi_data_gateway import (
-    ZhviDataGateway,
-    DB_COLLECTION_ZHVI_RECORDS
+from components.regions.region_data_gateway import (
+    RegionDataGateway,
+    DB_COLLECTION_REGION_RECORDS
 )
-from components.zhvi.zhvi_history_item import ZhviHistoryItem
-from components.zhvi.zhvi_record import ZhviRecord
+from components.regions.region_history_item import RegionHistoryItem
+from components.regions.region_record import RegionRecord
 
 
-class TestZhviNeighborhoodDataGateway(unittest.TestCase):
+class TestRegionNeighborhoodDataGateway(unittest.TestCase):
 
     def setUp(self) -> None:
-        db_uri = os.getenv("ZHVI_DB_URI")
+        db_uri = os.getenv("REGION_DB_URI")
         if db_uri is None or db_uri == "":
-            logging.fatal("Missing required ENV: $ZHVI_DB_URI")
+            logging.fatal("Missing required ENV: $REGION_DB_URI")
 
-        db_name = os.getenv("ZHVI_DB_NAME")
+        db_name = os.getenv("REGION_DB_NAME")
         if db_name is None or db_name == "":
-            logging.fatal("Missing required ENV: $ZHVI_DB_NAME")
+            logging.fatal("Missing required ENV: $REGION_DB_NAME")
 
-        self.gateway = ZhviDataGateway(db_uri=db_uri, db_name=db_name)
+        self.gateway = RegionDataGateway(db_uri=db_uri, db_name=db_name)
 
         client = pymongo.MongoClient(db_uri)
         db = client[db_name]
-        self.collection = db[DB_COLLECTION_ZHVI_RECORDS]
+        self.collection = db[DB_COLLECTION_REGION_RECORDS]
 
     def test_create_neighborhood_record(self):
         self.collection.drop()
-        record = ZhviRecord(
+        record = RegionRecord(
             region_id=1,
             size_rank=1,
             region_name="test_region_name",
@@ -40,18 +40,18 @@ class TestZhviNeighborhoodDataGateway(unittest.TestCase):
             city="test_city",
             metro="test_metro",
             county_name="test_county_name",
-            zhvi_history=[
-                ZhviHistoryItem(
+            region_history=[
+                RegionHistoryItem(
                     date=datetime.datetime(year=2000, month=1, day=31),
-                    zhvi_value=75553.2814897809
+                    region_vale=75553.2814897809
                 ),
-                ZhviHistoryItem(
+                RegionHistoryItem(
                     date=datetime.datetime(year=2000, month=2, day=29),
-                    zhvi_value=75756.46950997740
+                    region_vale=75756.46950997740
                 ),
             ]
         )
-        self.gateway.create_zhvi_record(record)
+        self.gateway.create_region_record(record)
 
         documents = self.collection.find()
         actual_document = documents[0]
@@ -66,6 +66,6 @@ class TestZhviNeighborhoodDataGateway(unittest.TestCase):
         self.assertEqual(actual_document["metro"], "test_metro")
         self.assertEqual(actual_document["county_name"], "test_county_name")
 
-        actual_history_1 = actual_document["zhvi_history"][0]
+        actual_history_1 = actual_document["region_history"][0]
         self.assertEqual(datetime.date.isoformat(actual_history_1["date"]), "2000-01-31")
-        self.assertEqual(actual_history_1["zhvi_value"], 75553.2814897809)
+        self.assertEqual(actual_history_1["region_vale"], 75553.2814897809)

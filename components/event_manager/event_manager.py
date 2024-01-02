@@ -24,19 +24,3 @@ class EventManager:
             auto_ack=False
         )
         self.channel.start_consuming()
-
-
-"""
-    conn = pika.BlockingConnection(pika.ConnectionParameters("localhost"))
-    channel = conn.channel()
-    channel.queue_declare(queue="zhvi-collection")
-
-    channel.basic_publish(
-        exchange="",
-        routing_key="zhvi_collection",
-        body=json.dumps({
-            "my message": "hi!",
-        }).encode('utf-8')
-    )
-    
-"""

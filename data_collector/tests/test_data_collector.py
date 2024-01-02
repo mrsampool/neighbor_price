@@ -2,7 +2,7 @@ import unittest
 import logging
 import os
 
-from components.zhvi_csv_client.zhvi_csv_client import ZhviCsvClient
+from components.region_csv_endpoint_worker.region_csv_endpoint_worker import RegionCsvEndpointWorker
 from components.event_manager.event_manager import EventManager
 from data_collector.data_collector import DataCollector
 
@@ -10,52 +10,52 @@ from data_collector.data_collector import DataCollector
 class TestDataCollector(unittest.TestCase):
 
     def setUp(self) -> None:
-        self.zhvi_csv_url = os.getenv("ZHVI_CSV_URL")
-        logging.info(f"using ZHVI_CSV_URL: {self.zhvi_csv_url}")
-        if self.zhvi_csv_url is None:
-            logging.fatal("Missing required ENV: $ZHVI_CSV_URL")
+        self.region_csv_url = os.getenv("REGION_CSV_URL")
+        logging.info(f"using REGION_CSV_URL: {self.region_csv_url}")
+        if self.region_csv_url is None:
+            logging.fatal("Missing required ENV: $REGION_CSV_URL")
 
-        self.zhvi_neighborhood_csv_path = os.getenv("ZHVI_NEIGHBORHOOD_CSV_PATH")
-        logging.info(f"using ZHVI_NEIGHBORHOOD_CSV_PATH: {self.zhvi_neighborhood_csv_path}")
-        if self.zhvi_neighborhood_csv_path is None:
-            logging.fatal("Missing required ENV: $ZHVI_NEIGHBORHOOD_CSV_PATH")
+        self.neighborhood_csv_path = os.getenv("NEIGHBORHOOD_CSV_PATH")
+        logging.info(f"using NEIGHBORHOOD_CSV_PATH: {self.neighborhood_csv_path}")
+        if self.neighborhood_csv_path is None:
+            logging.fatal("Missing required ENV: $NEIGHBORHOOD_CSV_PATH")
 
-        self.zhvi_metro_csv_path = os.getenv("ZHVI_METRO_CSV_PATH")
-        logging.info(f"using ZHVI_METRO_CSV_PATH: {self.zhvi_metro_csv_path}")
-        if self.zhvi_metro_csv_path is None:
-            logging.fatal("Missing required ENV: $ZHVI_METRO_CSV_PATH")
+        self.metro_csv_path = os.getenv("METRO_CSV_PATH")
+        logging.info(f"using METRO_CSV_PATH: {self.metro_csv_path}")
+        if self.metro_csv_path is None:
+            logging.fatal("Missing required ENV: $METRO_CSV_PATH")
 
-        self.zhvi_state_csv_path = os.getenv("ZHVI_STATE_CSV_PATH")
-        logging.info(f"using ZHVI_STATE_CSV_PATH: {self.zhvi_state_csv_path}")
-        if self.zhvi_state_csv_path is None:
-            logging.fatal("Missing required ENV: $ZHVI_STATE_CSV_PATH")
+        self.state_csv_path = os.getenv("STATE_CSV_PATH")
+        logging.info(f"using STATE_CSV_PATH: {self.state_csv_path}")
+        if self.state_csv_path is None:
+            logging.fatal("Missing required ENV: $STATE_CSV_PATH")
 
         self.event_host = os.getenv("EVENT_HOST")
         logging.info(f"using EVENT_HOST: {self.event_host}")
         if self.event_host is None:
             logging.fatal("Missing required ENV: $EVENT_HOST")
 
-        self.event_zhvi_queue = os.getenv("EVENT_ZHVI_QUEUE")
-        logging.info(f"using EVENT_LVHI_QUEUE: {self.event_zhvi_queue}")
-        if self.event_zhvi_queue is None:
-            logging.fatal("Missing required ENV: $EVENT_ZHVI_QUEUE")
+        self.event_region_queue = os.getenv("EVENT_REGION_QUEUE")
+        logging.info(f"using EVENT_LVHI_QUEUE: {self.event_region_queue}")
+        if self.event_region_queue is None:
+            logging.fatal("Missing required ENV: $EVENT_REGION_QUEUE")
 
-        csv_client = ZhviCsvClient(
-            zhvi_csv_url=self.zhvi_csv_url,
-            zvhi_neighborhood_csv_path=self.zhvi_neighborhood_csv_path,
-            zvhi_metro_csv_path=self.zhvi_metro_csv_path,
-            zvhi_state_csv_path=self.zhvi_state_csv_path,
+        csv_client = RegionCsvEndpointWorker(
+            region_csv_url=self.region_csv_url,
+            zvhi_neighborhood_csv_path=self.neighborhood_csv_path,
+            zvhi_metro_csv_path=self.metro_csv_path,
+            zvhi_state_csv_path=self.state_csv_path,
         )
 
         event_manager = EventManager(
             host=self.event_host,
-            queue_name=self.event_zhvi_queue
+            queue_name=self.event_region_queue
         )
 
         self.data_collector = DataCollector(
             csv_client=csv_client,
             event_manager=event_manager,
-            zhvi_data_gateway=None,
+            region_data_gateway=None,
         )
 
     def test_collect_neighborhoods_data(self):

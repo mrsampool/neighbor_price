@@ -5,20 +5,20 @@ import logging
 import os
 from prometheus_client import start_http_server, Summary
 
-from components.zhvi.zhvi_data_gateway import ZhviDataGateway
+from components.regions.region_data_gateway import RegionDataGateway
 from neighbor_price.region_detail import RegionDetail
 
-db_uri = os.getenv("ZHVI_DB_URI")
-logging.info(f"using ZHVI_DB_URI: {db_uri}")
+db_uri = os.getenv("REGION_DB_URI")
+logging.info(f"using REGION_DB_URI: {db_uri}")
 if db_uri is None:
-    logging.fatal("Missing required ENV: $ZHVI_DB_URI")
+    logging.fatal("Missing required ENV: $REGION_DB_URI")
 
-db_name = os.getenv("ZHVI_DB_NAME")
-logging.info(f"using ZHVI_DB_NAME: {db_name}")
+db_name = os.getenv("REGION_DB_NAME")
+logging.info(f"using REGION_DB_NAME: {db_name}")
 if db_name is None:
-    logging.fatal("Missing required ENV: $ZHVI_DB_NAME")
+    logging.fatal("Missing required ENV: $REGION_DB_NAME")
 
-zhvi_data_gateway = ZhviDataGateway(db_uri=db_uri, db_name=db_name)
+region_data_gateway = RegionDataGateway(db_uri=db_uri, db_name=db_name)
 
 app = Flask(__name__)
 
@@ -31,7 +31,7 @@ REQUEST_TIME = Summary('request_processing_seconds', 'Time spent processing requ
 @REQUEST_TIME.time()
 def us_detail():
     region_detail = RegionDetail(
-        zhvi_data_gateway=zhvi_data_gateway,
+        region_data_gateway=region_data_gateway,
     )
     return render_template(
         template_name_or_list='neighborhood_detail.html',
@@ -43,7 +43,7 @@ def us_detail():
 @REQUEST_TIME.time()
 def state_detail(state_id):
     region_detail = RegionDetail(
-        zhvi_data_gateway=zhvi_data_gateway,
+        region_data_gateway=region_data_gateway,
         state_id=state_id,
     )
     return render_template(
@@ -56,7 +56,7 @@ def state_detail(state_id):
 @REQUEST_TIME.time()
 def metro_detail(state_id, metro_id):
     region_detail = RegionDetail(
-        zhvi_data_gateway=zhvi_data_gateway,
+        region_data_gateway=region_data_gateway,
         state_id=state_id,
         metro_id=metro_id,
     )
@@ -70,7 +70,7 @@ def metro_detail(state_id, metro_id):
 @REQUEST_TIME.time()
 def city_detail(state_id, metro_id, city_id):
     region_detail = RegionDetail(
-        zhvi_data_gateway=zhvi_data_gateway,
+        region_data_gateway=region_data_gateway,
         state_id=state_id,
         metro_id=metro_id,
         city_id=city_id
@@ -85,7 +85,7 @@ def city_detail(state_id, metro_id, city_id):
 @REQUEST_TIME.time()
 def neighborhood_detail(state_id, metro_id, city_id, neighborhood_id):
     region_detail = RegionDetail(
-        zhvi_data_gateway=zhvi_data_gateway,
+        region_data_gateway=region_data_gateway,
         state_id=state_id,
         metro_id=metro_id,
         city_id=city_id,

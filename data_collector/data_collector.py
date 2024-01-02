@@ -1,7 +1,7 @@
 import logging
 
-from components.zhvi_csv_client.zhvi_csv_client import ZhviCsvClient
-from components.zhvi.zhvi_data_gateway import ZhviDataGateway
+from components.region_csv_endpoint_worker.region_csv_endpoint_worker import RegionCsvEndpointWorker
+from components.regions.region_data_gateway import RegionDataGateway
 
 from components.event_manager.event_manager import EventManager
 from components.event_manager.event_body import EventBody
@@ -10,49 +10,49 @@ from components.event_manager.event_body import EventBody
 class DataCollector:
     def __init__(
             self,
-            csv_client: ZhviCsvClient,
+            csv_client: RegionCsvEndpointWorker,
             event_manager: EventManager,
-            zhvi_data_gateway: ZhviDataGateway = None,
+            region_data_gateway: RegionDataGateway = None,
     ):
         self.csv_client = csv_client
-        self.zhvi_data_gateway = zhvi_data_gateway
+        self.region_data_gateway = region_data_gateway
         self.event_manager = event_manager
 
-    def _fetch_zhvi_df_by_data_type(self, data_type: str):
+    def _fetch_region_df_by_region_type(self, data_type: str):
         match data_type:
             case "neighborhoods":
-                return self.csv_client.get_zhvi_neighborhoods_df()
+                return self.csv_client.get_neighborhoods_df()
             case "cities":
-                return self.csv_client.get_zhvi_cities_df()
+                return self.csv_client.get_cities_df()
             case "metros":
-                return self.csv_client.get_zhvi_metros_df()
+                return self.csv_client.get_metros_df()
             case "states":
-                return self.csv_client.get_zhvi_states_df()
+                return self.csv_client.get_states_df()
             case _:
-                logging.error(f"invalid ZHVI data type: {data_type}")
+                logging.error(f"invalid region data type: {data_type}")
                 return
 
-    def _collect_zhvi_data(self, data_type: str):
+    def _collect_region_data(self, data_type: str):
 
-        logging.info(f"collecting ZHVI {data_type} data")
+        logging.info(f"collecting  {data_type} data")
 
-        df = self._fetch_zhvi_df_by_data_type(data_type=data_type)
+        df = self._fetch_region_df_by_region_type(data_type=data_type)
         total_rows = len(df.index)
-        logging.info(f"collected raw ZHVI data for {total_rows} {data_type}. saving to database...")
+        logging.info(f"collected raw  data for {total_rows} {data_type}. saving to database...")
 
-        logging.info(f"publishing collected {data_type} ZHVI data...")
+        logging.info(f"publishing collected {data_type}  data...")
         for i, df_row in df.iterrows():
             row_csv = df_row.transpose().to_csv()
-            self.event_manager.publish(body=EventBody(name="collected zhvi record", data=row_csv))
+            self.event_manager.publish(body=EventBody(name="collected region record", data=row_csv))
 
     def collect_neighborhoods_data(self):
-        self._collect_zhvi_data(data_type="neighborhoods")
+        self._collect_region_data(data_type="neighborhoods")
 
     def collect_cities_data(self):
-        self._collect_zhvi_data(data_type="cities")
+        self._collect_region_data(data_type="cities")
 
     def collect_metros_data(self):
-        self._collect_zhvi_data(data_type="metros")
+        self._collect_region_data(data_type="metros")
 
     def collect_states_data(self):
-        self._collect_zhvi_data(data_type="states")
+        self._collect_region_data(data_type="states")

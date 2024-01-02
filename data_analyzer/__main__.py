@@ -6,7 +6,7 @@ import sys
 import logging
 
 from components.event_manager.event_manager import EventManager
-from components.zhvi.zhvi_data_gateway import ZhviDataGateway
+from components.regions.region_data_gateway import RegionDataGateway
 from data_analyzer.data_analyzer import DataAnalyzer
 
 
@@ -17,20 +17,20 @@ class Config:
         if self.event_host is None:
             logging.fatal("Missing required ENV: $EVENT_HOST")
 
-        self.event_lvhi_queue = os.getenv("EVENT_ZHVI_QUEUE")
-        logging.info(f"using EVENT_ZHVI_QUEUE: {self.event_lvhi_queue}")
+        self.event_lvhi_queue = os.getenv("EVENT_REGION_QUEUE")
+        logging.info(f"using EVENT_REGION_QUEUE: {self.event_lvhi_queue}")
         if self.event_lvhi_queue is None:
-            logging.fatal("Missing required ENV: $EVENT_ZHVI_QUEUE")
+            logging.fatal("Missing required ENV: $EVENT_REGION_QUEUE")
 
-        self.zhvi_db_uri = os.getenv("ZHVI_DB_URI")
-        logging.info(f"using ZHVI_DB_URI: {self.zhvi_db_uri}")
-        if self.zhvi_db_uri is None:
-            logging.fatal("Missing required ENV: $ZHVI_DB_URI")
+        self.regions_db_uri = os.getenv("REGION_DB_URI")
+        logging.info(f"using REGION_DB_URI: {self.regions_db_uri}")
+        if self.regions_db_uri is None:
+            logging.fatal("Missing required ENV: $REGION_DB_URI")
 
-        self.zhvi_db_name = os.getenv("ZHVI_DB_NAME")
-        logging.info(f"using ZHVI_DB_NAME: {self.zhvi_db_name}")
-        if self.zhvi_db_name is None:
-            logging.fatal("Missing required ENV: $ZHVI_DB_NAME")
+        self.regions_db_name = os.getenv("REGION_DB_NAME")
+        logging.info(f"using REGION_DB_NAME: {self.regions_db_name}")
+        if self.regions_db_name is None:
+            logging.fatal("Missing required ENV: $REGION_DB_NAME")
 
 
 def main():
@@ -38,9 +38,9 @@ def main():
 
     c = Config()
 
-    zhvi_data_gateway = ZhviDataGateway(db_uri=c.zhvi_db_uri, db_name=c.zhvi_db_name)
+    region_data_gateway = RegionDataGateway(db_uri=c.regions_db_uri, db_name=c.regions_db_name)
     event_manager = EventManager(host=c.event_host, queue_name=c.event_lvhi_queue)
-    data_analyzer = DataAnalyzer(event_manager=event_manager, zhvi_data_gateway=zhvi_data_gateway)
+    data_analyzer = DataAnalyzer(event_manager=event_manager, regions_data_gateway=region_data_gateway)
 
     print(' [*] Waiting for messages. To exit press CTRL+C')
 
