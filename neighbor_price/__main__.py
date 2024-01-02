@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
+
 from flask import Flask, render_template
 import logging
 import os
+from prometheus_client import start_http_server, Summary
 
 from components.zhvi.zhvi_data_gateway import ZhviDataGateway
 from neighbor_price.region_detail import RegionDetail
@@ -22,8 +24,11 @@ app = Flask(__name__)
 
 logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=20)
 
+REQUEST_TIME = Summary('request_processing_seconds', 'Time spent processing request')
+
 
 @app.route("/")
+@REQUEST_TIME.time()
 def us_detail():
     region_detail = RegionDetail(
         zhvi_data_gateway=zhvi_data_gateway,
@@ -35,6 +40,7 @@ def us_detail():
 
 
 @app.route("/state/<state_id>")
+@REQUEST_TIME.time()
 def state_detail(state_id):
     region_detail = RegionDetail(
         zhvi_data_gateway=zhvi_data_gateway,
@@ -47,6 +53,7 @@ def state_detail(state_id):
 
 
 @app.route("/state/<state_id>/metro/<metro_id>")
+@REQUEST_TIME.time()
 def metro_detail(state_id, metro_id):
     region_detail = RegionDetail(
         zhvi_data_gateway=zhvi_data_gateway,
@@ -60,6 +67,7 @@ def metro_detail(state_id, metro_id):
 
 
 @app.route("/state/<state_id>/metro/<metro_id>/city/<city_id>")
+@REQUEST_TIME.time()
 def city_detail(state_id, metro_id, city_id):
     region_detail = RegionDetail(
         zhvi_data_gateway=zhvi_data_gateway,
@@ -74,6 +82,7 @@ def city_detail(state_id, metro_id, city_id):
 
 
 @app.route("/state/<state_id>/metro/<metro_id>/city/<city_id>/neighborhood/<neighborhood_id>")
+@REQUEST_TIME.time()
 def neighborhood_detail(state_id, metro_id, city_id, neighborhood_id):
     region_detail = RegionDetail(
         zhvi_data_gateway=zhvi_data_gateway,
@@ -89,4 +98,8 @@ def neighborhood_detail(state_id, metro_id, city_id, neighborhood_id):
 
 
 if __name__ == "__main__":
-    app.run(port=8000, debug=True)
+    start_http_server(8100)
+    app.run(port=8000, debug=False)
+
+
+

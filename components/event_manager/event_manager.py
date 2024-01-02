@@ -5,7 +5,7 @@ from components.event_manager.event_body import EventBody
 class EventManager:
     def __init__(self, host: str, queue_name: str):
         self.host = host
-        self.conn = pika.BlockingConnection(pika.ConnectionParameters(host))
+        self.conn = pika.BlockingConnection(pika.ConnectionParameters(host=host, blocked_connection_timeout=300))
         self.channel = self.conn.channel()
         self.channel.queue_declare(queue_name)
         self.queue_name = queue_name
@@ -21,7 +21,7 @@ class EventManager:
         self.channel.basic_consume(
             queue=self.queue_name,
             on_message_callback=callback,
-            auto_ack=True
+            auto_ack=False
         )
         self.channel.start_consuming()
 

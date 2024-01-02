@@ -12,7 +12,7 @@
 <body>
     <nav class="navbar navbar-expand-lg bg-info">
       <div class="container-fluid">
-        <a class="navbar-brand" href="#">NeighborPrice</a>
+        <a class="navbar-brand" href="/">NeighborPrice</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
@@ -62,58 +62,56 @@
         </div>
     </main>
 
-    <script>
-        const dates = {{ region_detail.dates | tojson }};
-
-        const data = {
-            labels: dates,
-            datasets: [
-                {
-                    label: 'Neighborhood',
-                    backgroundColor: 'hsl(146, 23%, 45%)',
-                    borderColor: 'hsl(146, 23%, 40%)',
-                    data: {{ region_detail.prices.neighborhood | tojson}}
-                },
-                /*
-                {
-                    label: 'City',
-                    backgroundColor: 'hsl(205, 23%, 45%)',
-                    borderColor: 'hsl(205, 23%, 40%)',
-                    data: {{ region_detail.prices.neighborhood | tojson}}
-                },
-                */
-                {
-                    label: 'Metro',
-                    backgroundColor: 'hsl(262, 23%, 45%)',
-                    borderColor: 'hsl(262, 23%, 40%)',
-                    data: {{ region_detail.prices.metro | tojson}}
-                },
-                {
-                    label: 'State',
-                    backgroundColor: 'hsl(302, 23%, 45%)',
-                    borderColor: 'hsl(302, 23%, 40%)',
-                    data: {{ region_detail.prices.state | tojson}}
-                },
-                {
-                    label: 'US',
-                    backgroundColor: 'hsl(12, 23%, 45%)',
-                    borderColor: 'hsl(12, 23%, 40%)',
-                    data: {{ region_detail.prices.us | tojson}}
-                },
-            ]
-        };
-
-        const config = {
-            type: 'line',
-            data: data,
-            options: { maintainAspectRatio: false }
-        };
-
-        const myChart = new Chart(
-            document.getElementById('zhvi-chart'),
-            config
-        );
-
-    </script>
 </body>
+<script>
+    const dates = {{ region_detail.dates | tojson }};
+
+    const data = {
+        labels: dates,
+        datasets: [
+            {
+                label: '{{ region_detail.region_records.neighborhood.region_name }} (Neighborhood)',
+                backgroundColor: 'hsl(146, 23%, 45%)',
+                borderColor: 'hsl(146, 23%, 40%)',
+                data: {{ region_detail.prices.neighborhood | tojson}}
+            },
+            {
+                label: '{{ region_detail.region_records.city.region_name }} (City)',
+                backgroundColor: 'hsl(205, 23%, 45%)',
+                borderColor: 'hsl(205, 23%, 40%)',
+                data: {{ region_detail.prices.city | tojson}}
+            },
+            {
+                label: '{{ region_detail.region_records.metro.region_name }} (MSA)',
+                backgroundColor: 'hsl(262, 23%, 45%)',
+                borderColor: 'hsl(262, 23%, 40%)',
+                data: {{ region_detail.prices.metro | tojson}}
+            },
+            {
+                label: '{{ region_detail.region_records.state.region_name }} (State)',
+                backgroundColor: 'hsl(302, 23%, 45%)',
+                borderColor: 'hsl(302, 23%, 40%)',
+                data: {{ region_detail.prices.state | tojson}}
+            },
+            {
+                label: 'US',
+                backgroundColor: 'hsl(12, 23%, 45%)',
+                borderColor: 'hsl(12, 23%, 40%)',
+                data: {{ region_detail.prices.us | tojson}}
+            },
+        ]
+    };
+
+    const config = {
+        type: 'line',
+        data: data,
+        options: { maintainAspectRatio: false }
+    };
+
+    const myChart = new Chart(
+        document.getElementById('zhvi-chart'),
+        config
+    );
+
+</script>
 </html>

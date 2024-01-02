@@ -10,27 +10,57 @@ from components.zhvi.zhvi_history_item import ZhviHistoryItem
 DB_COLLECTION_ZHVI_RECORDS = "zvhi_records"
 
 state_names_and_abbrev = [
+    {"abbrev": "AL", "name": "Alaska"},
     {"abbrev": "AZ", "name": "Arizona"},
+    {"abbrev": "AR", "name": "Arkansas"},
+    {"abbrev": "AL", "name": "Alabama"},
     {"abbrev": "CA", "name": "California"},
     {"abbrev": "CO", "name": "Colorado"},
+    {"abbrev": "DE", "name": "Delaware"},
+    {"abbrev": "DC", "name": "District of Columbia"},
+    {"abbrev": "CT", "name": "Connecticut"},
     {"abbrev": "FL", "name": "Florida"},
     {"abbrev": "GA", "name": "Georgia"},
+    {"abbrev": "HI", "name": "Hawaii"},
+    {"abbrev": "IA", "name": "Iowa"},
+    {"abbrev": "ID", "name": "Idaho"},
     {"abbrev": "IL", "name": "Illinois"},
     {"abbrev": "IN", "name": "Indiana"},
+    {"abbrev": "KS", "name": "Kansas"},
+    {"abbrev": "KY", "name": "Kentucky"},
+    {"abbrev": "LA", "name": "Louisiana"},
     {"abbrev": "MA", "name": "Massachusetts"},
     {"abbrev": "MD", "name": "Maryland"},
     {"abbrev": "MI", "name": "Michigan"},
+    {"abbrev": "MS", "name": "Mississippi"},
     {"abbrev": "MO", "name": "Missouri"},
+    {"abbrev": "MN", "name": "Minnesota"},
+    {"abbrev": "MO", "name": "Montana"},
     {"abbrev": "NC", "name": "North Carolina"},
+    {"abbrev": "ND", "name": "North Dakota"},
+    {"abbrev": "NE", "name": "Nebraska"},
+    {"abbrev": "NV", "name": "Nevada"},
+    {"abbrev": "NH", "name": "New Hampshire"},
     {"abbrev": "NJ", "name": "New Jersey"},
+    {"abbrev": "NM", "name": "New Mexico"},
     {"abbrev": "NY", "name": "New York"},
+    {"abbrev": "ME", "name": "Maine"},
     {"abbrev": "OH", "name": "Ohio"},
+    {"abbrev": "OR", "name": "Oregon"},
+    {"abbrev": "OK", "name": "Oklahoma"},
+    {"abbrev": "RI", "name": "Rhode Island"},
     {"abbrev": "PN", "name": "Pennsylvania"},
+    {"abbrev": "SC", "name": "South Carolina"},
+    {"abbrev": "SD", "name": "South Dakota"},
     {"abbrev": "TN", "name": "Tennessee"},
     {"abbrev": "TX", "name": "Texas"},
+    {"abbrev": "UT", "name": "Utah"},
     {"abbrev": "WA", "name": "Washington"},
+    {"abbrev": "WV", "name": "West Virginia"},
+    {"abbrev": "WY", "name": "Wyoming"},
     {"abbrev": "WI", "name": "Wisonsin"},
-    {"abbrev": "VA", "name": "Virginia"}
+    {"abbrev": "VA", "name": "Virginia"},
+    {"abbrev": "VT", "name": "Vermont"},
 ]
 
 
@@ -168,10 +198,9 @@ class ZhviDataGateway:
         return list(map(lambda doc: ZhviRecord(document=doc), docs))
 
     def get_all_cities_for_metro_from_name(self, metro_name):
-        metro_without_state = metro_name.split(",")[0].strip()
         docs = self.collection.find({
             "region_type": "city",
-            "metro": {"$regex": f"{metro_without_state}", "$options": "i"}
+            "metro": {"$regex": f"{metro_name}", "$options": "i"}
         })
         return list(map(lambda doc: ZhviRecord(document=doc), docs))
 

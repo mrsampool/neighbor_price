@@ -61,6 +61,7 @@ class DataAnalyzer:
         record = self.populate_nested_zhvi_record_fields(record=record)
         logging.info(f"updating database: {record.region_type} {record.region_name}")
         self.zhvi_data_gateway.create_zhvi_record(record=record)
+        ch.basic_ack(delivery_tag=method.delivery_tag)
 
     def analyze(self):
         self.event_manager.consume(callback=self.analyze_data)

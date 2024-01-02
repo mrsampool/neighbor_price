@@ -96,7 +96,7 @@ class ZhviRecord:
                 self.city = None
 
             if 'Metro' in cols:
-                self.metro: str = pd_series.loc['Metro'].iloc[0]
+                self.metro = pd_series.loc['Metro'].iloc[0]
             else:
                 self.metro = None
 
