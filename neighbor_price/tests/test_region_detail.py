@@ -5,6 +5,7 @@ import logging
 from components.regions.region_data_gateway import RegionDataGateway
 from neighbor_price.region_detail import RegionDetail
 
+
 class TestRegionDetail(unittest.TestCase):
     def setUp(self) -> None:
         db_uri = os.getenv("REGION_DB_URI")
@@ -26,7 +27,6 @@ class TestRegionDetail(unittest.TestCase):
             metro_id="394530",
             neighborhood_id="268743"
         )
-        print(self.region_detail)
 
     def test_region_detail_metro(self):
         self.region_detail = RegionDetail(
@@ -34,11 +34,9 @@ class TestRegionDetail(unittest.TestCase):
             state_id="10",
             metro_id="394530",
         )
-        print(self.region_detail)
 
     def test_region_detail_state(self):
         self.region_detail = RegionDetail(
             region_data_gateway=self.region_data_gateway,
             state_id="10",
         )
-        print(self.region_detail)

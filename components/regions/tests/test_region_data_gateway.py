@@ -7,8 +7,7 @@ from components.regions.region_data_gateway import (
     RegionDataGateway,
     DB_COLLECTION_REGION_RECORDS
 )
-from components.regions.region_history_item import RegionHistoryItem
-from components.regions.region_record import RegionRecord
+from components.regions.region_record import RegionRecord, RegionHistoryItem
 
 
 class TestRegionNeighborhoodDataGateway(unittest.TestCase):
@@ -31,7 +30,7 @@ class TestRegionNeighborhoodDataGateway(unittest.TestCase):
     def test_create_neighborhood_record(self):
         self.collection.drop()
         record = RegionRecord(
-            region_id=1,
+            region_id="1",
             size_rank=1,
             region_name="test_region_name",
             region_type="test_region_type",
@@ -56,7 +55,7 @@ class TestRegionNeighborhoodDataGateway(unittest.TestCase):
         documents = self.collection.find()
         actual_document = documents[0]
 
-        self.assertEqual(actual_document["region_id"], 1)
+        self.assertEqual(actual_document["region_id"], "1")
         self.assertEqual(actual_document["size_rank"], 1)
         self.assertEqual(actual_document["region_name"], "test_region_name")
         self.assertEqual(actual_document["region_type"], "test_region_type")
@@ -69,3 +68,20 @@ class TestRegionNeighborhoodDataGateway(unittest.TestCase):
         actual_history_1 = actual_document["region_history"][0]
         self.assertEqual(datetime.date.isoformat(actual_history_1["date"]), "2000-01-31")
         self.assertEqual(actual_history_1["region_vale"], 75553.2814897809)
+
+    def test_get_region_by_id(self):
+        self.collection.drop()
+        documents = [
+            {
+                "region_id": "1",
+                "region_name": "test-region-1",
+            },
+            {
+                "region_id": "2",
+                "region_name": "test-region-2",
+            },
+        ]
+        self.collection.insert_many(documents)
+        actual = self.gateway.get_region_by_id("1")
+        self.assertEqual(actual.region_name, "test-region-1")
+

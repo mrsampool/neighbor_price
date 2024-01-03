@@ -4,8 +4,7 @@ from flask import render_template
 
 from typing import List
 from components.regions.region_data_gateway import RegionDataGateway
-from components.regions.region_record import RegionRecord
-from components.regions.region_history_item import RegionHistoryItem
+from components.regions.region_record import RegionRecord, RegionHistoryItem
 
 
 def prices_from_region_history(history: List[RegionHistoryItem]) -> List[float]:

@@ -4,10 +4,9 @@ import logging
 import pymongo
 from typing import List
 
-from components.regions.region_record import RegionRecord, NestedRegionRecord
-from components.regions.region_history_item import RegionHistoryItem
+from components.regions.region_record import RegionRecord, NestedRegionRecord, RegionHistoryItem
 
-DB_COLLECTION_REGION_RECORDS = "zvhi_records"
+DB_COLLECTION_REGION_RECORDS = "region_records"
 
 state_names_and_abbrev = [
     {"abbrev": "AL", "name": "Alaska"},
@@ -169,12 +168,6 @@ class RegionDataGateway:
             "region_history": doc_history
         }
         self.collection.update_one({"region_id": record.region_id}, {"$set": doc}, True)
-
-    def get_metros_for_state_id(self, state_id: str):
-        state_doc = self.collection.find({"region_id"})
-
-    def get_regions_by_type(self, region_type: str):
-        return self.collection.find({"region_type": region_type})
 
     def get_region_by_id(self, region_id) -> RegionRecord:
         doc = self.collection.find_one({"region_id": region_id})

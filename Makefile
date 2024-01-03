@@ -7,6 +7,7 @@ setup:
 .PHONY: test
 test:
 	python3 -m venv venv; \
+	source .env; \
 	source .env_test; \
 	source venv/bin/activate; \
 	python -m unittest; \

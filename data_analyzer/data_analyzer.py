@@ -61,7 +61,8 @@ class DataAnalyzer:
         record = self.populate_nested_region_record_fields(record=record)
         logging.info(f"updating database: {record.region_type} {record.region_name}")
         self.region_data_gateway.create_region_record(record=record)
-        ch.basic_ack(delivery_tag=method.delivery_tag)
+        if ch is not None:
+            ch.basic_ack(delivery_tag=method.delivery_tag)
 
     def analyze(self):
         self.event_manager.consume(callback=self.analyze_data)

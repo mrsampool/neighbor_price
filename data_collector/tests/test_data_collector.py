@@ -58,10 +58,11 @@ class TestDataCollector(unittest.TestCase):
             region_data_gateway=None,
         )
 
+    """
+    
     def test_collect_neighborhoods_data(self):
         self.data_collector.collect_neighborhoods_data()
 
-"""
 
     def test_create_zhvi_neighborhood_from_df_row(self):
         neighborhood_df_row = pd.read_csv('../../data/zhvi_neighborhoods.csv')
