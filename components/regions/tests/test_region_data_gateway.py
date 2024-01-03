@@ -125,4 +125,32 @@ class TestRegionNeighborhoodDataGateway(unittest.TestCase):
         expected_names = ["test-state-1", "test-state-2", "test-state-3"]
         self.assertTrue(all(name in actual_names for name in expected_names))
 
+    def test_get_all_metros_for_state_from_name(self):
+        self.drop_and_seed_documents([
+            {
+                "region_type": "msa",
+                "region_name": "test-msa-1",
+                "state_name": "AL"
+            },
+            {
+                "region_type": "msa",
+                "region_name": "test-msa-2",
+                "state_name": "AL"
+            },
+            {
+                "region_type": "msa",
+                "region_name": "test-msa-3",
+                "state_name": "TX"
+            },
+        ])
+        actual_records = self.gateway.get_all_metros_for_state_from_name(state_name="Alaska")
+
+        self.assertEqual(2, len(actual_records))
+
+        actual_names = {record.region_name for record in actual_records}
+        expected_names = ["test-msa-1", "test-msa-2"]
+        self.assertTrue(all(name in actual_names for name in expected_names))
+
+
+
 
