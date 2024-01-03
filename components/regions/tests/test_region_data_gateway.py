@@ -69,9 +69,12 @@ class TestRegionNeighborhoodDataGateway(unittest.TestCase):
         self.assertEqual(datetime.date.isoformat(actual_history_1["date"]), "2000-01-31")
         self.assertEqual(actual_history_1["region_vale"], 75553.2814897809)
 
-    def test_get_region_by_id(self):
+    def drop_and_seed_documents(self, documents):
         self.collection.drop()
-        documents = [
+        self.collection.insert_many(documents)
+
+    def test_get_region_by_id(self):
+        self.drop_and_seed_documents([
             {
                 "region_id": "1",
                 "region_name": "test-region-1",
@@ -80,8 +83,46 @@ class TestRegionNeighborhoodDataGateway(unittest.TestCase):
                 "region_id": "2",
                 "region_name": "test-region-2",
             },
-        ]
-        self.collection.insert_many(documents)
+        ])
         actual = self.gateway.get_region_by_id("1")
         self.assertEqual(actual.region_name, "test-region-1")
+
+    def test_get_us_doc(self):
+        self.drop_and_seed_documents([
+            {
+                "region_type": "country",
+                "region_name": "United States",
+                "size_rank": "test-size-rank"
+            },
+        ])
+        actual = self.gateway.get_us_doc()
+        self.assertEqual(actual.size_rank, "test-size-rank")
+
+    def test_get_all_states(self):
+        self.drop_and_seed_documents([
+            {
+                "region_type": "state",
+                "region_name": "test-state-1",
+            },
+            {
+                "region_type": "state",
+                "region_name": "test-state-2",
+            },
+            {
+                "region_type": "state",
+                "region_name": "test-state-3",
+            },
+            {
+                "region_type": "city",
+                "region_name": "test-city-1",
+            },
+        ])
+        actual_records = self.gateway.get_all_states()
+
+        self.assertEqual(3, len(actual_records))
+
+        actual_names = {record.region_name for record in actual_records}
+        expected_names = ["test-state-1", "test-state-2", "test-state-3"]
+        self.assertTrue(all(name in actual_names for name in expected_names))
+
 
