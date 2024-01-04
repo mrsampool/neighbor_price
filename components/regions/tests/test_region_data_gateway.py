@@ -125,7 +125,7 @@ class TestRegionNeighborhoodDataGateway(unittest.TestCase):
         expected_names = ["test-state-1", "test-state-2", "test-state-3"]
         self.assertTrue(all(name in actual_names for name in expected_names))
 
-    def test_get_all_metros_for_state_from_name(self):
+    def test_get_all_metros_for_state(self):
         self.drop_and_seed_documents([
             {
                 "region_type": "msa",
@@ -143,7 +143,7 @@ class TestRegionNeighborhoodDataGateway(unittest.TestCase):
                 "state_name": "TX"
             },
         ])
-        actual_records = self.gateway.get_all_metros_for_state_from_name(state_name="Alaska")
+        actual_records = self.gateway.get_all_metros_for_state(state_name="Alaska")
 
         self.assertEqual(2, len(actual_records))
 
@@ -151,6 +151,49 @@ class TestRegionNeighborhoodDataGateway(unittest.TestCase):
         expected_names = ["test-msa-1", "test-msa-2"]
         self.assertTrue(all(name in actual_names for name in expected_names))
 
+    def test_get_all_cities_for_metro(self):
+        self.drop_and_seed_documents([
+            {
+                "region_type": "city",
+                "state_name": "CO",
+                "metro": "city1-city2-msa",
+                "region_name": "city1"
+            },
+            {
+                "region_type": "city",
+                "state_name": "CO",
+                "metro": "city1-city2-msa",
+                "region_name": "city2"
+            },
+            {
+                "region_type": "city",
+                "state_name": "CO",
+                "metro": "city3-city4-msa",
+                "region_name": "city3"
+            },
+            {
+                "region_type": "city",
+                "state_name": "NM",
+                "metro": "city1-city2-msa",
+                "region_name": "city2"
+            },
+            {
+                "region_type": "state",
+                "state_name": "",
+                "metro": "",
+                "region_name": "CO"
+            },
 
+        ])
+        actual_records = self.gateway.get_all_cities_for_metro(
+            metro_name="city1",
+            state_abbrev="CO"
+        )
+
+        self.assertEqual(2, len(actual_records))
+
+        actual_names = {record.region_name for record in actual_records}
+        expected_names = ["city1", "city2"]
+        self.assertTrue(all(name in actual_names for name in expected_names))
 
 

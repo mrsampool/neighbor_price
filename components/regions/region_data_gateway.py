@@ -181,23 +181,20 @@ class RegionDataGateway:
         docs = self.collection.find({"region_type": "state"})
         return list(map(lambda doc: RegionRecord(document=doc), docs))
 
-    def get_all_metros_for_state_from_name(self, state_name) -> List[RegionRecord]:
+    def get_all_metros_for_state(self, state_name) -> List[RegionRecord]:
         state_abbrev = get_state_abbrev_from_state_name(state_name)
         docs = self.collection.find({"region_type": "msa", "state_name": state_abbrev})
         return list(map(lambda doc: RegionRecord(document=doc), docs))
 
-    def get_all_neighborhoods_for_metro_from_name(self, metro_name: str) -> List[RegionRecord]:
-        docs = self.collection.find({"region_type": "neighborhood", "metro": metro_name})
-        return list(map(lambda doc: RegionRecord(document=doc), docs))
-
-    def get_all_cities_for_metro_from_name(self, metro_name):
+    def get_all_cities_for_metro(self, metro_name, state_abbrev):
         docs = self.collection.find({
             "region_type": "city",
-            "metro": {"$regex": f"{metro_name}", "$options": "i"}
+            "state_name": state_abbrev,
+            "metro": {"$regex": f"{metro_name}", "$options": "i"},
         })
         return list(map(lambda doc: RegionRecord(document=doc), docs))
 
-    def get_all_neighborhoods_for_city_from_name(self, city_name):
+    def get_all_neighborhoods_for_city(self, city_name):
         docs = self.collection.find({
             "region_type": "neighborhood",
             "city": city_name
