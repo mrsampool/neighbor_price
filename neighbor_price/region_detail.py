@@ -83,7 +83,7 @@ class RegionDetail:
             elif rd.state_id is not None and rd.metro_id is None:
                 self.links = list(map(
                     lambda record: self.RegionLink(record=record, rd=rd, region_type="msa"),
-                    rd.region_records.state.metros
+                    rd.region_data_gateway.get_all_metros_for_state(state_name=rd.region_records.state.region_name)
                 ))
 
             elif rd.metro_id is not None and rd.city_id is None:

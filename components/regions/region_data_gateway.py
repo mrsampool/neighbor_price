@@ -72,10 +72,13 @@ def get_state_abbrev_from_state_name(state_name: str) -> str:
 
 
 class RegionDataGateway:
-    def __init__(self, db_uri: str, db_name: str):
-        self.client = pymongo.MongoClient(db_uri)
-        self.db = self.client[db_name]
-        self.collection = self.db[DB_COLLECTION_REGION_RECORDS]
+    def __init__(self, db_name: str = None, db_uri: str = None, collection=None):
+        if collection is None:
+            client = pymongo.MongoClient(db_uri)
+            db = client[db_name]
+            self.collection = db[DB_COLLECTION_REGION_RECORDS]
+        else:
+            self.collection = collection
 
     def create_region_record(
             self,
