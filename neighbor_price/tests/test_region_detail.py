@@ -43,18 +43,75 @@ class MockRegionDataGateway(RegionDataGateway):
                         )
                     ]
                 )
+            case "2":
+                return RegionRecord(
+                    region_name="metro-1",
+                    state_name="CO",
+                    region_history=[
+                        RegionHistoryItem(
+                            date=datetime(2023, 1, 1),
+                            region_vale=170
+                        ),
+                        RegionHistoryItem(
+                            date=datetime(2023, 2, 1),
+                            region_vale=180
+                        )
+                    ]
+                )
+            case "4":
+                return RegionRecord(
+                    region_name="city-1",
+                    state_name="CO",
+                    region_history=[
+                        RegionHistoryItem(
+                            date=datetime(2023, 1, 1),
+                            region_vale=190
+                        ),
+                        RegionHistoryItem(
+                            date=datetime(2023, 2, 1),
+                            region_vale=200
+                        )
+                    ]
+                )
 
     def get_all_metros_for_state(self, state_name) -> List[RegionRecord]:
-        if state_name == "Colorado":
+        match state_name:
+            case "Colorado":
+                return [
+                    RegionRecord(
+                        region_id="2",
+                        region_name="metro-1"
+                    ),
+                    RegionRecord(
+                        region_id="3",
+                        region_name="metro-2"
+                    )
+                ]
+
+    def get_all_cities_for_metro(self, metro_name, state_abbrev) -> List[RegionRecord]:
+        if metro_name == "metro-1" and state_abbrev == "CO":
             return [
                 RegionRecord(
-                    region_id="2",
-                    region_name="metro-1"
+                    region_id="4",
+                    region_name="city-1"
                 ),
                 RegionRecord(
-                    region_id="3",
-                    region_name="metro-2"
-                )
+                    region_id="5",
+                    region_name="city-2"
+                ),
+            ]
+
+    def get_all_neighborhoods_for_city(self, city_name, state_abbrev) -> List[RegionRecord]:
+        if city_name == "city-1" and state_abbrev == "CO":
+            return [
+                RegionRecord(
+                    region_id="6",
+                    region_name="neighborhood-1"
+                ),
+                RegionRecord(
+                    region_id="7",
+                    region_name="neighborhood-2"
+                ),
             ]
 
 
@@ -99,13 +156,112 @@ class TestRegionDetailState(unittest.TestCase):
         self.assertEqual(self.region_detail.dates[1].strftime("%m/%d/%Y"), "02/01/2023")
 
 
-"""
-    def test_region_detail_metro(self):
+class TestRegionDetailMetro(unittest.TestCase):
+
+    def setUp(self) -> None:
         self.region_detail = RegionDetail(
-            region_data_gateway=self.region_data_gateway,
-            state_id="10",
-            metro_id="394530",
+            region_data_gateway=MockRegionDataGateway(),
+            state_id="1",
+            metro_id="2"
         )
+
+    def test_region_detail_metro_records(self):
+        self.assertEqual(
+            self.region_detail.region_records.state.region_name,
+            "Colorado"
+        )
+        self.assertEqual(
+            self.region_detail.region_records.metro.region_name,
+            "metro-1"
+        )
+
+    def test_region_detail_metro_links(self):
+        self.assertEqual(
+            self.region_detail.region_links.links[0].address,
+            "/state/1/metro/2/city/4",
+        )
+        self.assertEqual(
+            self.region_detail.region_links.links[0].label,
+            "city-1",
+        )
+        self.assertEqual(
+            self.region_detail.region_links.links[1].address,
+            f"/state/1/metro/2/city/5",
+        )
+        self.assertEqual(
+            self.region_detail.region_links.links[1].label,
+            "city-2",
+        )
+
+    def test_region_detail_metro_prices(self):
+        self.assertEqual(self.region_detail.prices.state[0], 150)
+        self.assertEqual(self.region_detail.prices.state[1], 160)
+
+        self.assertEqual(self.region_detail.prices.metro[0], 170)
+        self.assertEqual(self.region_detail.prices.metro[1], 180)
+
+    def test_region_detail_metro_dates(self):
+        self.assertEqual(self.region_detail.dates[0].strftime("%m/%d/%Y"), "01/01/2023")
+        self.assertEqual(self.region_detail.dates[1].strftime("%m/%d/%Y"), "02/01/2023")
+
+
+class TestRegionDetailCity(unittest.TestCase):
+
+    def setUp(self) -> None:
+        self.region_detail = RegionDetail(
+            region_data_gateway=MockRegionDataGateway(),
+            state_id="1",
+            metro_id="2",
+            city_id="4"
+        )
+
+    def test_region_detail_city_records(self):
+        self.assertEqual(
+            self.region_detail.region_records.state.region_name,
+            "Colorado"
+        )
+        self.assertEqual(
+            self.region_detail.region_records.metro.region_name,
+            "metro-1"
+        )
+        self.assertEqual(
+            self.region_detail.region_records.city.region_name,
+            "city-1"
+        )
+
+    def test_region_detail_city_links(self):
+        self.assertEqual(
+            self.region_detail.region_links.links[0].address,
+            "/state/1/metro/2/city/4/neighborhood/6",
+        )
+        self.assertEqual(
+            self.region_detail.region_links.links[0].label,
+            "neighborhood-1",
+        )
+        self.assertEqual(
+            self.region_detail.region_links.links[1].address,
+            f"/state/1/metro/2/city/4/neighborhood/7",
+        )
+        self.assertEqual(
+            self.region_detail.region_links.links[1].label,
+            "neighborhood-2",
+        )
+
+    def test_region_detail_city_prices(self):
+        self.assertEqual(self.region_detail.prices.state[0], 150)
+        self.assertEqual(self.region_detail.prices.state[1], 160)
+
+        self.assertEqual(self.region_detail.prices.metro[0], 170)
+        self.assertEqual(self.region_detail.prices.metro[1], 180)
+
+        self.assertEqual(self.region_detail.prices.city[0], 190)
+        self.assertEqual(self.region_detail.prices.city[1], 200)
+
+    def test_region_detail_city_dates(self):
+        self.assertEqual(self.region_detail.dates[0].strftime("%m/%d/%Y"), "01/01/2023")
+        self.assertEqual(self.region_detail.dates[1].strftime("%m/%d/%Y"), "02/01/2023")
+
+"""
 
     def test_region_detail_city(self):
         self.region_detail = RegionDetail(

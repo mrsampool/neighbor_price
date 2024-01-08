@@ -197,7 +197,7 @@ class RegionDataGateway:
         })
         return list(map(lambda doc: RegionRecord(document=doc), docs))
 
-    def get_all_neighborhoods_for_city(self, city_name, state_abbrev):
+    def get_all_neighborhoods_for_city(self, city_name: str, state_abbrev: str):
         docs = self.collection.find({
             "region_type": "neighborhood",
             "city": city_name,

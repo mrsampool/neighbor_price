@@ -74,10 +74,9 @@ class RegionDetail:
     class RegionLinks:
         def __init__(self, rd: RegionDetail):
             if rd.state_id is None:
-                state_records: List[RegionRecord] = rd.region_data_gateway.get_all_states()
                 self.links = list(map(
                     lambda record: self.RegionLink(record=record, rd=rd, region_type="state"),
-                    state_records
+                    rd.region_data_gateway.get_all_states()
                 ))
 
             elif rd.state_id is not None and rd.metro_id is None:
@@ -89,13 +88,19 @@ class RegionDetail:
             elif rd.metro_id is not None and rd.city_id is None:
                 self.links = list(map(
                     lambda record: self.RegionLink(record=record, rd=rd, region_type="city"),
-                    rd.region_records.metro.cities
+                    rd.region_data_gateway.get_all_cities_for_metro(
+                        metro_name=rd.region_records.metro.region_name,
+                        state_abbrev=rd.region_records.metro.state_name
+                    )
                 ))
 
             elif rd.city_id is not None and rd.neighborhood_id is None:
                 self.links = list(map(
                     lambda record: self.RegionLink(record=record, rd=rd, region_type="neighborhood"),
-                    rd.region_records.city.neighborhoods
+                    rd.region_data_gateway.get_all_neighborhoods_for_city(
+                        city_name=rd.region_records.city.region_name,
+                        state_abbrev=rd.region_records.city.state_name
+                    )
                 ))
 
             else:
