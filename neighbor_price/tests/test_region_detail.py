@@ -1,144 +1,55 @@
 import unittest
-from typing import List
-from datetime import datetime
 
-from components.regions.region_record import RegionRecord, RegionHistoryItem
-from components.regions.region_data_gateway import RegionDataGateway
-from neighbor_price.region_detail import RegionDetail
+from components.regions.mock_region_data_gateway import MockRegionDataGateway
+from neighbor_price.region_detail import RegionDetail, RegionDetailer
 
 
-class MockRegionDataGateway(RegionDataGateway):
+class TestRegionDetailUS(unittest.TestCase):
 
-    def __init__(self):
-        super().__init__(collection="x")
+    def setUp(self) -> None:
+        region_detailer = RegionDetailer(data_gateway=MockRegionDataGateway())
+        self.region_detail = region_detailer.get_us_detail()
 
-    def get_us_doc(self) -> RegionRecord:
-        return RegionRecord(
-            region_id="0",
-            region_history=[
-                RegionHistoryItem(
-                    date=datetime(2023, 1, 1),
-                    region_vale=130
-                ),
-                RegionHistoryItem(
-                    date=datetime(2023, 2, 1),
-                    region_vale=140
-                )
-            ]
+    def test_region_detail_us_records(self):
+        self.assertEqual(
+            self.region_detail.region_records.us.region_name,
+            "United States of America"
         )
 
-    def get_region_by_id(self, region_id):
-        match region_id:
-            case "1":
-                return RegionRecord(
-                    region_name="Colorado",
-                    region_history=[
-                        RegionHistoryItem(
-                            date=datetime(2023, 1, 1),
-                            region_vale=150
-                        ),
-                        RegionHistoryItem(
-                            date=datetime(2023, 2, 1),
-                            region_vale=160
-                        )
-                    ]
-                )
-            case "2":
-                return RegionRecord(
-                    region_name="metro-1",
-                    state_name="CO",
-                    region_history=[
-                        RegionHistoryItem(
-                            date=datetime(2023, 1, 1),
-                            region_vale=170
-                        ),
-                        RegionHistoryItem(
-                            date=datetime(2023, 2, 1),
-                            region_vale=180
-                        )
-                    ]
-                )
-            case "4":
-                return RegionRecord(
-                    region_name="city-1",
-                    state_name="CO",
-                    region_history=[
-                        RegionHistoryItem(
-                            date=datetime(2023, 1, 1),
-                            region_vale=190
-                        ),
-                        RegionHistoryItem(
-                            date=datetime(2023, 2, 1),
-                            region_vale=200
-                        )
-                    ]
-                )
-            case "7":
-                return RegionRecord(
-                    region_name="neighborhood-1",
-                    state_name="CO",
-                    region_history=[
-                        RegionHistoryItem(
-                            date=datetime(2023, 1, 1),
-                            region_vale=210
-                        ),
-                        RegionHistoryItem(
-                            date=datetime(2023, 2, 1),
-                            region_vale=220
-                        )
-                    ]
-                )
+    def test_region_detail_us_links(self):
+        self.assertEqual(
+            self.region_detail.links[0].address,
+            "/state/state-1-id",
+        )
+        self.assertEqual(
+            self.region_detail.links[0].label,
+            "state-1-name",
+        )
+        self.assertEqual(
+            self.region_detail.links[1].address,
+            f"/state/state-2-id",
+        )
+        self.assertEqual(
+            self.region_detail.links[1].label,
+            "state-2-name",
+        )
 
-    def get_all_metros_for_state(self, state_name) -> List[RegionRecord]:
-        match state_name:
-            case "Colorado":
-                return [
-                    RegionRecord(
-                        region_id="2",
-                        region_name="metro-1"
-                    ),
-                    RegionRecord(
-                        region_id="3",
-                        region_name="metro-2"
-                    )
-                ]
+    def test_region_detail_us_prices(self):
+        self.assertEqual(self.region_detail.prices.us[0], 130)
+        self.assertEqual(self.region_detail.prices.us[1], 140)
 
-    def get_all_cities_for_metro(self, metro_name, state_abbrev) -> List[RegionRecord]:
-        if metro_name == "metro-1" and state_abbrev == "CO":
-            return [
-                RegionRecord(
-                    region_id="4",
-                    region_name="city-1"
-                ),
-                RegionRecord(
-                    region_id="5",
-                    region_name="city-2"
-                ),
-            ]
-
-    def get_all_neighborhoods_for_city(self, city_name, state_abbrev) -> List[RegionRecord]:
-        if city_name == "city-1" and state_abbrev == "CO":
-            return [
-                RegionRecord(
-                    region_id="6",
-                    region_name="neighborhood-1"
-                ),
-                RegionRecord(
-                    region_id="7",
-                    region_name="neighborhood-2"
-                ),
-            ]
+    def test_region_detail_us_dates(self):
+        self.assertEqual(self.region_detail.dates[0].strftime("%m/%d/%Y"), "01/01/2023")
+        self.assertEqual(self.region_detail.dates[1].strftime("%m/%d/%Y"), "02/01/2023")
 
 
 class TestRegionDetailState(unittest.TestCase):
 
     def setUp(self) -> None:
-        self.region_detail = RegionDetail(
-            region_data_gateway=MockRegionDataGateway(),
-            state_id="1",
-        )
+        region_detailer = RegionDetailer(data_gateway=MockRegionDataGateway())
+        self.state_detail = region_detailer.get_state_detail(state_id="1")
 
-    def test_region_detail_state_record(self):
+    def test_region_detail_state_records(self):
         self.assertEqual(
             self.region_detail.region_records.state.region_name,
             "Colorado"
