@@ -111,7 +111,7 @@ class RegionRecord:
         self.metro: str = document.get("metro")
         self.county_name: str = document.get("county_name")
         self.region_history = []
-        self.region_history = parse_region_history_from_doc(document.get("region_history"))
+        self.region_history = RegionHistory(doc_history=document.get("region_history"))
         self.metros = parse_nested_region_records_from_doc(document.get("metros"))
         self.cities = parse_nested_region_records_from_doc(document.get("cities"))
         self.neighborhoods = parse_nested_region_records_from_doc(document.get("neighborhoods"))
