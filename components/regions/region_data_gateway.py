@@ -4,7 +4,7 @@ import logging
 import pymongo
 from typing import List
 
-from components.regions.region_record import RegionRecord, NestedRegionRecord, RegionHistoryItem
+from components.regions.region_record import RegionRecord, NestedRegionRecord, RegionHistory
 
 DB_COLLECTION_REGION_RECORDS = "region_records"
 
@@ -95,7 +95,7 @@ class RegionDataGateway:
             metros: List[NestedRegionRecord] = None,
             cities: List[NestedRegionRecord] = None,
             neighborhods: List[NestedRegionRecord] = None,
-            region_history: List[RegionHistoryItem] = None
+            region_history: RegionHistory = None
     ):
         if region_history is None:
             region_history = []
@@ -124,7 +124,7 @@ class RegionDataGateway:
             )
 
         doc_history = []
-        for item in record.region_history:
+        for item in record.region_history.history_items:
             item_doc = {
                 "date": item.date,
                 "region_vale": item.region_value
@@ -176,7 +176,7 @@ class RegionDataGateway:
         doc = self.collection.find_one({"region_id": region_id})
         return RegionRecord(document=doc)
 
-    def get_us_doc(self) -> RegionRecord:
+    def get_us_record(self) -> RegionRecord:
         doc = self.collection.find_one({"region_type": "country", "region_name": "United States"})
         return RegionRecord(document=doc)
 

@@ -7,7 +7,7 @@ from components.regions.region_data_gateway import (
     RegionDataGateway,
     DB_COLLECTION_REGION_RECORDS
 )
-from components.regions.region_record import RegionRecord, RegionHistoryItem
+from components.regions.region_record import RegionRecord, RegionHistoryItem, RegionHistory
 
 
 class TestRegionNeighborhoodDataGateway(unittest.TestCase):
@@ -39,16 +39,18 @@ class TestRegionNeighborhoodDataGateway(unittest.TestCase):
             city="test_city",
             metro="test_metro",
             county_name="test_county_name",
-            region_history=[
-                RegionHistoryItem(
-                    date=datetime.datetime(year=2000, month=1, day=31),
-                    region_vale=75553.2814897809
-                ),
-                RegionHistoryItem(
-                    date=datetime.datetime(year=2000, month=2, day=29),
-                    region_vale=75756.46950997740
-                ),
-            ]
+            region_history=RegionHistory(
+                items=[
+                    RegionHistoryItem(
+                        date=datetime.datetime(year=2000, month=1, day=31),
+                        region_value=75553.2814897809
+                    ),
+                    RegionHistoryItem(
+                        date=datetime.datetime(year=2000, month=2, day=29),
+                        region_value=75756.46950997740
+                    ),
+                ]
+            )
         )
         self.gateway.create_region_record(record)
 
@@ -95,7 +97,7 @@ class TestRegionNeighborhoodDataGateway(unittest.TestCase):
                 "size_rank": "test-size-rank"
             },
         ])
-        actual = self.gateway.get_us_doc()
+        actual = self.gateway.get_us_record()
         self.assertEqual(actual.size_rank, "test-size-rank")
 
     def test_get_all_states(self):
