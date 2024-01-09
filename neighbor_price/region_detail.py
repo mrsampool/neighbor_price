@@ -1,20 +1,198 @@
 from __future__ import annotations
 from datetime import datetime
-from flask import render_template
+from dataclasses import dataclass
 
 from typing import List
 from components.regions.region_data_gateway import RegionDataGateway
-from components.regions.region_record import RegionRecord, RegionHistoryItem
+from components.regions.region_record import RegionRecord
 
 
-def prices_from_region_history(history: List[RegionHistoryItem]) -> List[float]:
-    return [history.region_value for history in history]
+@dataclass
+class RegionRecords:
+    us: RegionRecord | None = None
+    state: RegionRecord | None = None
+    metro: RegionRecord | None = None
+    city: RegionRecord | None = None
+    neighborhood: RegionRecord | None = None
 
 
-def dates_from_region_history(history: List[RegionHistoryItem]) -> List[datetime.datetime]:
-    return [history.date for history in history]
+@dataclass
+class RegionPrices:
+    us: List[float]
+    state: List[float] = None
+    metro: List[float] = None
+    city: List[float] = None
+    neighborhood: List[float] = None
 
 
+class RegionLink:
+    def __init__(
+            self,
+            label: str,
+            region_type: str,
+            region_id: str,
+            state_id: str | None,
+            metro_id: str | None,
+            city_id: str | None,
+    ):
+        self.label = label
+        self.region_type: str = region_type
+        self.region_id: str = region_id
+        self.state_id: str = state_id
+        self.metro_id: str = metro_id
+        self.city_id: str = city_id
+        self.address: str = self.get_address()
+
+    def get_address(self):
+        match self.region_type:
+            case 'state':
+                return f"/state/{self.region_id}"
+            case 'msa':
+                return f"/state/{self.state_id}/metro/{self.region_id}"
+            case 'city':
+                return f"/state/{self.state_id}/metro/{self.metro_id}/city/{self.region_id}"
+            case 'neighborhood':
+                return f"/state/{self.state_id}/metro/{self.metro_id}/city/{self.city_id}/neighborhood/{self.region_id}"
+
+
+@dataclass
+class RegionRecords:
+    us: RegionRecord
+    state: RegionRecord
+    metro: RegionRecord
+    city: RegionRecord
+    neighborhood: RegionRecord
+
+
+@dataclass
+class RegionDetail:
+    region_records: RegionRecords
+    links: List[RegionLink]
+    prices: RegionPrices
+    dates: List[datetime]
+
+
+@dataclass
+class StateDetail(RegionDetail):
+    state_id: str
+
+
+@dataclass
+class MetroDetail(RegionDetail):
+    state_id: str
+    metro_id: str
+
+
+@dataclass
+class CityDetail(RegionDetail):
+    state_id: str
+    metro_id: str
+    metro_id: str
+    city_id: str
+
+
+@dataclass
+class NeighborhoodDetail(RegionDetail):
+    state_id: str
+    metro_id: str
+    metro_id: str
+    city_id: str
+
+
+def build_links_for_records(
+        region_type: str | None,
+        records: List[RegionRecord],
+        state_id: str = None,
+        metro_id: str = None,
+        city_id: str = None
+) -> List[RegionLink]:
+    return list(map(
+        lambda record: RegionLink(
+            region_type=region_type,
+            region_id=record.region_id,
+            label=record.region_name,
+            state_id=state_id,
+            metro_id=metro_id,
+            city_id=city_id
+        ),
+        records
+    ))
+
+
+@dataclass
+class RegionDetailer:
+    data_gateway: RegionDataGateway
+
+    def get_us_detail(self) -> RegionDetail:
+        us_record = self.data_gateway.get_us_record()
+        state_records = self.data_gateway.get_all_states()
+        return RegionDetail(
+            region_records=RegionRecords(
+                us=us_record,
+                state=None,
+                metro=None,
+                city=None,
+                neighborhood=None
+            ),
+            links=build_links_for_records(
+                region_type="state",
+                records=state_records
+            ),
+            prices=RegionPrices(us=us_record.region_history.get_prices()),
+            dates=us_record.region_history.get_dates()
+        )
+
+    def get_state_detail(self, state_id) -> RegionDetail:
+        us_record = self.data_gateway.get_us_record()
+        state_record = self.data_gateway.get_region_by_id(region_id=state_id)
+        metro_records = self.data_gateway.get_all_metros_for_state(state_name=state_record.region_name)
+        return RegionDetail(
+            region_records=RegionRecords(
+                us=us_record,
+                state=state_record,
+                metro=None,
+                city=None,
+                neighborhood=None
+            ),
+            links=build_links_for_records(
+                region_type="state",
+                records=metro_records
+            ),
+            prices=RegionPrices(
+                us=us_record.region_history.get_prices(),
+                state=state_record.region_history.get_prices()
+            ),
+            dates=us_record.region_history.get_dates()
+        )
+
+    """
+
+    def get_state_detail(self, state_id: str) -> StateDetail:
+
+    def get_city_detail(
+            self,
+            city_id: str,
+            state_id: str
+    ) -> CityDetail:
+
+    def get_metro_detail(
+            self,
+            metro_id: str,
+            city_id: str,
+            state_id: str
+    ) -> MetroDetail:
+
+    def get_neighborhood_detail(
+            self,
+            neighborhood_id: str,
+            city_id: str,
+            metro_id: str,
+            state_id: str
+    ) -> NeighborhoodDetail:
+    """
+
+
+"""
 class RegionDetail:
     def __init__(
             self,
@@ -106,29 +284,7 @@ class RegionDetail:
             else:
                 self.links = []
 
-        class RegionLink:
-            def __init__(
-                    self,
-                    record: RegionRecord,
-                    rd: RegionDetail,
-                    region_type: str
-            ):
-                self.record = record
-                self.label = record.region_name
-                self.rd = rd
-                self.region_type = region_type
-                self.address = self.get_address()
 
-            def get_address(self):
-                match self.region_type:
-                    case 'state':
-                        return f"/state/{self.record.region_id}"
-                    case 'msa':
-                        return f"/state/{self.rd.state_id}/metro/{self.record.region_id}"
-                    case 'city':
-                        return f"/state/{self.rd.state_id}/metro/{self.rd.metro_id}/city/{self.record.region_id}"
-                    case 'neighborhood':
-                        return f"/state/{self.rd.state_id}/metro/{self.rd.metro_id}/city/{self.rd.city_id}/neighborhood/{self.record.region_id}"
 
     class RegionPrices:
         def __init__(self, rd: RegionDetail):
@@ -151,3 +307,4 @@ class RegionDetail:
             self.us = prices_from_region_history(
                 rd.region_records.us.region_history
             ) if rd.region_records.us is not None else []
+"""
