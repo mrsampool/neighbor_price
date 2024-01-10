@@ -1,7 +1,7 @@
 import unittest
 
 from components.regions.mock_region_data_gateway import MockRegionDataGateway
-from neighbor_price.region_detail import RegionDetail, RegionDetailer
+from neighbor_price.region_detailer import RegionDetail, RegionDetailer
 
 
 class TestRegionDetailUS(unittest.TestCase):
@@ -85,11 +85,8 @@ class TestRegionDetailState(unittest.TestCase):
 class TestRegionDetailMetro(unittest.TestCase):
 
     def setUp(self) -> None:
-        self.region_detail = RegionDetail(
-            region_data_gateway=MockRegionDataGateway(),
-            state_id="1",
-            metro_id="2"
-        )
+        region_detailer = RegionDetailer(data_gateway=MockRegionDataGateway())
+        self.region_detail = region_detailer.get_metro_detail(state_id="1", metro_id="2")
 
     def test_region_detail_metro_records(self):
         self.assertEqual(
@@ -103,19 +100,19 @@ class TestRegionDetailMetro(unittest.TestCase):
 
     def test_region_detail_metro_links(self):
         self.assertEqual(
-            self.region_detail.region_links.links[0].address,
+            self.region_detail.links[0].address,
             "/state/1/metro/2/city/4",
         )
         self.assertEqual(
-            self.region_detail.region_links.links[0].label,
+            self.region_detail.links[0].label,
             "city-1",
         )
         self.assertEqual(
-            self.region_detail.region_links.links[1].address,
+            self.region_detail.links[1].address,
             f"/state/1/metro/2/city/5",
         )
         self.assertEqual(
-            self.region_detail.region_links.links[1].label,
+            self.region_detail.links[1].label,
             "city-2",
         )
 
@@ -134,8 +131,8 @@ class TestRegionDetailMetro(unittest.TestCase):
 class TestRegionDetailCity(unittest.TestCase):
 
     def setUp(self) -> None:
-        self.region_detail = RegionDetail(
-            region_data_gateway=MockRegionDataGateway(),
+        region_detailer = RegionDetailer(data_gateway=MockRegionDataGateway())
+        self.region_detail = region_detailer.get_city_detail(
             state_id="1",
             metro_id="2",
             city_id="4"
@@ -157,19 +154,19 @@ class TestRegionDetailCity(unittest.TestCase):
 
     def test_region_detail_city_links(self):
         self.assertEqual(
-            self.region_detail.region_links.links[0].address,
+            self.region_detail.links[0].address,
             "/state/1/metro/2/city/4/neighborhood/6",
         )
         self.assertEqual(
-            self.region_detail.region_links.links[0].label,
+            self.region_detail.links[0].label,
             "neighborhood-1",
         )
         self.assertEqual(
-            self.region_detail.region_links.links[1].address,
+            self.region_detail.links[1].address,
             f"/state/1/metro/2/city/4/neighborhood/7",
         )
         self.assertEqual(
-            self.region_detail.region_links.links[1].label,
+            self.region_detail.links[1].label,
             "neighborhood-2",
         )
 
@@ -191,8 +188,8 @@ class TestRegionDetailCity(unittest.TestCase):
 class TestRegionDetailNeighborhood(unittest.TestCase):
 
     def setUp(self) -> None:
-        self.region_detail = RegionDetail(
-            region_data_gateway=MockRegionDataGateway(),
+        region_detailer = RegionDetailer(data_gateway=MockRegionDataGateway())
+        self.region_detail = region_detailer.get_neighborhood_detail(
             state_id="1",
             metro_id="2",
             city_id="4",
@@ -219,7 +216,7 @@ class TestRegionDetailNeighborhood(unittest.TestCase):
 
     def test_region_detail_neighborhood_links(self):
         self.assertEqual(
-            self.region_detail.region_links.links,
+            self.region_detail.links,
             [],
         )
 

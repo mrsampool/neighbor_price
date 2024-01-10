@@ -6,7 +6,7 @@ import os
 from prometheus_client import start_http_server, Summary
 
 from components.regions.region_data_gateway import RegionDataGateway
-from neighbor_price.region_detail import RegionDetail
+from neighbor_price.region_detailer import RegionDetail
 
 db_uri = os.getenv("REGION_DB_URI")
 logging.info(f"using REGION_DB_URI: {db_uri}")
