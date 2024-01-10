@@ -41,7 +41,7 @@ class RegionDetailer:
                 region_id=record.region_id,
                 label=record.region_name,
             ), state_records)),
-            prices=RegionPrices(us=region_records.us.region_history.get_prices()),
+            prices=region_records.get_prices(),
             dates=region_records.us.region_history.get_dates()
         )
 
@@ -55,10 +55,7 @@ class RegionDetailer:
                 region_id=record.region_id,
                 state_id=state_id
             ), metro_records)),
-            prices=RegionPrices(
-                us=region_records.us.region_history.get_prices(),
-                state=region_records.state.region_history.get_prices()
-            ),
+            prices=region_records.get_prices(),
             dates=region_records.us.region_history.get_dates()
         )
 
@@ -76,11 +73,7 @@ class RegionDetailer:
                 state_id=state_id,
                 metro_id=metro_id
             ), city_records)),
-            prices=RegionPrices(
-                us=region_records.us.region_history.get_prices(),
-                state=region_records.state.region_history.get_prices(),
-                metro=region_records.metro.region_history.get_prices()
-            ),
+            prices=region_records.get_prices(),
             dates=region_records.us.region_history.get_dates()
         )
 
@@ -108,12 +101,7 @@ class RegionDetailer:
                 metro_id=metro_id,
                 city_id=city_id
             ), neighborhood_records)),
-            prices=RegionPrices(
-                us=region_records.us.region_history.get_prices(),
-                state=region_records.state.region_history.get_prices(),
-                metro=region_records.metro.region_history.get_prices(),
-                city=region_records.city.region_history.get_prices()
-            ),
+            prices=region_records.get_prices(),
             dates=region_records.us.region_history.get_dates()
         )
 
@@ -133,12 +121,6 @@ class RegionDetailer:
         return RegionDetail(
             region_records=region_records,
             links=[],
-            prices=RegionPrices(
-                us=region_records.us.region_history.get_prices(),
-                state=region_records.state.region_history.get_prices(),
-                metro=region_records.metro.region_history.get_prices(),
-                city=region_records.city.region_history.get_prices(),
-                neighborhood=region_records.neighborhood.region_history.get_prices()
-            ),
+            prices=region_records.get_prices(),
             dates=region_records.us.region_history.get_dates()
         )

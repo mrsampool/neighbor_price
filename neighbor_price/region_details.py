@@ -7,21 +7,30 @@ from neighbor_price.region_links import RegionLink
 
 
 @dataclass
-class RegionRecords:
-    us: RegionRecord | None = None
-    state: RegionRecord | None = None
-    metro: RegionRecord | None = None
-    city: RegionRecord | None = None
-    neighborhood: RegionRecord | None = None
-
-
-@dataclass
 class RegionPrices:
     us: List[float]
     state: List[float] = None
     metro: List[float] = None
     city: List[float] = None
     neighborhood: List[float] = None
+
+
+@dataclass
+class RegionRecords:
+    us: RegionRecord
+    state: RegionRecord | None = None
+    metro: RegionRecord | None = None
+    city: RegionRecord | None = None
+    neighborhood: RegionRecord | None = None
+
+    def get_prices(self) -> RegionPrices:
+        return RegionPrices(
+            us=self.us.region_history.get_prices(),
+            state=self.state.region_history.get_prices() if self.state is not None else None,
+            metro=self.metro.region_history.get_prices() if self.metro is not None else None,
+            city=self.city.region_history.get_prices() if self.city is not None else None,
+            neighborhood=self.neighborhood.region_history.get_prices() if self.neighborhood is not None else None,
+        )
 
 
 @dataclass
