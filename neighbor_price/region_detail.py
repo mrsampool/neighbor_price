@@ -31,9 +31,9 @@ class RegionLink:
             label: str,
             region_type: str,
             region_id: str,
-            state_id: str | None,
-            metro_id: str | None,
-            city_id: str | None,
+            state_id: str | None = None,
+            metro_id: str | None = None,
+            city_id: str | None = None,
     ):
         self.label = label
         self.region_type: str = region_type
@@ -47,7 +47,7 @@ class RegionLink:
         match self.region_type:
             case 'state':
                 return f"/state/{self.region_id}"
-            case 'msa':
+            case 'metro':
                 return f"/state/{self.state_id}/metro/{self.region_id}"
             case 'city':
                 return f"/state/{self.state_id}/metro/{self.metro_id}/city/{self.region_id}"
@@ -134,10 +134,11 @@ class RegionDetailer:
                 city=None,
                 neighborhood=None
             ),
-            links=build_links_for_records(
+            links=list(map(lambda record: RegionLink(
                 region_type="state",
-                records=state_records
-            ),
+                region_id=record.region_id,
+                label=record.region_name,
+            ), state_records)),
             prices=RegionPrices(us=us_record.region_history.get_prices()),
             dates=us_record.region_history.get_dates()
         )
@@ -154,10 +155,12 @@ class RegionDetailer:
                 city=None,
                 neighborhood=None
             ),
-            links=build_links_for_records(
-                region_type="state",
-                records=metro_records
-            ),
+            links=list(map(lambda record: RegionLink(
+                region_type="metro",
+                label=record.region_name,
+                region_id=record.region_id,
+                state_id=state_id
+            ), metro_records)),
             prices=RegionPrices(
                 us=us_record.region_history.get_prices(),
                 state=state_record.region_history.get_prices()

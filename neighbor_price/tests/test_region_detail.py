@@ -47,7 +47,7 @@ class TestRegionDetailState(unittest.TestCase):
 
     def setUp(self) -> None:
         region_detailer = RegionDetailer(data_gateway=MockRegionDataGateway())
-        self.state_detail = region_detailer.get_state_detail(state_id="1")
+        self.region_detail = region_detailer.get_state_detail(state_id="1")
 
     def test_region_detail_state_records(self):
         self.assertEqual(
@@ -57,20 +57,20 @@ class TestRegionDetailState(unittest.TestCase):
 
     def test_region_detail_state_links(self):
         self.assertEqual(
-            self.region_detail.region_links.links[0].address,
             "/state/1/metro/2",
+            self.region_detail.links[0].address,
         )
         self.assertEqual(
-            self.region_detail.region_links.links[0].label,
             "metro-1",
+            self.region_detail.links[0].label,
         )
         self.assertEqual(
-            self.region_detail.region_links.links[1].address,
             f"/state/1/metro/3",
+            self.region_detail.links[1].address,
         )
         self.assertEqual(
-            self.region_detail.region_links.links[1].label,
             "metro-2",
+            self.region_detail.links[1].label,
         )
 
     def test_region_detail_state_prices(self):
