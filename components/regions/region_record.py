@@ -41,25 +41,6 @@ class RegionHistory:
         return [history.date for history in self.history_items]
 
 
-class NestedRegionRecord:
-    def __init__(self, region_id: str, region_name: str):
-        self.region_id = region_id
-        self.region_name = region_name
-
-
-def parse_nested_region_records_from_doc(doc_records) -> List[NestedRegionRecord]:
-    records = []
-    if doc_records is not None:
-        for record in doc_records:
-            records.append(
-                NestedRegionRecord(
-                    region_id=record.get("region_id"),
-                    region_name=record.get("region_name")
-                )
-            )
-    return records
-
-
 class RegionRecord:
     def __init__(
             self,
