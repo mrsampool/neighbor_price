@@ -13,7 +13,11 @@ class TestRegionNeighborhoodDataGateway(unittest.TestCase):
         self.collection = mongomock.MongoClient().db.collection
         self.gateway = RegionDataGateway(collection=self.collection)
 
-    def test_create_neighborhood_record(self):
+    def drop_and_seed_documents(self, documents):
+        self.collection.drop()
+        self.collection.insert_many(documents)
+
+    def test_save_neighborhood_record(self):
         self.collection.drop()
         record = RegionRecord(
             region_id="1",
@@ -38,7 +42,7 @@ class TestRegionNeighborhoodDataGateway(unittest.TestCase):
                 ]
             )
         )
-        self.gateway.create_region_record(record)
+        self.gateway.save_region_record(record)
 
         documents = self.collection.find()
         actual_document = documents[0]
@@ -57,9 +61,9 @@ class TestRegionNeighborhoodDataGateway(unittest.TestCase):
         self.assertEqual(datetime.date.isoformat(actual_history_1["date"]), "2000-01-31")
         self.assertEqual(actual_history_1["region_vale"], 75553.2814897809)
 
-    def drop_and_seed_documents(self, documents):
-        self.collection.drop()
-        self.collection.insert_many(documents)
+        actual_history_2 = actual_document["region_history"][1]
+        self.assertEqual(datetime.date.isoformat(actual_history_2["date"]), "2000-02-29")
+        self.assertEqual(actual_history_2["region_vale"], 75756.46950997740)
 
     def test_get_region_by_id(self):
         self.drop_and_seed_documents([
