@@ -4,7 +4,7 @@ import logging
 import pymongo
 from typing import List
 
-from components.regions.region_record import RegionRecord, NestedRegionRecord, RegionHistory
+from components.regions.region_record import RegionRecord
 
 DB_COLLECTION_REGION_RECORDS = "region_records"
 
