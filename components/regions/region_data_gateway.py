@@ -80,49 +80,7 @@ class RegionDataGateway:
         else:
             self.collection = collection
 
-    def create_region_record(
-            self,
-            record: RegionRecord = None,
-            region_id: str = 0,
-            size_rank: int = 0,
-            region_name: str = "",
-            region_type: str = "",
-            state_name: str = "",
-            state: str = "",
-            city: str = "",
-            metro: str = "",
-            county_name: str = "",
-            metros: List[NestedRegionRecord] = None,
-            cities: List[NestedRegionRecord] = None,
-            neighborhods: List[NestedRegionRecord] = None,
-            region_history: RegionHistory = None
-    ):
-        if region_history is None:
-            region_history = []
-        if metros is None:
-            metros = []
-        if cities is None:
-            cities = []
-        if neighborhods is None:
-            neighborhods = []
-
-        if record is None:
-            record = RegionRecord(
-                region_id=region_id,
-                size_rank=size_rank,
-                region_name=region_name,
-                region_type=region_type,
-                state_name=state_name,
-                state=state,
-                city=city,
-                metro=metro,
-                county_name=county_name,
-                metros=metros,
-                cities=cities,
-                neighborhoods=neighborhods,
-                region_history=region_history
-            )
-
+    def save_region_record(self, record: RegionRecord):
         doc_history = []
         for item in record.region_history.history_items:
             item_doc = {
@@ -130,30 +88,6 @@ class RegionDataGateway:
                 "region_vale": item.region_value
             }
             doc_history.append(item_doc)
-
-        metros = []
-        for metro in record.metros:
-            metro_doc = {
-                "region_id": metro.region_id,
-                "region_name": metro.region_name
-            }
-            metros.append(metro_doc)
-
-        cities = []
-        for city in record.cities:
-            city_doc = {
-                "region_id": city.region_id,
-                "region_name": city.region_name
-            }
-            cities.append(city_doc)
-
-        neighborhoods = []
-        for neighborhood in record.neighborhoods:
-            neighborhood_doc = {
-                "region_id": neighborhood.region_id,
-                "region_name": neighborhood.region_name
-            }
-            neighborhoods.append(neighborhood_doc)
 
         doc = {
             "region_id": record.region_id,
@@ -165,9 +99,6 @@ class RegionDataGateway:
             "city": record.city,
             "metro": record.metro,
             "county_name": record.county_name,
-            "metros": metros,
-            "cities": cities,
-            "neighborhoods": neighborhoods,
             "region_history": doc_history
         }
         self.collection.update_one({"region_id": record.region_id}, {"$set": doc}, True)

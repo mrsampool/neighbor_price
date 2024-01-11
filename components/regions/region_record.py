@@ -74,9 +74,6 @@ class RegionRecord:
             city: str = None,
             metro: str = None,
             county_name: str = None,
-            metros: List[NestedRegionRecord] = [],
-            cities: List[NestedRegionRecord] = [],
-            neighborhoods: List[NestedRegionRecord] = [],
             region_history: RegionHistory = None,
     ):
         if document is not None:
@@ -96,9 +93,6 @@ class RegionRecord:
             self.metro: str = metro
             self.county_name: str = county_name
             self.region_history: RegionHistory = region_history
-            self.metros: List[NestedRegionRecord] = metros
-            self.cities: List[NestedRegionRecord] = cities
-            self.neighborhoods: List[NestedRegionRecord] = neighborhoods
 
     def init_from_document(self, document):
         self.region_id: int = document.get("region_id")
@@ -112,9 +106,6 @@ class RegionRecord:
         self.county_name: str = document.get("county_name")
         self.region_history = []
         self.region_history = RegionHistory(doc_history=document.get("region_history"))
-        self.metros = parse_nested_region_records_from_doc(document.get("metros"))
-        self.cities = parse_nested_region_records_from_doc(document.get("cities"))
-        self.neighborhoods = parse_nested_region_records_from_doc(document.get("neighborhoods"))
 
     def init_from_pd_series(self, pd_series):
         self.region_id: int = pd_series.loc['RegionID'].iloc[0]
@@ -122,9 +113,6 @@ class RegionRecord:
         self.region_name: str = pd_series.loc['RegionName'].iloc[0]
         self.region_type: str = pd_series.loc['RegionType'].iloc[0]
         self.state_name: str = pd_series.loc['StateName'].iloc[0]
-        self.metros: List[NestedRegionRecord] = []
-        self.cities: List[NestedRegionRecord] = []
-        self.neighborhoods: List[NestedRegionRecord] = []
 
         cols = pd_series.index.values
 
