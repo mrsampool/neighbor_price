@@ -4,6 +4,7 @@ from components.event_manager.event_body import EventBody
 
 class EventManager:
     def __init__(self, host: str = None, queue_name: str = None, channel=None):
+        # TODO: create event manager base class with no init, create sublass for pika
         if channel is None:
             self.host = host
             self.conn = pika.BlockingConnection(pika.ConnectionParameters(host=host, blocked_connection_timeout=300))
