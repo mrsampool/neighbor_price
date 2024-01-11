@@ -1,11 +1,8 @@
 import datetime
 import unittest
-import logging
-import os
-import pymongo
+import mongomock
 from components.regions.region_data_gateway import (
-    RegionDataGateway,
-    DB_COLLECTION_REGION_RECORDS
+    RegionDataGateway
 )
 from components.regions.region_record import RegionRecord, RegionHistoryItem, RegionHistory
 
@@ -13,19 +10,8 @@ from components.regions.region_record import RegionRecord, RegionHistoryItem, Re
 class TestRegionNeighborhoodDataGateway(unittest.TestCase):
 
     def setUp(self) -> None:
-        db_uri = os.getenv("REGION_DB_URI")
-        if db_uri is None or db_uri == "":
-            logging.fatal("Missing required ENV: $REGION_DB_URI")
-
-        db_name = os.getenv("REGION_DB_NAME")
-        if db_name is None or db_name == "":
-            logging.fatal("Missing required ENV: $REGION_DB_NAME")
-
-        self.gateway = RegionDataGateway(db_uri=db_uri, db_name=db_name)
-
-        client = pymongo.MongoClient(db_uri)
-        db = client[db_name]
-        self.collection = db[DB_COLLECTION_REGION_RECORDS]
+        self.collection = mongomock.MongoClient().db.collection
+        self.gateway = RegionDataGateway(collection=self.collection)
 
     def test_create_neighborhood_record(self):
         self.collection.drop()
