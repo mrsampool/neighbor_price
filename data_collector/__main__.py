@@ -86,7 +86,6 @@ def handler():
 
     data_collector = DataCollector(
         csv_client=csv_client,
-        region_data_gateway=region_data_gateway,
         event_manager=event_manager
     )
 

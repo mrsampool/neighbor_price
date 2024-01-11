@@ -12,10 +12,8 @@ class DataCollector:
             self,
             csv_client: RegionCsvEndpointWorker,
             event_manager: EventManager,
-            region_data_gateway: RegionDataGateway = None,
     ):
         self.csv_client = csv_client
-        self.region_data_gateway = region_data_gateway
         self.event_manager = event_manager
 
     def _fetch_region_df_by_region_type(self, data_type: str):
