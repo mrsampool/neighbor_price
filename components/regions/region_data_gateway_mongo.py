@@ -9,12 +9,12 @@ from components.regions.region_data_gateway import DB_COLLECTION_REGION_RECORDS,
 
 class RegionDataGatewayMongo(RegionDataGateway):
     def __init__(self, db_name: str = None, db_uri: str = None, collection=None):
-        if collection is None:
+        if collection is not None:
+            self.collection = collection
+        else:
             client = pymongo.MongoClient(db_uri)
             db = client[db_name]
             self.collection = db[DB_COLLECTION_REGION_RECORDS]
-        else:
-            self.collection = collection
 
     def save_region_record(self, record: RegionRecord):
         doc_history = []

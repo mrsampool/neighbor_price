@@ -1,15 +1,17 @@
 import datetime
 import unittest
-from components.regions.region_data_gateway_mock import (
-    RegionDataGatewayMock
+import mongomock
+from components.regions.region_data_gateway_mongo import (
+    RegionDataGatewayMongo
 )
 from components.regions.region_record import RegionRecord, RegionHistoryItem, RegionHistory
 
 
-class TestRegionNeighborhoodDataGateway(unittest.TestCase):
+class TestRegionDataGatewayMongo(unittest.TestCase):
 
     def setUp(self) -> None:
-        self.gateway = RegionDataGatewayMock()
+        self.collection = mongomock.MongoClient().db.collection
+        self.gateway = RegionDataGatewayMongo(collection=self.collection)
 
     def drop_and_seed_documents(self, documents):
         self.collection.drop()
