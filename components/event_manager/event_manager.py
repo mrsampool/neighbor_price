@@ -1,4 +1,3 @@
-import pika
 from dataclasses import dataclass
 from components.event_manager.event_body import EventBody
 
