@@ -6,7 +6,7 @@ import sys
 import logging
 
 from components.event_manager.event_manager_pika import EventManagerPika
-from components.regions.region_data_gateway import RegionDataGateway
+from components.regions.region_data_gateway_mongo import RegionDataGatewayMongo
 from data_analyzer.data_analyzer import DataAnalyzer
 
 
@@ -38,7 +38,7 @@ def main():
 
     c = Config()
 
-    region_data_gateway = RegionDataGateway(db_uri=c.regions_db_uri, db_name=c.regions_db_name)
+    region_data_gateway = RegionDataGatewayMongo(db_uri=c.regions_db_uri, db_name=c.regions_db_name)
     event_manager = EventManagerPika(host=c.event_host, queue_name=c.event_lvhi_queue)
     data_analyzer = DataAnalyzer(event_manager=event_manager, region_data_gateway=region_data_gateway)
 

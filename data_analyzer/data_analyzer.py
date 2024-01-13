@@ -6,7 +6,7 @@ import pandas as pd
 from io import StringIO
 
 from components.regions.region_record import RegionRecord
-from components.regions.region_data_gateway import RegionDataGateway
+from components.regions.region_data_gateway_mongo import RegionDataGateway
 
 
 class DataAnalyzer:

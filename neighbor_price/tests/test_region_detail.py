@@ -1,13 +1,13 @@
 import unittest
 
-from components.regions.mock_region_data_gateway import MockRegionDataGateway
-from neighbor_price.region_detailer import RegionDetail, RegionDetailer
+from components.regions.region_data_gateway_mock import RegionDataGatewayMock
+from neighbor_price.region_detailer import RegionDetailer
 
 
 class TestRegionDetailUS(unittest.TestCase):
 
     def setUp(self) -> None:
-        region_detailer = RegionDetailer(data_gateway=MockRegionDataGateway())
+        region_detailer = RegionDetailer(data_gateway=RegionDataGatewayMock())
         self.region_detail = region_detailer.get_us_detail()
 
     def test_region_detail_us_records(self):
@@ -46,7 +46,7 @@ class TestRegionDetailUS(unittest.TestCase):
 class TestRegionDetailState(unittest.TestCase):
 
     def setUp(self) -> None:
-        region_detailer = RegionDetailer(data_gateway=MockRegionDataGateway())
+        region_detailer = RegionDetailer(data_gateway=RegionDataGatewayMock())
         self.region_detail = region_detailer.get_state_detail(state_id="1")
 
     def test_region_detail_state_records(self):
@@ -85,7 +85,7 @@ class TestRegionDetailState(unittest.TestCase):
 class TestRegionDetailMetro(unittest.TestCase):
 
     def setUp(self) -> None:
-        region_detailer = RegionDetailer(data_gateway=MockRegionDataGateway())
+        region_detailer = RegionDetailer(data_gateway=RegionDataGatewayMock())
         self.region_detail = region_detailer.get_metro_detail(state_id="1", metro_id="2")
 
     def test_region_detail_metro_records(self):
@@ -131,7 +131,7 @@ class TestRegionDetailMetro(unittest.TestCase):
 class TestRegionDetailCity(unittest.TestCase):
 
     def setUp(self) -> None:
-        region_detailer = RegionDetailer(data_gateway=MockRegionDataGateway())
+        region_detailer = RegionDetailer(data_gateway=RegionDataGatewayMock())
         self.region_detail = region_detailer.get_city_detail(
             state_id="1",
             metro_id="2",
@@ -188,7 +188,7 @@ class TestRegionDetailCity(unittest.TestCase):
 class TestRegionDetailNeighborhood(unittest.TestCase):
 
     def setUp(self) -> None:
-        region_detailer = RegionDetailer(data_gateway=MockRegionDataGateway())
+        region_detailer = RegionDetailer(data_gateway=RegionDataGatewayMock())
         self.region_detail = region_detailer.get_neighborhood_detail(
             state_id="1",
             metro_id="2",

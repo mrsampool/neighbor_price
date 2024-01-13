@@ -5,8 +5,9 @@ import pandas as pd
 
 from components.event_manager.event_manager_pika import EventManagerPika
 from components.event_manager.event_body import EventBody
-from components.regions.region_data_gateway import RegionDataGateway
+from components.regions.region_data_gateway_mock import RegionDataGatewayMock
 from data_analyzer.data_analyzer import DataAnalyzer
+
 
 class TestDataAnalyzer(unittest.TestCase):
     def setUp(self) -> None:
@@ -37,7 +38,7 @@ class TestDataAnalyzer(unittest.TestCase):
             queue_name=event_region_queue
         )
 
-        data_gateway = RegionDataGateway(db_uri=region_db_uri, db_name=region_db_name)
+        data_gateway = RegionDataGatewayMock()
 
         self.data_analyzer = DataAnalyzer(event_manager=event_manager, region_data_gateway=data_gateway)
 

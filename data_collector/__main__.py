@@ -7,7 +7,7 @@ import pika
 import json
 
 from components.region_csv_endpoint_worker.region_csv_endpoint_worker import RegionCsvEndpointWorker
-from components.regions.region_data_gateway import RegionDataGateway
+from components.regions.region_data_gateway_mongo import RegionDataGatewayMongo
 from components.event_manager.event_manager_pika import EventManagerPika
 
 app = Flask(__name__)
@@ -74,7 +74,7 @@ def handler():
         zvhi_state_csv_path=c.state_csv_path,
     )
 
-    region_data_gateway = RegionDataGateway(
+    region_data_gateway = RegionDataGatewayMongo(
         db_uri=c.region_db_uri,
         db_name=c.region_db_name
     )

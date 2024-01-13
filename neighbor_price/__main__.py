@@ -5,7 +5,7 @@ import os
 from flask import Flask, render_template
 from prometheus_client import start_http_server, Summary
 
-from components.regions.region_data_gateway import RegionDataGateway
+from components.regions.region_data_gateway_mongo import RegionDataGatewayMongo
 from neighbor_price.region_detailer import RegionDetailer
 
 app = Flask(__name__)
@@ -22,7 +22,7 @@ logging.info(f"using REGION_DB_NAME: {db_name}")
 if db_name is None:
     logging.fatal("Missing required ENV: $REGION_DB_NAME")
 
-region_data_gateway = RegionDataGateway(db_uri=db_uri, db_name=db_name)
+region_data_gateway = RegionDataGatewayMongo(db_uri=db_uri, db_name=db_name)
 region_detailer = RegionDetailer(data_gateway=region_data_gateway)
 
 REQUEST_TIME = Summary('request_processing_seconds', 'Time spent processing request')

@@ -5,10 +5,10 @@ from components.regions.region_data_gateway import RegionDataGateway
 from components.regions.region_record import RegionRecord, RegionHistoryItem, RegionHistory
 
 
-class MockRegionDataGateway(RegionDataGateway):
+class RegionDataGatewayMock(RegionDataGateway):
 
     def __init__(self):
-        super().__init__(collection="x")
+        super().__init__()
 
     def get_us_record(self) -> RegionRecord:
         return RegionRecord(
