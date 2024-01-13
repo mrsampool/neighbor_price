@@ -20,7 +20,7 @@ class MockResponse:
 class MockEventManager(EventManager):
 
     def __init__(self, publish_list: List[EventBody]):
-        super().__init__(channel="x")
+        super().__init__()
         self.published: List[EventBody] = publish_list
 
     def publish(self, body: EventBody):

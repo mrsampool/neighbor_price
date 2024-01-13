@@ -8,7 +8,7 @@ import json
 
 from components.region_csv_endpoint_worker.region_csv_endpoint_worker import RegionCsvEndpointWorker
 from components.regions.region_data_gateway import RegionDataGateway
-from components.event_manager.event_manager import EventManager
+from components.event_manager.event_manager_pika import EventManagerPika
 
 app = Flask(__name__)
 
@@ -79,7 +79,7 @@ def handler():
         db_name=c.region_db_name
     )
 
-    event_manager = EventManager(
+    event_manager = EventManagerPika(
         host=c.event_host,
         queue_name=c.event_lvhi_queue
     )

@@ -3,7 +3,7 @@ import logging
 import os
 import pandas as pd
 
-from components.event_manager.event_manager import EventManager
+from components.event_manager.event_manager_pika import EventManagerPika
 from components.event_manager.event_body import EventBody
 from components.regions.region_data_gateway import RegionDataGateway
 from data_analyzer.data_analyzer import DataAnalyzer
@@ -32,7 +32,7 @@ class TestDataAnalyzer(unittest.TestCase):
 
         logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=20)
 
-        event_manager = EventManager(
+        event_manager = EventManagerPika(
             host=event_host,
             queue_name=event_region_queue
         )

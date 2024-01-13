@@ -1,18 +1,18 @@
 import logging
 
-from components.event_manager.event_manager import EventManager
+from components.event_manager.event_manager_pika import EventManagerPika
 import json
 import pandas as pd
 from io import StringIO
 
-from components.regions.region_record import RegionRecord, NestedRegionRecord
+from components.regions.region_record import RegionRecord
 from components.regions.region_data_gateway import RegionDataGateway
 
 
 class DataAnalyzer:
     def __init__(
             self,
-            event_manager: EventManager,
+            event_manager: EventManagerPika,
             region_data_gateway: RegionDataGateway
     ):
         self.event_manager = event_manager
