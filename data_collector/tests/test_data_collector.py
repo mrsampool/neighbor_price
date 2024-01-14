@@ -13,6 +13,21 @@ from data_collector.tests.test_utils import MockResponse, dict_to_encoded_csv
 
 def mocked_requests_get(*args, **kwargs) -> MockResponse:
     match args[0]:
+        case 'csv/state':
+            content = dict_to_encoded_csv({
+                "RegionId": ["region-id-1", "region-id-2"],
+                "SizeRank": ["size-1", "size-2"],
+                "RegionName": ["state-1", "state-2"],
+                "RegionType": ["state", "state"],
+                "StateName": ["", ""],
+                "State": ["", ""],
+                "City": ["", ""],
+                "Metro": ["", ""],
+                "CountyName": ["", ""],
+                "2000-01-31": [70, 80],
+                "2000-02-20": [170, 190]
+            })
+            return MockResponse(content=content)
         case 'csv/metro':
             content = dict_to_encoded_csv({
                 "RegionId": ["region-id-1", "region-id-2"],
@@ -84,6 +99,37 @@ class TestDataCollector(unittest.TestCase):
             csv_client=csv_client,
             event_manager=EventManagerMock(publish_list=self.publish_list),
         )
+
+    @mock.patch('requests.get', side_effect=mocked_requests_get)
+    def test_collect_states_data(self, mock):
+        self.data_collector.collect_states_data()
+        actual_published = get_actual_published(self.publish_list)
+
+        actual_published_1 = actual_published[0]
+        self.assertEqual("region-id-1", actual_published_1.loc['RegionId'][0])
+        self.assertEqual("size-1", actual_published_1.loc["SizeRank"][0])
+        self.assertEqual("state-1", actual_published_1.loc["RegionName"][0])
+        self.assertEqual("state", actual_published_1.loc["RegionType"][0])
+        self.assertEqual("", actual_published_1.loc["StateName"][0])
+        self.assertEqual("", actual_published_1.loc["State"][0])
+        self.assertEqual("", actual_published_1.loc["City"][0])
+        self.assertEqual("", actual_published_1.loc["Metro"][0])
+        self.assertEqual("", actual_published_1.loc["CountyName"][0])
+        self.assertEqual("70", actual_published_1.loc["2000-01-31"][0])
+        self.assertEqual("170", actual_published_1.loc["2000-02-20"][0])
+
+        actual_published_2 = actual_published[1]
+        self.assertEqual("region-id-2", actual_published_2.loc['RegionId'][0])
+        self.assertEqual("size-2", actual_published_2.loc["SizeRank"][0])
+        self.assertEqual("state-2", actual_published_2.loc["RegionName"][0])
+        self.assertEqual("state", actual_published_2.loc["RegionType"][0])
+        self.assertEqual("", actual_published_2.loc["StateName"][0])
+        self.assertEqual("", actual_published_2.loc["State"][0])
+        self.assertEqual("", actual_published_2.loc["City"][0])
+        self.assertEqual("", actual_published_2.loc["Metro"][0])
+        self.assertEqual("", actual_published_2.loc["CountyName"][0])
+        self.assertEqual("80", actual_published_2.loc["2000-01-31"][0])
+        self.assertEqual("190", actual_published_2.loc["2000-02-20"][0])
 
     @mock.patch('requests.get', side_effect=mocked_requests_get)
     def test_collect_metros_data(self, mock):
