@@ -13,7 +13,22 @@ from data_collector.tests.test_utils import MockResponse, dict_to_encoded_csv
 
 def mocked_requests_get(*args, **kwargs) -> MockResponse:
     match args[0]:
-        case 'csv/neighborhoods':
+        case 'csv/city':
+            content = dict_to_encoded_csv({
+                "RegionId": ["region-id-1", "region-id-2"],
+                "SizeRank": ["size-1", "size-2"],
+                "RegionName": ["city-1", "city-2"],
+                "RegionType": ["city", "city"],
+                "StateName": ["state-name-1", "state-name-2"],
+                "State": ["state-1", "state-2"],
+                "City": ["", ""],
+                "Metro": ["metro-1", "metro-2"],
+                "CountyName": ["", ""],
+                "2000-01-31": [90, 100],
+                "2000-02-20": [190, 210]
+            })
+            return MockResponse(content=content)
+        case 'csv/neighborhood':
             content = dict_to_encoded_csv({
                 "RegionId": ["region-id-1", "region-id-2"],
                 "SizeRank": ["size-1", "size-2"],
@@ -36,7 +51,7 @@ class TestDataCollector(unittest.TestCase):
 
         csv_client = RegionCsvEndpointWorker(
             region_csv_url="csv/",
-            neighborhood_csv_path="neighborhoods",
+            neighborhood_csv_path="neighborhood",
             metro_csv_path="metro",
             city_csv_path="city",
             state_csv_path="state"
@@ -48,6 +63,39 @@ class TestDataCollector(unittest.TestCase):
             csv_client=csv_client,
             event_manager=EventManagerMock(publish_list=self.publish_list),
         )
+
+    @mock.patch('requests.get', side_effect=mocked_requests_get)
+    def test_collect_cities_data(self, mock):
+        self.data_collector.collect_cities_data()
+        actual_published = []
+        for published in self.publish_list:
+            actual_published.append(pd.read_csv(StringIO(published.data), index_col=0, keep_default_na=False))
+
+        actual_published_1 = actual_published[0]
+        self.assertEqual("region-id-1", actual_published_1.loc['RegionId'][0])
+        self.assertEqual("size-1", actual_published_1.loc["SizeRank"][0])
+        self.assertEqual("city-1", actual_published_1.loc["RegionName"][0])
+        self.assertEqual("city", actual_published_1.loc["RegionType"][0])
+        self.assertEqual("state-name-1", actual_published_1.loc["StateName"][0])
+        self.assertEqual("state-1", actual_published_1.loc["State"][0])
+        self.assertEqual("", actual_published_1.loc["City"][0])
+        self.assertEqual("metro-1", actual_published_1.loc["Metro"][0])
+        self.assertEqual("", actual_published_1.loc["CountyName"][0])
+        self.assertEqual("90", actual_published_1.loc["2000-01-31"][0])
+        self.assertEqual("190", actual_published_1.loc["2000-02-20"][0])
+
+        actual_published_2 = actual_published[1]
+        self.assertEqual("region-id-2", actual_published_2.loc['RegionId'][0])
+        self.assertEqual("size-2", actual_published_2.loc["SizeRank"][0])
+        self.assertEqual("city-2", actual_published_2.loc["RegionName"][0])
+        self.assertEqual("city", actual_published_2.loc["RegionType"][0])
+        self.assertEqual("state-name-2", actual_published_2.loc["StateName"][0])
+        self.assertEqual("state-2", actual_published_2.loc["State"][0])
+        self.assertEqual("", actual_published_2.loc["City"][0])
+        self.assertEqual("metro-2", actual_published_2.loc["Metro"][0])
+        self.assertEqual("", actual_published_2.loc["CountyName"][0])
+        self.assertEqual("100", actual_published_2.loc["2000-01-31"][0])
+        self.assertEqual("210", actual_published_2.loc["2000-02-20"][0])
 
     @mock.patch('requests.get', side_effect=mocked_requests_get)
     def test_collect_neighborhoods_data(self, mock):

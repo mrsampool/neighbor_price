@@ -21,7 +21,7 @@ class RegionCsvEndpointWorker:
     def _get_region_df_from_path(self, path):
         response = requests.get(self.region_csv_url + path)
         content = response.content.decode('utf-8')
-        content_df = pd.read_csv(StringIO(content))
+        content_df = pd.read_csv(StringIO(content), keep_default_na=False)
         return content_df
 
     def get_neighborhoods_df(self):
