@@ -8,8 +8,9 @@ from components.event_manager.event_manager import EventManager
 @dataclass
 class EventManagerMock(EventManager):
 
-    def __init__(self, publish_list: List[EventBody]):
+    def __init__(self, publish_list: List[EventBody] = None):
         super().__init__()
+        self.callback = None
         self.published: List[EventBody] = publish_list
 
     def publish(self, body: EventBody):

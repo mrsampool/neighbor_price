@@ -7,8 +7,9 @@ from components.regions.region_record import RegionRecord, RegionHistoryItem, Re
 
 class RegionDataGatewayMock(RegionDataGateway):
 
-    def __init__(self):
+    def __init__(self, save_list: List[RegionRecord] = None):
         super().__init__()
+        self.save_list = save_list
 
     def get_us_record(self) -> RegionRecord:
         return RegionRecord(
@@ -149,3 +150,8 @@ class RegionDataGatewayMock(RegionDataGateway):
                     region_name="neighborhood-2"
                 ),
             ]
+
+    def save_region_record(self, record: RegionRecord):
+        if self.save_list is not None:
+            self.save_list.append(record)
+

@@ -1,5 +1,6 @@
 import logging
 
+from components.event_manager.event_manager import EventManager
 from components.event_manager.event_manager_pika import EventManagerPika
 import json
 import pandas as pd
@@ -12,7 +13,7 @@ from components.regions.region_data_gateway_mongo import RegionDataGateway
 class DataAnalyzer:
     def __init__(
             self,
-            event_manager: EventManagerPika,
+            event_manager: EventManager,
             region_data_gateway: RegionDataGateway
     ):
         self.event_manager = event_manager
@@ -55,12 +56,12 @@ class DataAnalyzer:
     def analyze_data(self, ch=None, method=None, properties=None, body=None):
         body = json.loads(body)
         data = body["data"]
-        df = pd.read_csv(StringIO(data), index_col=0)
+        df = pd.read_csv(StringIO(data))
 
         record = RegionRecord(pd_series=df)
         record = self.populate_nested_region_record_fields(record=record)
         logging.info(f"updating database: {record.region_type} {record.region_name}")
-        self.region_data_gateway.create_region_record(record=record)
+        self.region_data_gateway.save_region_record(record=record)
         if ch is not None:
             ch.basic_ack(delivery_tag=method.delivery_tag)
 
