@@ -1,7 +1,6 @@
 import unittest
 from typing import List
 import datetime
-
 import pandas as pd
 
 from components.event_manager.event_manager_mock import EventManagerMock

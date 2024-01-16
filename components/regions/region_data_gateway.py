@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 from dataclasses import dataclass
-import pymongo
 from typing import List
 
 from components.regions.region_record import RegionRecord
