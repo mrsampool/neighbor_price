@@ -56,7 +56,7 @@ class DataAnalyzer:
     def analyze_data(self, ch=None, method=None, properties=None, body=None):
         body = json.loads(body)
         data = body["data"]
-        df = pd.read_csv(StringIO(data))
+        df = pd.read_csv(StringIO(data), index_col=0)
 
         record = RegionRecord(pd_series=df)
         record = self.populate_nested_region_record_fields(record=record)

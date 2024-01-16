@@ -39,7 +39,7 @@ class DataCollector:
 
         logging.info(f"publishing collected {data_type}  data...")
         for i, df_row in df.iterrows():
-            row_csv = df_row.transpose().to_csv()
+            row_csv = df_row.to_csv()
             self.event_manager.publish(body=EventBody(name="collected region record", data=row_csv))
 
     def collect_neighborhoods_data(self):

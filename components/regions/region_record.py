@@ -89,11 +89,11 @@ class RegionRecord:
         self.region_history = RegionHistory(doc_history=document.get("region_history"))
 
     def init_from_pd_series(self, pd_series):
-        self.region_id: int = pd_series.loc['RegionID'].iloc[0]
-        self.size_rank: int = pd_series.loc['SizeRank'].iloc[0]
-        self.region_name: str = pd_series.loc['RegionName'].iloc[0]
-        self.region_type: str = pd_series.loc['RegionType'].iloc[0]
-        self.state_name: str = pd_series.loc['StateName'].iloc[0]
+        self.region_id: int = pd_series.loc['RegionID'][0]
+        self.size_rank: int = pd_series.loc['SizeRank'][0]
+        self.region_name: str = pd_series.loc['RegionName'][0]
+        self.region_type: str = pd_series.loc['RegionType'][0]
+        self.state_name: str = pd_series.loc['StateName'][0]
 
         cols = pd_series.index.values
 

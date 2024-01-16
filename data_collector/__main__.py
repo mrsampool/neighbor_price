@@ -3,8 +3,6 @@ from flask import Flask
 import os
 import logging
 from data_collector.data_collector import DataCollector
-import pika
-import json
 
 from components.region_csv_endpoint_worker.region_csv_endpoint_worker import RegionCsvEndpointWorker
 from components.regions.region_data_gateway_mongo import RegionDataGatewayMongo
@@ -68,10 +66,10 @@ def handler():
 
     csv_client = RegionCsvEndpointWorker(
         region_csv_url=c.region_csv_url,
-        zvhi_neighborhood_csv_path=c.neighborhood_csv_path,
-        zvhi_city_csv_path=c.city_csv_path,
-        zvhi_metro_csv_path=c.metro_csv_path,
-        zvhi_state_csv_path=c.state_csv_path,
+        neighborhood_csv_path=c.neighborhood_csv_path,
+        city_csv_path=c.city_csv_path,
+        metro_csv_path=c.metro_csv_path,
+        state_csv_path=c.state_csv_path,
     )
 
     region_data_gateway = RegionDataGatewayMongo(
