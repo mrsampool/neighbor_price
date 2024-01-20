@@ -18,7 +18,6 @@ class DataAnalyzer:
         self.region_data_gateway = region_data_gateway
 
     def analyze_data(self, ch=None, method=None, properties=None, body=None):
-        body = json.loads(body)
         data = body["data"]
         df = pd.read_csv(StringIO(data), index_col=0)
 
