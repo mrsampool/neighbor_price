@@ -34,12 +34,7 @@ class TestDataAnalyzer(unittest.TestCase):
         })
         for i, df_row in df.iterrows():
             row_csv = df_row.to_csv()
-            self.data_analyzer.analyze_data(
-                body=EventBody(
-                    name="collected region record",
-                    data=row_csv
-                ).to_json().encode('utf-8')
-            )
+            self.data_analyzer.analyze_data(body={"name": "collected region record", "data": row_csv})
 
         actual_saved = self.save_list[0]
 
