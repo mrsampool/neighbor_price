@@ -1,7 +1,6 @@
 import logging
 
 from components.region_csv_endpoint_worker.region_csv_endpoint_worker import RegionCsvEndpointWorker
-
 from components.event_manager.event_manager import EventManager
 from components.event_manager.event_body import EventBody
 
