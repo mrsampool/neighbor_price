@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-from flask import Flask
 import os
 import logging
 from data_collector.data_collector import DataCollector
@@ -7,8 +6,6 @@ from data_collector.data_collector import DataCollector
 from components.region_csv_endpoint_worker.region_csv_endpoint_worker import RegionCsvEndpointWorker
 from components.regions.region_data_gateway_mongo import RegionDataGatewayMongo
 from components.event_manager.event_manager_pika import EventManagerPika
-
-app = Flask(__name__)
 
 
 class Config:
