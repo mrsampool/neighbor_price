@@ -1,4 +1,5 @@
 function_name=$1
+function_arn=$2
 
 source .env
 
@@ -24,6 +25,6 @@ zip -r ../"$function_name"_package.zip .
 cd ..
 rm -rf package
 aws lambda update-function-code \
---function-name arn:aws:lambda:us-west-1:065361442221:function:data_analyzer \
+--function-name "$function_arn" \
 --zip-file fileb://"$function_name"_package.zip;
 rm "$function_name"_package.zip

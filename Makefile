@@ -20,27 +20,29 @@ test:
 	source .env; \
 	python -m unittest;
 
-.PHONY: collect
+.PHONY: dev.collect
 collect:
 	source venv/bin/activate; \
 	source .env; \
-	python -m data_collector; \
+	python -m data_collector;
 
-.PHONY: analyzer.run
+.PHONY: dev.analyze
 analyze:
-	python3 -m venv venv; \
-	source .env; \
 	source venv/bin/activate; \
+	source .env; \
 	python -m data_analyzer;
+
+.PHONY: deploy.collector
+deploy.collector:
+	scripts/deploy_lambda.sh data_collector $LAMBDA_ARN_DATA_COLLECTOR
 
 .PHONY: deploy.analyzer
 deploy.analyzer:
-	scripts/deploy_lambda.sh data_analyzer
+	scripts/deploy_lambda.sh data_analyzer $LAMBDA_ARN_DATA_ANALYZER
 
 .PHONE: run
 run:
-	python3 -m venv venv; \
-	source .env; \
 	source venv/bin/activate; \
+	source .env; \
 	python -m neighbor_price;
 
