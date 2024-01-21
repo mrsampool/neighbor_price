@@ -18,8 +18,8 @@ class DataAnalyzer:
         self.region_data_gateway = region_data_gateway
 
     def analyze_data(self, ch=None, method=None, properties=None, body=None):
-        logging.info(f"body: {body}")
-        df = pd.read_csv(StringIO(body), index_col=0)
+        data = body["data"]
+        df = pd.read_csv(StringIO(data), index_col=0)
 
         record = RegionRecord(pd_series=df)
         logging.info(f"updating database: {record.region_type} {record.region_name}")
