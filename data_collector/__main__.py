@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 import os
 import logging
+
+from components.event_manager.event_manager_sns import EventManagerSNS
 from data_collector.data_collector import DataCollector
 
 from components.region_csv_endpoint_worker.region_csv_endpoint_worker import RegionCsvEndpointWorker
@@ -50,10 +52,10 @@ class Config:
         if self.event_host is None:
             logging.fatal("Missing required ENV: $EVENT_HOST")
 
-        self.event_lvhi_queue = os.getenv("EVENT_REGION_QUEUE")
-        logging.info(f"using EVENT_REGION_QUEUE: {self.event_lvhi_queue}")
+        self.event_lvhi_queue = os.getenv("EVENT_QUEUE")
+        logging.info(f"using EVENT_QUEUE: {self.event_lvhi_queue}")
         if self.event_lvhi_queue is None:
-            logging.fatal("Missing required ENV: $EVENT_REGION_QUEUE")
+            logging.fatal("Missing required ENV: $EVENT_QUEUE")
 
 
 def handler():
@@ -74,9 +76,9 @@ def handler():
         db_name=c.region_db_name
     )
 
-    event_manager = EventManagerPika(
-        host=c.event_host,
-        queue_name=c.event_lvhi_queue
+    event_manager = EventManagerSNS(
+        region_name="us-west-1",
+        topic_arn="arn:aws:sns:us-west-1:065361442221:region-collection"
     )
 
     data_collector = DataCollector(
@@ -84,10 +86,10 @@ def handler():
         event_manager=event_manager
     )
 
-    data_collector.collect_neighborhoods_data()
-    data_collector.collect_cities_data()
-    data_collector.collect_metros_data()
     data_collector.collect_states_data()
+    data_collector.collect_metros_data()
+    data_collector.collect_cities_data()
+    data_collector.collect_neighborhoods_data()
 
 
 if __name__ == "__main__":

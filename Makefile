@@ -35,30 +35,7 @@ analyze:
 
 .PHONY: deploy.analyzer
 deploy.analyzer:
-	mkdir -p package/components; \
-	cp -r components/event_manager package/components/; \
-	cp -r components/regions package/components/; \
-	cp components/__init__.py package/components/; \
-	cp -r data_analyzer package/; \
-	\
-	mv package/data_analyzer/lambda/* package/ ; \
-	\
-	source venv/bin/activate; \
-	pip install \
-	-r package/lambda_requirements.txt \
-    --target ./package \
-    --platform manylinux2014_x86_64 \
-    --implementation cp \
-    --python-version 3.12 \
-    --only-binary=:all: --upgrade; \
-	\
-	cd package; \
-	zip -r ../data_analyzer_package.zip .; \
-	cd ..; \
-	rm -rf package;
-	aws lambda update-function-code \
-	--function-name arn:aws:lambda:us-west-1:065361442221:function:data_analyzer \
-	--zip-file fileb://data_analyzer_package.zip;
+	scripts/deploy_data_analyzer_lambda.sh
 
 .PHONE: run
 run:
