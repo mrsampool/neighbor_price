@@ -51,3 +51,9 @@ class DataCollector:
 
     def collect_states_data(self):
         self._collect_region_data(data_type="states")
+
+    def collect_all_data(self):
+        self.collect_states_data()
+        self.collect_metros_data()
+        self.collect_cities_data()
+        self.collect_neighborhoods_data()
