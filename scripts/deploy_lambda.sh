@@ -1,12 +1,27 @@
+echo "Deploying function..."
 function_name=$1
-function_arn=$2
+echo "FUNCTION NAME: $function_name"
 
 source .env
+function_arn=""
+if [ "$function_name" == "data_collector" ]; then
+  function_arn="$LAMBDA_ARN_DATA_COLLECTOR"
+elif [ "$function_name" == "data_analyzer" ]; then
+  function_arn="$LAMBDA_ARN_DATA_ANALYZER"
+else
+  echo "ERROR: Unknown function: $function_name. Exiting."
+  exit 1
+fi
 
 mkdir -p package/components
+touch package/components/__init__.py
+
 cp -r components/event_manager package/components/
 cp -r components/regions package/components/
-touch package/components/__init__.py
+if [ "$function_name" == "data_collector" ]; then
+  cp -r components/region_csv_endpoint_worker package/components/
+fi
+
 cp -r "$function_name" package/
 
 cp lambdas/"$function_name"/* package/
@@ -25,6 +40,6 @@ zip -r ../"$function_name"_package.zip .
 cd ..
 rm -rf package
 aws lambda update-function-code \
---function-name "$function_arn" \
---zip-file fileb://"$function_name"_package.zip;
+  --function-name "$function_arn" \
+  --zip-file fileb://"$function_name"_package.zip;
 rm "$function_name"_package.zip

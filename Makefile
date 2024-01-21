@@ -34,11 +34,11 @@ analyze:
 
 .PHONY: deploy.collector
 deploy.collector:
-	scripts/deploy_lambda.sh data_collector $LAMBDA_ARN_DATA_COLLECTOR
+	scripts/deploy_lambda.sh data_collector
 
 .PHONY: deploy.analyzer
 deploy.analyzer:
-	scripts/deploy_lambda.sh data_analyzer $LAMBDA_ARN_DATA_ANALYZER
+	scripts/deploy_lambda.sh data_analyzer
 
 .PHONE: run
 run:
