@@ -15,18 +15,17 @@ class DataCollector:
         self.event_manager = event_manager
 
     def _fetch_region_df_by_region_type(self, data_type: str):
-        match data_type:
-            case "neighborhoods":
-                return self.csv_client.get_neighborhoods_df()
-            case "cities":
-                return self.csv_client.get_cities_df()
-            case "metros":
-                return self.csv_client.get_metros_df()
-            case "states":
-                return self.csv_client.get_states_df()
-            case _:
-                logging.error(f"invalid region data type: {data_type}")
-                return
+        if data_type == "neighborhoods":
+            return self.csv_client.get_neighborhoods_df()
+        elif data_type == "cities":
+            return self.csv_client.get_cities_df()
+        elif data_type == "metros":
+            return self.csv_client.get_metros_df()
+        elif data_type == "states":
+            return self.csv_client.get_states_df()
+        else:
+            logging.error(f"invalid region data type: {data_type}")
+            return
 
     def _collect_region_data(self, data_type: str):
 

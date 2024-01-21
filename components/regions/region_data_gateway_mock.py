@@ -42,88 +42,86 @@ class RegionDataGatewayMock(RegionDataGateway):
         ]
 
     def get_region_by_id(self, region_id):
-        match region_id:
-            case "1":
-                return RegionRecord(
-                    region_name="Colorado",
-                    region_history=RegionHistory(
-                        items=[
-                            RegionHistoryItem(
-                                date=datetime(2023, 1, 1),
-                                region_value=150
-                            ),
-                            RegionHistoryItem(
-                                date=datetime(2023, 2, 1),
-                                region_value=160
-                            )
-                        ]
-                    )
+        if region_id == "1":
+            return RegionRecord(
+                region_name="Colorado",
+                region_history=RegionHistory(
+                    items=[
+                        RegionHistoryItem(
+                            date=datetime(2023, 1, 1),
+                            region_value=150
+                        ),
+                        RegionHistoryItem(
+                            date=datetime(2023, 2, 1),
+                            region_value=160
+                        )
+                    ]
                 )
-            case "2":
-                return RegionRecord(
-                    region_name="metro-1",
-                    state_name="CO",
-                    region_history=RegionHistory(
-                        items=[
-                            RegionHistoryItem(
-                                date=datetime(2023, 1, 1),
-                                region_value=170
-                            ),
-                            RegionHistoryItem(
-                                date=datetime(2023, 2, 1),
-                                region_value=180
-                            )
-                        ]
-                    )
+            )
+        elif region_id == "2":
+            return RegionRecord(
+                region_name="metro-1",
+                state_name="CO",
+                region_history=RegionHistory(
+                    items=[
+                        RegionHistoryItem(
+                            date=datetime(2023, 1, 1),
+                            region_value=170
+                        ),
+                        RegionHistoryItem(
+                            date=datetime(2023, 2, 1),
+                            region_value=180
+                        )
+                    ]
                 )
-            case "4":
-                return RegionRecord(
-                    region_name="city-1",
-                    state_name="CO",
-                    region_history=RegionHistory(
-                        items=[
-                            RegionHistoryItem(
-                                date=datetime(2023, 1, 1),
-                                region_value=190
-                            ),
-                            RegionHistoryItem(
-                                date=datetime(2023, 2, 1),
-                                region_value=200
-                            )
-                        ]
-                    )
+            )
+        elif region_id == "4":
+            return RegionRecord(
+                region_name="city-1",
+                state_name="CO",
+                region_history=RegionHistory(
+                    items=[
+                        RegionHistoryItem(
+                            date=datetime(2023, 1, 1),
+                            region_value=190
+                        ),
+                        RegionHistoryItem(
+                            date=datetime(2023, 2, 1),
+                            region_value=200
+                        )
+                    ]
                 )
-            case "7":
-                return RegionRecord(
-                    region_name="neighborhood-1",
-                    state_name="CO",
-                    region_history=RegionHistory(
-                        items=[
-                            RegionHistoryItem(
-                                date=datetime(2023, 1, 1),
-                                region_value=210
-                            ),
-                            RegionHistoryItem(
-                                date=datetime(2023, 2, 1),
-                                region_value=220
-                            )
-                        ]
-                    )
+            )
+        elif region_id == "7":
+            return RegionRecord(
+                region_name="neighborhood-1",
+                state_name="CO",
+                region_history=RegionHistory(
+                    items=[
+                        RegionHistoryItem(
+                            date=datetime(2023, 1, 1),
+                            region_value=210
+                        ),
+                        RegionHistoryItem(
+                            date=datetime(2023, 2, 1),
+                            region_value=220
+                        )
+                    ]
                 )
+            )
 
     def get_all_metros_for_state(self, state_name) -> List[RegionRecord]:
-        match state_name:
-            case "Colorado":
-                return [
-                    RegionRecord(
-                        region_id="2",
-                        region_name="metro-1"
-                    ),
-                    RegionRecord(
-                        region_id="3",
-                        region_name="metro-2"
-                    )
-                ]
+        if state_name == "Colorado":
+            return [
+                RegionRecord(
+                    region_id="2",
+                    region_name="metro-1"
+                ),
+                RegionRecord(
+                    region_id="3",
+                    region_name="metro-2"
+                )
+            ]
 
     def get_all_cities_for_metro(self, metro_name, state_abbrev) -> List[RegionRecord]:
         if metro_name == "metro-1" and state_abbrev == "CO":

@@ -12,68 +12,66 @@ from data_collector.tests.test_utils import MockResponse, dict_to_encoded_csv
 
 
 def mocked_requests_get(*args, **kwargs) -> MockResponse:
-    match args[0]:
-        case 'csv/state':
-            content = dict_to_encoded_csv({
-                "RegionId": ["region-id-1", "region-id-2"],
-                "SizeRank": ["size-1", "size-2"],
-                "RegionName": ["state-1", "state-2"],
-                "RegionType": ["state", "state"],
-                "StateName": ["", ""],
-                "State": ["", ""],
-                "City": ["", ""],
-                "Metro": ["", ""],
-                "CountyName": ["", ""],
-                "2000-01-31": [70, 80],
-                "2000-02-20": [170, 190]
-            })
-            return MockResponse(content=content)
-        case 'csv/metro':
-            content = dict_to_encoded_csv({
-                "RegionId": ["region-id-1", "region-id-2"],
-                "SizeRank": ["size-1", "size-2"],
-                "RegionName": ["metro-1", "metro-2"],
-                "RegionType": ["msa", "msa"],
-                "StateName": ["state-name-1", "state-name-2"],
-                "State": ["state-1", "state-2"],
-                "City": ["", ""],
-                "Metro": ["", ""],
-                "CountyName": ["", ""],
-                "2000-01-31": [80, 90],
-                "2000-02-20": [180, 200]
-            })
-            return MockResponse(content=content)
-        case 'csv/city':
-            content = dict_to_encoded_csv({
-                "RegionId": ["region-id-1", "region-id-2"],
-                "SizeRank": ["size-1", "size-2"],
-                "RegionName": ["city-1", "city-2"],
-                "RegionType": ["city", "city"],
-                "StateName": ["state-name-1", "state-name-2"],
-                "State": ["state-1", "state-2"],
-                "City": ["", ""],
-                "Metro": ["metro-1", "metro-2"],
-                "CountyName": ["", ""],
-                "2000-01-31": [90, 100],
-                "2000-02-20": [190, 210]
-            })
-            return MockResponse(content=content)
-        case 'csv/neighborhood':
-            content = dict_to_encoded_csv({
-                "RegionId": ["region-id-1", "region-id-2"],
-                "SizeRank": ["size-1", "size-2"],
-                "RegionName": ["neighborhood-1", "neighborhood-2"],
-                "RegionType": ["neighborhood", "neighborhood"],
-                "StateName": ["state-name-1", "state-name-2"],
-                "State": ["state-1", "state-2"],
-                "City": ["city-1", "city-2"],
-                "Metro": ["metro-1", "metro-2"],
-                "CountyName": ["county-1", "county-2"],
-                "2000-01-31": [100, 110],
-                "2000-02-20": [200, 220]
-            })
-            return MockResponse(content=content)
-
+    if args[0] == 'csv/state':
+        content = dict_to_encoded_csv({
+            "RegionId": ["region-id-1", "region-id-2"],
+            "SizeRank": ["size-1", "size-2"],
+            "RegionName": ["state-1", "state-2"],
+            "RegionType": ["state", "state"],
+            "StateName": ["", ""],
+            "State": ["", ""],
+            "City": ["", ""],
+            "Metro": ["", ""],
+            "CountyName": ["", ""],
+            "2000-01-31": [70, 80],
+            "2000-02-20": [170, 190]
+        })
+        return MockResponse(content=content)
+    elif args[0] == 'csv/metro':
+        content = dict_to_encoded_csv({
+            "RegionId": ["region-id-1", "region-id-2"],
+            "SizeRank": ["size-1", "size-2"],
+            "RegionName": ["metro-1", "metro-2"],
+            "RegionType": ["msa", "msa"],
+            "StateName": ["state-name-1", "state-name-2"],
+            "State": ["state-1", "state-2"],
+            "City": ["", ""],
+            "Metro": ["", ""],
+            "CountyName": ["", ""],
+            "2000-01-31": [80, 90],
+            "2000-02-20": [180, 200]
+        })
+        return MockResponse(content=content)
+    elif args[0] == 'csv/city':
+        content = dict_to_encoded_csv({
+            "RegionId": ["region-id-1", "region-id-2"],
+            "SizeRank": ["size-1", "size-2"],
+            "RegionName": ["city-1", "city-2"],
+            "RegionType": ["city", "city"],
+            "StateName": ["state-name-1", "state-name-2"],
+            "State": ["state-1", "state-2"],
+            "City": ["", ""],
+            "Metro": ["metro-1", "metro-2"],
+            "CountyName": ["", ""],
+            "2000-01-31": [90, 100],
+            "2000-02-20": [190, 210]
+        })
+        return MockResponse(content=content)
+    elif args[0] == 'csv/neighborhood':
+        content = dict_to_encoded_csv({
+            "RegionId": ["region-id-1", "region-id-2"],
+            "SizeRank": ["size-1", "size-2"],
+            "RegionName": ["neighborhood-1", "neighborhood-2"],
+            "RegionType": ["neighborhood", "neighborhood"],
+            "StateName": ["state-name-1", "state-name-2"],
+            "State": ["state-1", "state-2"],
+            "City": ["city-1", "city-2"],
+            "Metro": ["metro-1", "metro-2"],
+            "CountyName": ["county-1", "county-2"],
+            "2000-01-31": [100, 110],
+            "2000-02-20": [200, 220]
+        })
+        return MockResponse(content=content)
 
 def get_actual_published(publish_list: List[EventBody]):
     actual_published = []
