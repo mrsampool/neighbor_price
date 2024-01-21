@@ -26,8 +26,8 @@ analyze:
 	source venv/bin/activate; \
 	python -m data_analyzer;
 
-.PHONY: analyzer.package
-analyzer.package:
+.PHONY: deploy.analyzer
+deploy.analyzer:
 	mkdir -p package/components; \
 	cp -r components/event_manager package/components/; \
 	cp -r components/regions package/components/; \
@@ -49,6 +49,9 @@ analyzer.package:
 	zip -r ../data_analyzer_package.zip .; \
 	cd ..; \
 	rm -rf package;
+	aws lambda update-function-code \
+	--function-name arn:aws:lambda:us-west-1:065361442221:function:data_analyzer \
+	--zip-file fileb://data_analyzer_package.zip;
 
 .PHONE: run
 run:
