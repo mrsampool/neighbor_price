@@ -35,7 +35,7 @@ analyze:
 
 .PHONY: deploy.analyzer
 deploy.analyzer:
-	scripts/deploy_data_analyzer_lambda.sh
+	scripts/deploy_lambda.sh data_analyzer
 
 .PHONE: run
 run:
