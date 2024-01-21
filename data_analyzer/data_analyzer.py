@@ -18,8 +18,8 @@ class DataAnalyzer:
         self.region_data_gateway = region_data_gateway
 
     def analyze_data(self, ch=None, method=None, properties=None, body=None):
-        data = body["data"]
-        df = pd.read_csv(StringIO(data), index_col=0)
+        logging.info(f"body: {body}")
+        df = pd.read_csv(StringIO(body), index_col=0)
 
         record = RegionRecord(pd_series=df)
         logging.info(f"updating database: {record.region_type} {record.region_name}")
@@ -27,5 +27,9 @@ class DataAnalyzer:
         if ch is not None:
             ch.basic_ack(delivery_tag=method.delivery_tag)
 
+    def process_data(self, ch=None, method=None, properties=None, body=None):
+        body = json.loads(body)
+        self.analyze_data(ch=ch, method=method, properties=properties, body=body)
+
     def analyze(self):
-        self.event_manager.consume(callback=self.analyze_data)
+        self.event_manager.consume(callback=self.process_data)
