@@ -27,7 +27,7 @@ class RegionHistory:
                     self.history_items.append(
                         RegionHistoryItem(
                             date=history_item["date"],
-                            region_vale=float(history_item["region_vale"])
+                            region_value=float(history_item["region_vale"])
                         )
                     )
 
