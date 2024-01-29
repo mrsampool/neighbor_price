@@ -49,7 +49,7 @@
     <main class="p-3">
         {% block header %}{% endblock %}
         <ul>
-            {% for link in region_detail.region_links.links %}
+            {% for link in region_detail.links %}
                 <a href="{{ link.address }}">
                     <button type="button" class="btn btn-primary">
                         {{ link.label }}

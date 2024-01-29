@@ -53,7 +53,7 @@ class Config:
 def main():
     logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=20)
 
-    c = Config()
+    c = Config(event_queue_mode=EVENT_QUEUE_MODE_RABBITMQ)
 
     region_data_gateway = RegionDataGatewayMongo(db_uri=c.regions_db_uri, db_name=c.regions_db_name)
     event_manager = EventManagerPika(host=c.event_rabbit_mq_host, queue_name=c.event_rabbitmq_queue)

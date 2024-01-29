@@ -21,13 +21,13 @@ test:
 	python -m unittest;
 
 .PHONY: dev.collect
-collect:
+dev.collect:
 	source venv/bin/activate; \
 	source .env; \
 	python -m data_collector;
 
 .PHONY: dev.analyze
-analyze:
+dev.analyze:
 	source venv/bin/activate; \
 	source .env; \
 	python -m data_analyzer;
@@ -44,5 +44,5 @@ deploy.analyzer:
 run:
 	source venv/bin/activate; \
 	source .env; \
-	python -m neighbor_price;
+	gunicorn neighbor_price.app:app;
 

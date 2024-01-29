@@ -80,7 +80,7 @@ class Config:
 def handler():
     logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=20)
 
-    c = Config()
+    c = Config(event_queue_mode=EVENT_QUEUE_MODE_RABBITMQ)
 
     csv_client = RegionCsvEndpointWorker(
         region_csv_url=c.region_csv_url,
