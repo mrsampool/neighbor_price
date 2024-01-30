@@ -14,11 +14,18 @@ containers.start:
 containers.stop:
 	docker compose stop;
 
-.PHONY: test
-test:
+.PHONY: test.unit
+test.unit:
 	source venv/bin/activate; \
 	source .env; \
 	python -m unittest;
+
+.PHONY: test.integration
+test.integration:
+	source venv/bin/activate; \
+	source .env; \
+	export REGION_DB_NAME=neighbor_price_test; \
+	python -m pytest;
 
 .PHONY: dev.collect
 dev.collect:
