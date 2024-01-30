@@ -18,7 +18,6 @@ class DataAnalyzer:
         self.region_data_gateway = region_data_gateway
 
     def analyze_data(self, ch=None, method=None, properties=None, body=None):
-        logging.info(f"analyzing_data: {body}")
         df = pd.read_csv(StringIO(body), index_col=0)
 
         record = RegionRecord(pd_series=df)
