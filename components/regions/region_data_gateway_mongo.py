@@ -57,10 +57,11 @@ class RegionDataGatewayMongo(RegionDataGateway):
         return list(map(lambda doc: RegionRecord(document=doc), docs))
 
     def get_all_cities_for_metro(self, metro_name, state_abbrev):
+        metro_without_state_abbrev = metro_name.split(",")[0]
         docs = self.collection.find({
             "region_type": "city",
             "state_name": state_abbrev,
-            "metro": {"$regex": f"{metro_name}", "$options": "i"},
+            "metro": {"$regex": f"{metro_without_state_abbrev}", "$options": "i"},
         })
         return list(map(lambda doc: RegionRecord(document=doc), docs))
 
