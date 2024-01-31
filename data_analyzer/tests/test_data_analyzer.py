@@ -1,10 +1,10 @@
+import json
 import unittest
 from typing import List
 import datetime
 import pandas as pd
 
 from components.event_manager.event_manager_mock import EventManagerMock
-from components.event_manager.event_body import EventBody
 from components.regions.region_data_gateway_mock import RegionDataGatewayMock
 from components.regions.region_record import RegionRecord
 from data_analyzer.data_analyzer import DataAnalyzer
@@ -18,7 +18,7 @@ class TestDataAnalyzer(unittest.TestCase):
             region_data_gateway=RegionDataGatewayMock(save_list=self.save_list)
         )
 
-    def test_analyze_data(self):
+    def test_process_data(self):
         df = pd.DataFrame(data={
             "RegionID": ["region-id-1"],
             "SizeRank": ["size-1"],
@@ -34,7 +34,7 @@ class TestDataAnalyzer(unittest.TestCase):
         })
         for i, df_row in df.iterrows():
             row_csv = df_row.to_csv()
-            self.data_analyzer.analyze_data(body={"name": "collected region record", "data": row_csv})
+            self.data_analyzer.process_data(body=json.dumps({"name": "collected region record", "data": row_csv}))
 
         actual_saved = self.save_list[0]
 
