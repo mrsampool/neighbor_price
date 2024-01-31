@@ -18,7 +18,7 @@ containers.stop:
 test.unit:
 	source venv/bin/activate; \
 	source .env; \
-	python -m unittest;
+	python -m unittest discover -s . -p "test_*.py";
 
 .PHONY: test.integration
 test.integration:
