@@ -32,7 +32,7 @@ jobs:
       run: make init
 
     - name: start docker containers
-      run: make container.start
+      run: make containers.start
       env:
         DOCKER_COMPOSE_VERSION: 1.29.2
         DOCKER_COMPOSE_FILE: docker-compose.yml
