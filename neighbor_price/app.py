@@ -63,7 +63,7 @@ def metro_detail(state_id, metro_id):
 def city_detail(state_id, metro_id, city_id):
     region_detail = region_detailer.get_city_detail(state_id=state_id, metro_id=metro_id, city_id=city_id)
     return render_template(
-        template_name_or_list='neighborhood_detail.html',
+        template_name_or_list='city_detail.html',
         region_detail=region_detail
     )
 
