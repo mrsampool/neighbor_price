@@ -28,9 +28,7 @@ jobs:
 
     - name: initialize environment
       run: | 
-        make init
         cp .env.sample .env
-        source .env
         mkdir -p .docker-data/.mongo-data .docker-data/.rabbit-data .docker-data/.rabbit-log .docker-data/.prometheus-data
         python3 -m venv venv
         source venv/bin/activate
@@ -44,9 +42,11 @@ jobs:
 
     - name: Run unit tests
       run: |
+        source .env
         python -m unittest discover -s . -p "test_*.py"
 
     - name: Run integration tests
       run: |
+        source .env
         export REGION_DB_NAME=neighbor_price_test
         python -m pytest
