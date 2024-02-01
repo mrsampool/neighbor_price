@@ -18,10 +18,8 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
-    - name: Setup upterm session
-      uses: lhotari/action-upterm@v1
-      with:
-        limit-access-to-actor: false
+    #- name: Setup upterm session
+    #  uses: lhotari/action-upterm@v1
 
     - name: Set up Python
       uses: actions/setup-python@v2
@@ -29,16 +27,26 @@ jobs:
         python-version: '3.x'
 
     - name: initialize environment
-      run: make init
+      run: | 
+        make init
+        cp .env.sample .env
+        source .env
+        mkdir -p .docker-data/.mongo-data .docker-data/.rabbit-data .docker-data/.rabbit-log .docker-data/.prometheus-data
+        python3 -m venv venv
+        source venv/bin/activate
+        pip install -r requirements.txt
 
     - name: start docker containers
-      run: make containers.start
+      run: docker compose up -d
       env:
         DOCKER_COMPOSE_VERSION: 1.29.2
         DOCKER_COMPOSE_FILE: docker-compose.yml
 
     - name: Run unit tests
-      run: make test.unit
+      run: |
+        python -m unittest discover -s . -p "test_*.py"
 
     - name: Run integration tests
-      run: make test.integration
+      run: |
+        export REGION_DB_NAME=neighbor_price_test
+        python -m pytest
