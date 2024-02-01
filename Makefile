@@ -47,6 +47,12 @@ deploy.collector:
 deploy.analyzer:
 	scripts/deploy_lambda.sh data_analyzer
 
+.PHONE: run.dev
+run.dev:
+	source venv/bin/activate; \
+	source .env; \
+	flask --app neighbor_price.app run --debug
+
 .PHONE: run
 run:
 	source venv/bin/activate; \
