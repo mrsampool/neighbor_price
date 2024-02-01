@@ -4,3 +4,13 @@
 # TODO: Add metrics monitoring
 # TODO: Add prometheus to collect data
 # TODO: Add grafana to display data
+
+Web application
+basic form, reporting
+
+Data collection
+
+Data analyzer
+
+Production monitoring
+instrumenting
