@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import json
 import logging
 import os
 
@@ -83,9 +84,14 @@ def neighborhood_detail(state_id, metro_id, city_id, neighborhood_id):
     )
 
 
+@app.route("/healthcheck")
+@REQUEST_TIME.time()
+def healthcheck():
+    return json.dumps({'status': 'healthy'}), 200, {'ContentType': 'application/json'}
+
+
+start_http_server(8100)
+
 if __name__ == "__main__":
     start_http_server(8100)
-    app.run(port=8000, debug=False)
-
-
-
+    app.run(port=8000, debug=True)
