@@ -3,8 +3,9 @@ import json
 import logging
 import os
 
-from flask import Flask, render_template
-from prometheus_client import start_http_server, Summary
+import requests
+from flask import Flask, render_template, Response
+from prometheus_client import start_http_server, Summary, generate_latest, CONTENT_TYPE_LATEST
 
 from components.regions.region_data_gateway_mongo import RegionDataGatewayMongo
 from neighbor_price.region_detailer import RegionDetailer
@@ -83,6 +84,9 @@ def neighborhood_detail(state_id, metro_id, city_id, neighborhood_id):
         region_detail=region_detail
     )
 
+@app.route('/metrics')
+def metrics():
+    return Response(generate_latest(), mimetype=CONTENT_TYPE_LATEST)
 
 @app.route("/healthcheck")
 @REQUEST_TIME.time()
@@ -90,8 +94,5 @@ def healthcheck():
     return json.dumps({'status': 'healthy'}), 200, {'ContentType': 'application/json'}
 
 
-start_http_server(8100)
-
 if __name__ == "__main__":
-    start_http_server(8100)
     app.run(port=8000, debug=True)
