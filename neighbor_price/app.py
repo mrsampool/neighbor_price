@@ -3,14 +3,17 @@ import json
 import logging
 import os
 
-import requests
 from flask import Flask, render_template, Response
-from prometheus_client import start_http_server, Summary, generate_latest, CONTENT_TYPE_LATEST
+from prometheus_client import Summary, generate_latest, CONTENT_TYPE_LATEST
+
+from flask_httpauth import HTTPBasicAuth
+from werkzeug.security import generate_password_hash, check_password_hash
 
 from components.regions.region_data_gateway_mongo import RegionDataGatewayMongo
 from neighbor_price.region_detailer import RegionDetailer
 
 app = Flask(__name__)
+auth = HTTPBasicAuth()
 
 logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=20)
 
@@ -84,7 +87,20 @@ def neighborhood_detail(state_id, metro_id, city_id, neighborhood_id):
         region_detail=region_detail
     )
 
+
+users = {
+    "grafana": generate_password_hash("grafanaadmin"),
+}
+
+
+@auth.verify_password
+def verify_password(username, password):
+    if username in users and check_password_hash(users.get(username), password):
+        return username
+
+
 @app.route('/metrics')
+@auth.login_required
 def metrics():
     return Response(generate_latest(), mimetype=CONTENT_TYPE_LATEST)
 
