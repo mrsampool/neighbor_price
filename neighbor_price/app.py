@@ -4,7 +4,7 @@ import logging
 import os
 
 from flask import Flask, render_template, Response
-from prometheus_client import Summary, generate_latest, CONTENT_TYPE_LATEST, Counter
+from prometheus_client import Summary, generate_latest, CONTENT_TYPE_LATEST, Counter, Gauge
 
 from flask_httpauth import HTTPBasicAuth
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -31,6 +31,8 @@ region_data_gateway = RegionDataGatewayMongo(db_uri=db_uri, db_name=db_name)
 region_detailer = RegionDetailer(data_gateway=region_data_gateway)
 
 REQUEST_TIME = Summary('request_processing_seconds', 'Time spent processing request')
+in_progress_requests = Gauge('my_inprogress_requests', 'Description of gauge')
+
 page_view_counter = Counter('page_views', 'Total page views')
 us_detail_counter = Counter('us_detail_views', 'US detail views')
 state_detail_counter = Counter('state_detail_views', 'State detail views')
@@ -42,6 +44,7 @@ neighborhood_detail_counter = Counter('neighborhood_detail_views', 'Neighborhood
 
 @app.route("/")
 @REQUEST_TIME.time()
+@in_progress_requests.track_inprogress()
 def us_detail():
     page_view_counter.inc()
     us_detail_counter.inc()
@@ -54,6 +57,7 @@ def us_detail():
 
 @app.route("/state/<state_id>")
 @REQUEST_TIME.time()
+@in_progress_requests.track_inprogress()
 def state_detail(state_id):
     page_view_counter.inc()
     state_detail_counter.inc()
@@ -66,6 +70,7 @@ def state_detail(state_id):
 
 @app.route("/state/<state_id>/metro/<metro_id>")
 @REQUEST_TIME.time()
+@in_progress_requests.track_inprogress()
 def metro_detail(state_id, metro_id):
     page_view_counter.inc()
     metro_detail_counter.inc()
@@ -78,6 +83,7 @@ def metro_detail(state_id, metro_id):
 
 @app.route("/state/<state_id>/metro/<metro_id>/city/<city_id>")
 @REQUEST_TIME.time()
+@in_progress_requests.track_inprogress()
 def city_detail(state_id, metro_id, city_id):
     page_view_counter.inc()
     city_detail_counter.inc()
@@ -90,6 +96,7 @@ def city_detail(state_id, metro_id, city_id):
 
 @app.route("/state/<state_id>/metro/<metro_id>/city/<city_id>/neighborhood/<neighborhood_id>")
 @REQUEST_TIME.time()
+@in_progress_requests.track_inprogress()
 def neighborhood_detail(state_id, metro_id, city_id, neighborhood_id):
     page_view_counter.inc()
     neighborhood_detail_counter.inc()
