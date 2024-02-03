@@ -45,72 +45,76 @@ neighborhood_detail_counter = Counter('neighborhood_detail_views', 'Neighborhood
 
 @app.route("/")
 @REQUEST_TIME.time()
-@REQUEST_LATENCY.time()
 def us_detail():
-    page_view_counter.inc()
-    us_detail_counter.inc()
-    region_detail = region_detailer.get_us_detail()
-    return render_template(
-        template_name_or_list='neighborhood_detail.html',
-        region_detail=region_detail
-    )
+    with REQUEST_LATENCY.labels(method='GET', endpoint='/').time():
+        page_view_counter.inc()
+        us_detail_counter.inc()
+        region_detail = region_detailer.get_us_detail()
+        return render_template(
+            template_name_or_list='neighborhood_detail.html',
+            region_detail=region_detail
+        )
 
 
 @app.route("/state/<state_id>")
 @REQUEST_TIME.time()
 @REQUEST_LATENCY.time()
 def state_detail(state_id):
-    page_view_counter.inc()
-    state_detail_counter.inc()
-    region_detail = region_detailer.get_state_detail(state_id=state_id)
-    return render_template(
-        template_name_or_list='state_detail.html',
-        region_detail=region_detail
-    )
+    with REQUEST_LATENCY.labels(method='GET', endpoint='/').time():
+        page_view_counter.inc()
+        state_detail_counter.inc()
+        region_detail = region_detailer.get_state_detail(state_id=state_id)
+        return render_template(
+            template_name_or_list='state_detail.html',
+            region_detail=region_detail
+        )
 
 
 @app.route("/state/<state_id>/metro/<metro_id>")
 @REQUEST_TIME.time()
 @REQUEST_LATENCY.time()
 def metro_detail(state_id, metro_id):
-    page_view_counter.inc()
-    metro_detail_counter.inc()
-    region_detail = region_detailer.get_metro_detail(state_id=state_id, metro_id=metro_id)
-    return render_template(
-        template_name_or_list='metro_detail.html',
-        region_detail=region_detail
-    )
+    with REQUEST_LATENCY.labels(method='GET', endpoint='/').time():
+        page_view_counter.inc()
+        metro_detail_counter.inc()
+        region_detail = region_detailer.get_metro_detail(state_id=state_id, metro_id=metro_id)
+        return render_template(
+            template_name_or_list='metro_detail.html',
+            region_detail=region_detail
+        )
 
 
 @app.route("/state/<state_id>/metro/<metro_id>/city/<city_id>")
 @REQUEST_TIME.time()
 @REQUEST_LATENCY.time()
 def city_detail(state_id, metro_id, city_id):
-    page_view_counter.inc()
-    city_detail_counter.inc()
-    region_detail = region_detailer.get_city_detail(state_id=state_id, metro_id=metro_id, city_id=city_id)
-    return render_template(
-        template_name_or_list='city_detail.html',
-        region_detail=region_detail
-    )
+    with REQUEST_LATENCY.labels(method='GET', endpoint='/').time():
+        page_view_counter.inc()
+        city_detail_counter.inc()
+        region_detail = region_detailer.get_city_detail(state_id=state_id, metro_id=metro_id, city_id=city_id)
+        return render_template(
+            template_name_or_list='city_detail.html',
+            region_detail=region_detail
+        )
 
 
 @app.route("/state/<state_id>/metro/<metro_id>/city/<city_id>/neighborhood/<neighborhood_id>")
 @REQUEST_TIME.time()
 @REQUEST_LATENCY.time()
 def neighborhood_detail(state_id, metro_id, city_id, neighborhood_id):
-    page_view_counter.inc()
-    neighborhood_detail_counter.inc()
-    region_detail = region_detailer.get_neighborhood_detail(
-        state_id=state_id,
-        metro_id=metro_id,
-        city_id=city_id,
-        neighborhood_id=neighborhood_id
-    )
-    return render_template(
-        template_name_or_list='neighborhood_detail.html',
-        region_detail=region_detail
-    )
+    with REQUEST_LATENCY.labels(method='GET', endpoint='/').time():
+        page_view_counter.inc()
+        neighborhood_detail_counter.inc()
+        region_detail = region_detailer.get_neighborhood_detail(
+            state_id=state_id,
+            metro_id=metro_id,
+            city_id=city_id,
+            neighborhood_id=neighborhood_id
+        )
+        return render_template(
+            template_name_or_list='neighborhood_detail.html',
+            region_detail=region_detail
+        )
 
 
 users = {
