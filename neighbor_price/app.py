@@ -4,7 +4,7 @@ import logging
 import os
 
 from flask import Flask, render_template, Response
-from prometheus_client import Summary, generate_latest, CONTENT_TYPE_LATEST
+from prometheus_client import Summary, generate_latest, CONTENT_TYPE_LATEST, Counter
 
 from flask_httpauth import HTTPBasicAuth
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -31,11 +31,20 @@ region_data_gateway = RegionDataGatewayMongo(db_uri=db_uri, db_name=db_name)
 region_detailer = RegionDetailer(data_gateway=region_data_gateway)
 
 REQUEST_TIME = Summary('request_processing_seconds', 'Time spent processing request')
+page_view_counter = Counter('page_views', 'Total page views')
+us_detail_counter = Counter('us_detail_views', 'US detail views')
+state_detail_counter = Counter('state_detail_views', 'State detail views')
+metro_detail_counter = Counter('metro_detail_views', 'Metro detail views')
+city_detail_counter = Counter('city_detail_views', 'City detail views')
+neighborhood_detail_counter = Counter('neighborhood_detail_views', 'Neighborhood Detail views')
+
 
 
 @app.route("/")
 @REQUEST_TIME.time()
 def us_detail():
+    page_view_counter.inc()
+    us_detail_counter.inc()
     region_detail = region_detailer.get_us_detail()
     return render_template(
         template_name_or_list='neighborhood_detail.html',
@@ -46,6 +55,8 @@ def us_detail():
 @app.route("/state/<state_id>")
 @REQUEST_TIME.time()
 def state_detail(state_id):
+    page_view_counter.inc()
+    state_detail_counter.inc()
     region_detail = region_detailer.get_state_detail(state_id=state_id)
     return render_template(
         template_name_or_list='state_detail.html',
@@ -56,6 +67,8 @@ def state_detail(state_id):
 @app.route("/state/<state_id>/metro/<metro_id>")
 @REQUEST_TIME.time()
 def metro_detail(state_id, metro_id):
+    page_view_counter.inc()
+    metro_detail_counter.inc()
     region_detail = region_detailer.get_metro_detail(state_id=state_id, metro_id=metro_id)
     return render_template(
         template_name_or_list='metro_detail.html',
@@ -66,6 +79,8 @@ def metro_detail(state_id, metro_id):
 @app.route("/state/<state_id>/metro/<metro_id>/city/<city_id>")
 @REQUEST_TIME.time()
 def city_detail(state_id, metro_id, city_id):
+    page_view_counter.inc()
+    city_detail_counter.inc()
     region_detail = region_detailer.get_city_detail(state_id=state_id, metro_id=metro_id, city_id=city_id)
     return render_template(
         template_name_or_list='city_detail.html',
@@ -76,6 +91,8 @@ def city_detail(state_id, metro_id, city_id):
 @app.route("/state/<state_id>/metro/<metro_id>/city/<city_id>/neighborhood/<neighborhood_id>")
 @REQUEST_TIME.time()
 def neighborhood_detail(state_id, metro_id, city_id, neighborhood_id):
+    page_view_counter.inc()
+    neighborhood_detail_counter.inc()
     region_detail = region_detailer.get_neighborhood_detail(
         state_id=state_id,
         metro_id=metro_id,
