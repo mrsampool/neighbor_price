@@ -46,7 +46,7 @@ neighborhood_detail_counter = Counter('neighborhood_detail_views', 'Neighborhood
 @app.route("/")
 @REQUEST_TIME.time()
 def us_detail():
-    with REQUEST_LATENCY.labels(method='GET', endpoint='/').time():
+    with REQUEST_LATENCY.labels(method='GET', endpoint='us detail').time():
         page_view_counter.inc()
         us_detail_counter.inc()
         region_detail = region_detailer.get_us_detail()
@@ -59,7 +59,7 @@ def us_detail():
 @app.route("/state/<state_id>")
 @REQUEST_TIME.time()
 def state_detail(state_id):
-    with REQUEST_LATENCY.labels(method='GET', endpoint='/').time():
+    with REQUEST_LATENCY.labels(method='GET', endpoint='state detail').time():
         page_view_counter.inc()
         state_detail_counter.inc()
         region_detail = region_detailer.get_state_detail(state_id=state_id)
@@ -72,7 +72,7 @@ def state_detail(state_id):
 @app.route("/state/<state_id>/metro/<metro_id>")
 @REQUEST_TIME.time()
 def metro_detail(state_id, metro_id):
-    with REQUEST_LATENCY.labels(method='GET', endpoint='/').time():
+    with REQUEST_LATENCY.labels(method='GET', endpoint='metro detail').time():
         page_view_counter.inc()
         metro_detail_counter.inc()
         region_detail = region_detailer.get_metro_detail(state_id=state_id, metro_id=metro_id)
@@ -85,7 +85,7 @@ def metro_detail(state_id, metro_id):
 @app.route("/state/<state_id>/metro/<metro_id>/city/<city_id>")
 @REQUEST_TIME.time()
 def city_detail(state_id, metro_id, city_id):
-    with REQUEST_LATENCY.labels(method='GET', endpoint='/').time():
+    with REQUEST_LATENCY.labels(method='GET', endpoint='city detail').time():
         page_view_counter.inc()
         city_detail_counter.inc()
         region_detail = region_detailer.get_city_detail(state_id=state_id, metro_id=metro_id, city_id=city_id)
@@ -98,7 +98,7 @@ def city_detail(state_id, metro_id, city_id):
 @app.route("/state/<state_id>/metro/<metro_id>/city/<city_id>/neighborhood/<neighborhood_id>")
 @REQUEST_TIME.time()
 def neighborhood_detail(state_id, metro_id, city_id, neighborhood_id):
-    with REQUEST_LATENCY.labels(method='GET', endpoint='/').time():
+    with REQUEST_LATENCY.labels(method='GET', endpoint='neighborhood_detail').time():
         page_view_counter.inc()
         neighborhood_detail_counter.inc()
         region_detail = region_detailer.get_neighborhood_detail(
