@@ -58,7 +58,6 @@ def us_detail():
 
 @app.route("/state/<state_id>")
 @REQUEST_TIME.time()
-@REQUEST_LATENCY.time()
 def state_detail(state_id):
     with REQUEST_LATENCY.labels(method='GET', endpoint='/').time():
         page_view_counter.inc()
@@ -72,7 +71,6 @@ def state_detail(state_id):
 
 @app.route("/state/<state_id>/metro/<metro_id>")
 @REQUEST_TIME.time()
-@REQUEST_LATENCY.time()
 def metro_detail(state_id, metro_id):
     with REQUEST_LATENCY.labels(method='GET', endpoint='/').time():
         page_view_counter.inc()
@@ -86,7 +84,6 @@ def metro_detail(state_id, metro_id):
 
 @app.route("/state/<state_id>/metro/<metro_id>/city/<city_id>")
 @REQUEST_TIME.time()
-@REQUEST_LATENCY.time()
 def city_detail(state_id, metro_id, city_id):
     with REQUEST_LATENCY.labels(method='GET', endpoint='/').time():
         page_view_counter.inc()
@@ -100,7 +97,6 @@ def city_detail(state_id, metro_id, city_id):
 
 @app.route("/state/<state_id>/metro/<metro_id>/city/<city_id>/neighborhood/<neighborhood_id>")
 @REQUEST_TIME.time()
-@REQUEST_LATENCY.time()
 def neighborhood_detail(state_id, metro_id, city_id, neighborhood_id):
     with REQUEST_LATENCY.labels(method='GET', endpoint='/').time():
         page_view_counter.inc()
