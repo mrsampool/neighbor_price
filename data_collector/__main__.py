@@ -3,6 +3,7 @@ import os
 import logging
 
 from components.event_manager.event_manager import EVENT_QUEUE_MODE_RABBITMQ, EVENT_QUEUE_MODE_SNS
+from components.regions.region_data_gateway_mongo import MongoConfig
 from data_collector.data_collector import DataCollector
 
 from components.region_csv_endpoint_worker.region_csv_endpoint_worker import RegionCsvEndpointWorker
@@ -11,17 +12,6 @@ from components.event_manager.event_manager_pika import EventManagerPika
 
 class Config:
     def __init__(self, event_queue_mode: str):
-        # Database
-        self.region_db_uri = os.getenv("REGION_DB_URI")
-        logging.info(f"using REGION_DB_URI: {self.region_db_uri}")
-        if self.region_db_uri is None:
-            logging.fatal("Missing required ENV: $REGION_DB_URI")
-
-        self.region_db_name = os.getenv("REGION_DB_NAME")
-        logging.info(f"using REGION_DB_NAME: {self.region_db_name}")
-        if self.region_db_name is None:
-            logging.fatal("Missing required ENV: $REGION_DB_NAME")
-
         # CSV Worker
         self.region_csv_url = os.getenv("REGION_CSV_URL")
         logging.info(f"using REGION_CSV_URL: {self.region_csv_url}")

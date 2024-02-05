@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+import logging
+import os
+
 import pymongo
 from typing import List
 
@@ -75,3 +78,18 @@ class RegionDataGatewayMongo(RegionDataGateway):
         }).sort("name", pymongo.ASCENDING)
         return list(map(lambda doc: RegionRecord(document=doc), docs))
 
+
+class MongoConfig:
+    db_uri: str | ""
+    db_name: str | ""
+
+    def read_config_from_env(self):
+        self.db_uri = os.getenv("REGION_DB_URI")
+        logging.info(f"using REGION_DB_URI: {self.db_uri}")
+        if self.db_uri is None:
+            logging.fatal("Missing required ENV: $REGION_DB_URI")
+
+        self.db_name = os.getenv("REGION_DB_NAME")
+        logging.info(f"using REGION_DB_NAME: {self.db_name}")
+        if self.db_name is None:
+            logging.fatal("Missing required ENV: $REGION_DB_NAME")

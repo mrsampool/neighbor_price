@@ -9,23 +9,13 @@ from prometheus_client import Summary, generate_latest, CONTENT_TYPE_LATEST, Cou
 from flask_httpauth import HTTPBasicAuth
 from werkzeug.security import generate_password_hash, check_password_hash
 
-from components.regions.region_data_gateway_mongo import RegionDataGatewayMongo
+from components.regions.region_data_gateway_mongo import RegionDataGatewayMongo, MongoConfigENV, MongoConfig
 from neighbor_price.region_detailer import RegionDetailer
 
 app = Flask(__name__)
 auth = HTTPBasicAuth()
 
 logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=20)
-
-db_uri = os.getenv("REGION_DB_URI")
-logging.info(f"using REGION_DB_URI: {db_uri}")
-if db_uri is None:
-    logging.fatal("Missing required ENV: $REGION_DB_URI")
-
-db_name = os.getenv("REGION_DB_NAME")
-logging.info(f"using REGION_DB_NAME: {db_name}")
-if db_name is None:
-    logging.fatal("Missing required ENV: $REGION_DB_NAME")
 
 metrics_user = os.getenv("METRICS_USER")
 logging.info(f"using METRICS_USER: {metrics_user}")
@@ -36,8 +26,8 @@ metrics_pw = generate_password_hash(os.getenv("METRICS_PW"))
 if metrics_pw is None:
     logging.fatal("Missing required ENV: $METRICS_PW")
 
-
-region_data_gateway = RegionDataGatewayMongo(db_uri=db_uri, db_name=db_name)
+mongo_config = MongoConfig().read_config_from_env()
+region_data_gateway = RegionDataGatewayMongo(db_uri=mongo_config.db_uri, db_name=mongo_config.db_name)
 region_detailer = RegionDetailer(data_gateway=region_data_gateway)
 
 REQUEST_LATENCY = Histogram('http_request_latency_seconds', 'HTTP Request latency', ['method', 'page_type'])

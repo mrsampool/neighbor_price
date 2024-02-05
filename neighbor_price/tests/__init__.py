@@ -5,6 +5,7 @@ import pymongo
 import pytest
 
 from components.regions.region_data_gateway import DB_COLLECTION_REGION_RECORDS
+from components.regions.region_data_gateway_mongo import MongoConfig
 from neighbor_price.app import app
 
 
@@ -19,18 +20,10 @@ def client():
 
 @pytest.fixture
 def collection():
-    db_uri = os.getenv("REGION_DB_URI")
-    logging.info(f"using REGION_DB_URI: {db_uri}")
-    if db_uri is None:
-        logging.fatal("Missing required ENV: $REGION_DB_URI")
+    mongo_config = MongoConfig().read_config_from_env()
 
-    db_name = os.getenv("REGION_DB_NAME")
-    logging.info(f"using REGION_DB_NAME: {db_name}")
-    if db_name is None:
-        logging.fatal("Missing required ENV: $REGION_DB_NAME")
-
-    client = pymongo.MongoClient(db_uri)
-    db = client[db_name]
+    client = pymongo.MongoClient(mongo_config.db_uri)
+    db = client[mongo_config.db_name]
     collection = db[DB_COLLECTION_REGION_RECORDS]
 
     collection.drop()
