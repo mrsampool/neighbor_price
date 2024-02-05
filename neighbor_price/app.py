@@ -4,12 +4,12 @@ import logging
 import os
 
 from flask import Flask, render_template, Response
-from prometheus_client import Summary, generate_latest, CONTENT_TYPE_LATEST, Counter, Gauge, Histogram
+from prometheus_client import generate_latest, CONTENT_TYPE_LATEST, Counter, Histogram
 
 from flask_httpauth import HTTPBasicAuth
 from werkzeug.security import generate_password_hash, check_password_hash
 
-from components.regions.region_data_gateway_mongo import RegionDataGatewayMongo, MongoConfigENV, MongoConfig
+from components.regions.region_data_gateway_mongo import RegionDataGatewayMongo, MongoConfig
 from neighbor_price.region_detailer import RegionDetailer
 
 app = Flask(__name__)
@@ -17,18 +17,19 @@ auth = HTTPBasicAuth()
 
 logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=20)
 
+mongo_config = MongoConfig()
+region_data_gateway = RegionDataGatewayMongo(db_uri=mongo_config.db_uri, db_name=mongo_config.db_name)
+region_detailer = RegionDetailer(data_gateway=region_data_gateway)
+
 metrics_user = os.getenv("METRICS_USER")
 logging.info(f"using METRICS_USER: {metrics_user}")
 if metrics_user is None:
     logging.fatal("Missing required ENV: $METRICS_USER")
 
-metrics_pw = generate_password_hash(os.getenv("METRICS_PW"))
+metrics_pw = os.getenv("METRICS_PW")
 if metrics_pw is None:
     logging.fatal("Missing required ENV: $METRICS_PW")
-
-mongo_config = MongoConfig().read_config_from_env()
-region_data_gateway = RegionDataGatewayMongo(db_uri=mongo_config.db_uri, db_name=mongo_config.db_name)
-region_detailer = RegionDetailer(data_gateway=region_data_gateway)
+metrics_pw_hash = generate_password_hash(metrics_pw)
 
 REQUEST_LATENCY = Histogram('http_request_latency_seconds', 'HTTP Request latency', ['method', 'page_type'])
 PAGE_VIEWS = Counter('page_views_total', 'Total number of page views', ['page_type'])
@@ -101,7 +102,7 @@ def neighborhood_detail(state_id, metro_id, city_id, neighborhood_id):
 
 @auth.verify_password
 def verify_password(username, password):
-    return username == metrics_user and check_password_hash(metrics_pw, password)
+    return username == metrics_user and check_password_hash(metrics_pw_hash, password)
 
 
 @app.route('/metrics')
