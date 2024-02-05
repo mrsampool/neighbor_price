@@ -1,3 +1,5 @@
+import json
+
 from neighbor_price.tests import collection
 from neighbor_price.tests import client
 
@@ -67,6 +69,7 @@ def test_city_detail(client, collection):
 
     assert '<canvas id="region-chart"' in html
 
+
 def test_neighborhood_detail(client, collection):
     landing = client.get("/state/9/metro/395057/city/20330/neighborhood/268450")
     assert landing.status_code == 200
@@ -76,3 +79,22 @@ def test_neighborhood_detail(client, collection):
     assert '<h1>Russian Hill</h1>' in html
 
     assert '<canvas id="region-chart"' in html
+
+
+def test_healthcheck(client):
+    res = client.get("/healthcheck")
+    assert res.status_code == 200
+    body = json.loads(res.data)
+    assert body['status'] == "healthy"
+
+
+def test_metrics(client):
+    username = 'grafana'
+    password = 'grafanaadmin'
+    response = client.get('/metrics', auth=(username, password))
+    assert response.status_code == 200
+    body = str(response.data)
+
+    assert "http_request_latency_seconds" in body
+    assert "page_views_total" in body
+

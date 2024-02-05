@@ -30,14 +30,11 @@ if db_name is None:
 region_data_gateway = RegionDataGatewayMongo(db_uri=db_uri, db_name=db_name)
 region_detailer = RegionDetailer(data_gateway=region_data_gateway)
 
-REQUEST_TIME = Summary('request_processing_seconds', 'Time spent processing request')
-
 REQUEST_LATENCY = Histogram('http_request_latency_seconds', 'HTTP Request latency', ['method', 'page_type'])
 PAGE_VIEWS = Counter('page_views_total', 'Total number of page views', ['page_type'])
 
 
 @app.route("/")
-@REQUEST_TIME.time()
 def us_detail():
     page_type = "us detail"
     with REQUEST_LATENCY.labels(method='GET', page_type=page_type).time():
@@ -50,7 +47,6 @@ def us_detail():
 
 
 @app.route("/state/<state_id>")
-@REQUEST_TIME.time()
 def state_detail(state_id):
     page_type = "state detail"
     with REQUEST_LATENCY.labels(method='GET', page_type=page_type).time():
@@ -63,7 +59,6 @@ def state_detail(state_id):
 
 
 @app.route("/state/<state_id>/metro/<metro_id>")
-@REQUEST_TIME.time()
 def metro_detail(state_id, metro_id):
     page_type = "metro detail"
     with REQUEST_LATENCY.labels(method='GET', page_type=page_type).time():
@@ -76,7 +71,6 @@ def metro_detail(state_id, metro_id):
 
 
 @app.route("/state/<state_id>/metro/<metro_id>/city/<city_id>")
-@REQUEST_TIME.time()
 def city_detail(state_id, metro_id, city_id):
     page_type = "city detail"
     with REQUEST_LATENCY.labels(method='GET', page_type=page_type).time():
@@ -89,7 +83,6 @@ def city_detail(state_id, metro_id, city_id):
 
 
 @app.route("/state/<state_id>/metro/<metro_id>/city/<city_id>/neighborhood/<neighborhood_id>")
-@REQUEST_TIME.time()
 def neighborhood_detail(state_id, metro_id, city_id, neighborhood_id):
     page_type = "neighborhood detail"
     with REQUEST_LATENCY.labels(method='GET', page_type=page_type).time():
@@ -123,7 +116,6 @@ def metrics():
     return Response(generate_latest(), mimetype=CONTENT_TYPE_LATEST)
 
 @app.route("/healthcheck")
-@REQUEST_TIME.time()
 def healthcheck():
     return json.dumps({'status': 'healthy'}), 200, {'ContentType': 'application/json'}
 
