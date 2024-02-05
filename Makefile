@@ -39,16 +39,8 @@ dev.analyze:
 	source .env; \
 	python -m data_analyzer;
 
-.PHONY: deploy.collector
-deploy.collector:
-	scripts/deploy_lambda.sh data_collector
-
-.PHONY: deploy.analyzer
-deploy.analyzer:
-	scripts/deploy_lambda.sh data_analyzer
-
-.PHONE: run.dev
-run.dev:
+.PHONE: dev.run
+dev.run:
 	source venv/bin/activate; \
 	source .env; \
 	flask --app neighbor_price.app run --debug
@@ -59,3 +51,15 @@ run:
 	source .env; \
 	gunicorn neighbor_price.app:app;
 
+.PHONY: deploy.collector
+deploy.collector:
+	scripts/deploy_lambda.sh data_collector
+
+.PHONY: deploy.analyzer
+deploy.analyzer:
+	scripts/deploy_lambda.sh data_analyzer
+
+.PHONE: loadtest
+loadtest:
+	source venv/bin/activate; \
+	python load_tester/app.py
