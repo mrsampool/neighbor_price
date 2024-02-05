@@ -80,16 +80,22 @@ class RegionDataGatewayMongo(RegionDataGateway):
 
 
 class MongoConfig:
-    db_uri: str | None
-    db_name: str | None
 
-    def read_config_from_env(self):
-        self.db_uri = os.getenv("REGION_DB_URI")
-        logging.info(f"using REGION_DB_URI: {self.db_uri}")
-        if self.db_uri is None:
-            logging.fatal("Missing required ENV: $REGION_DB_URI")
+    def __init__(
+            self,
+            db_uri: str | None = None,
+            db_name: str | None = None
+    ):
+        if db_uri is None:
+            db_uri = os.getenv("REGION_DB_URI")
+            logging.info(f"using REGION_DB_URI: {db_uri}")
+            if db_uri is None:
+                logging.fatal("Missing required ENV: $REGION_DB_URI")
+        self.db_uri = db_uri
 
-        self.db_name = os.getenv("REGION_DB_NAME")
-        logging.info(f"using REGION_DB_NAME: {self.db_name}")
-        if self.db_name is None:
-            logging.fatal("Missing required ENV: $REGION_DB_NAME")
+        if db_name is None:
+            db_name = os.getenv("REGION_DB_NAME")
+            logging.info(f"using REGION_DB_NAME: {db_name}")
+            if db_name is None:
+                logging.fatal("Missing required ENV: $REGION_DB_NAME")
+        self.db_name = db_name
