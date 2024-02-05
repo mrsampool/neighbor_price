@@ -44,23 +44,13 @@ class RegionHistory:
     
     def get_average_value_growth_rate(self) -> float:
         prices = self.get_prices()
+        if len(prices) < 1:
+            return 0
         percentage_changes = [
             (prices[i + 1] - prices[i]) / prices[i] * 100 for i in range(len(prices) - 1)
         ]
         average_rate_of_growth = sum(percentage_changes) / len(percentage_changes)
         return average_rate_of_growth
-
-
-
-
-
-        first_value = self.history_items[0].region_value
-        last_value = self.history_items[-1].region_value
-
-        total_growth = last_value - first_value
-        return total_growth / len(self.history_items)
-
-        
 
 
 class RegionRecord:
