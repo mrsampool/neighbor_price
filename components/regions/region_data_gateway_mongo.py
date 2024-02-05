@@ -80,8 +80,8 @@ class RegionDataGatewayMongo(RegionDataGateway):
 
 
 class MongoConfig:
-    db_uri: str | ""
-    db_name: str | ""
+    db_uri: str | None
+    db_name: str | None
 
     def read_config_from_env(self):
         self.db_uri = os.getenv("REGION_DB_URI")
