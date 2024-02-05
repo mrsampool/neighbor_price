@@ -48,6 +48,9 @@
     </nav>
     <main class="p-3">
         {% block header %}{% endblock %}
+
+        <p>Average value growth rate: {{ region_detail.growth_rate }} / month</p>
+
         <ul>
             {% for link in region_detail.links %}
                 <a href="{{ link.address }}">

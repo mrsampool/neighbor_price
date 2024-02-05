@@ -42,7 +42,8 @@ class RegionDetailer:
                 label=record.region_name,
             ), state_records)),
             prices=region_records.get_prices(),
-            dates=region_records.us.region_history.get_dates()
+            dates=region_records.us.region_history.get_dates(),
+            growth_rate=region_records.us.region_history.avg_growth_rate
         )
 
     def get_state_detail(self, state_id) -> RegionDetail:

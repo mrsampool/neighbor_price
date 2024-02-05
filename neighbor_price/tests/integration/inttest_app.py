@@ -16,6 +16,8 @@ def test_us_detail(client, collection):
     assert '<a href="/state/54">' in html
     assert "Texas" in html
 
+    assert '<p>Average value growth rate: 5.0 % / month < / p >'
+
     assert '<canvas id="region-chart"' in html
 
 
@@ -32,6 +34,8 @@ def test_state_detail(client, collection):
 
     assert '<a href="/state/9/metro/753899">' in html
     assert "Los Angeles" in html
+
+    assert '<p>Average value growth rate: 5.0 % / month < / p >'
 
     assert '<canvas id="region-chart"' in html
 
@@ -52,6 +56,8 @@ def test_metro_detail(client, collection):
 
     assert '<canvas id="region-chart"' in html
 
+    assert '<p>Average value growth rate: 5.0 % / month < / p >'
+
 
 def test_city_detail(client, collection):
     landing = client.get("/state/9/metro/395057/city/20330")
@@ -69,6 +75,8 @@ def test_city_detail(client, collection):
 
     assert '<canvas id="region-chart"' in html
 
+    assert '<p>Average value growth rate: 5.0 % / month < / p >'
+
 
 def test_neighborhood_detail(client, collection):
     landing = client.get("/state/9/metro/395057/city/20330/neighborhood/268450")
@@ -79,6 +87,8 @@ def test_neighborhood_detail(client, collection):
     assert '<h1>Russian Hill</h1>' in html
 
     assert '<canvas id="region-chart"' in html
+
+    assert '<p>Average value growth rate: 5.0 % / month < / p >'
 
 
 def test_healthcheck(client):

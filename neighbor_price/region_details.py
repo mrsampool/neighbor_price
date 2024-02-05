@@ -39,6 +39,7 @@ class RegionDetail:
     links: List[RegionLink]
     prices: RegionPrices
     dates: List[datetime]
+    growth_rate: List[datetime]
 
 
 @dataclass
