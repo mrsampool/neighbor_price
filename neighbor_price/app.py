@@ -27,6 +27,16 @@ logging.info(f"using REGION_DB_NAME: {db_name}")
 if db_name is None:
     logging.fatal("Missing required ENV: $REGION_DB_NAME")
 
+metrics_user = os.getenv("METRICS_USER")
+logging.info(f"using METRICS_USER: {metrics_user}")
+if metrics_user is None:
+    logging.fatal("Missing required ENV: $METRICS_USER")
+
+metrics_pw = generate_password_hash(os.getenv("METRICS_PW"))
+if metrics_pw is None:
+    logging.fatal("Missing required ENV: $METRICS_PW")
+
+
 region_data_gateway = RegionDataGatewayMongo(db_uri=db_uri, db_name=db_name)
 region_detailer = RegionDetailer(data_gateway=region_data_gateway)
 
@@ -99,15 +109,9 @@ def neighborhood_detail(state_id, metro_id, city_id, neighborhood_id):
         )
 
 
-users = {
-    "grafana": generate_password_hash("grafanaadmin"),
-}
-
-
 @auth.verify_password
 def verify_password(username, password):
-    if username in users and check_password_hash(users.get(username), password):
-        return username
+    return username == metrics_user and check_password_hash(metrics_pw, password)
 
 
 @app.route('/metrics')
