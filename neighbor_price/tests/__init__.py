@@ -20,7 +20,7 @@ def client():
 
 @pytest.fixture
 def collection():
-    mongo_config = MongoConfig().read_config_from_env()
+    mongo_config = MongoConfig()
 
     client = pymongo.MongoClient(mongo_config.db_uri)
     db = client[mongo_config.db_name]

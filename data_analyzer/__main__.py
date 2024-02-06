@@ -12,7 +12,7 @@ from data_analyzer.data_analyzer import DataAnalyzer
 class Config:
     def __init__(self, event_queue_mode: str):
 
-        self.mongo_config = MongoConfig().read_config_from_env()
+        self.mongo_config = MongoConfig()
 
         if event_queue_mode == EVENT_QUEUE_MODE_RABBITMQ:
 
