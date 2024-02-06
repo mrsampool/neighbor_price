@@ -39,7 +39,7 @@ class RegionHistory:
     def get_prices(self) -> List[float]:
         return [history.region_value for history in self.history_items]
 
-    def get_dates(self) -> List[datetime]:
+    def get_dates(self) -> List[str]:
         return [history.date.strftime("%Y-%m") for history in self.history_items]
     
     def get_average_value_growth_rate(self) -> float:

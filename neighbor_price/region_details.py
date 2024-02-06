@@ -70,7 +70,7 @@ class RegionDetail:
     region_records: RegionRecords
     links: List[RegionLink]
     prices: RegionPrices
-    dates: List[datetime]
+    dates: List[str]
     growth_rate: List[datetime]
     breadcrumbs: List[RegionLink]
 

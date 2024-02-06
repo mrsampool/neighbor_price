@@ -46,7 +46,7 @@ def test_metro_detail(client, collection):
 
     html = landing.data.decode()
 
-    assert '<h1>San Francisco, CA</h1>' in html
+    assert '<h1>San Francisco, CA (Metro Area)</h1>' in html
 
     assert '<a href="/state/9/metro/395057/city/20330">' in html
     assert "San Francisco" in html
@@ -65,7 +65,7 @@ def test_city_detail(client, collection):
 
     html = landing.data.decode()
 
-    assert '<h1>San Francisco</h1>' in html
+    assert '<h1>San Francisco (City)</h1>' in html
 
     assert '<a href="/state/9/metro/395057/city/20330/neighborhood/268450">' in html
     assert "Russian Hill" in html
@@ -84,7 +84,7 @@ def test_neighborhood_detail(client, collection):
 
     html = landing.data.decode()
 
-    assert '<h1>Russian Hill</h1>' in html
+    assert '<h1>Russian Hill (Neighborhood)</h1>' in html
 
     assert '<canvas id="region-chart"' in html
 
