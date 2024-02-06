@@ -43,7 +43,8 @@ class RegionDetailer:
             ), state_records)),
             prices=region_records.get_prices(),
             dates=region_records.us.region_history.get_dates(),
-            growth_rate=region_records.us.region_history.avg_growth_rate
+            growth_rate=region_records.us.region_history.avg_growth_rate,
+            breadcrumbs=region_records.get_breadcrumbs()
         )
 
     def get_state_detail(self, state_id) -> RegionDetail:
@@ -58,7 +59,8 @@ class RegionDetailer:
             ), metro_records)),
             prices=region_records.get_prices(),
             dates=region_records.us.region_history.get_dates(),
-            growth_rate=region_records.state.region_history.avg_growth_rate
+            growth_rate=region_records.state.region_history.avg_growth_rate,
+            breadcrumbs=region_records.get_breadcrumbs()
         )
 
     def get_metro_detail(self, state_id: str, metro_id: str) -> RegionDetail:
@@ -77,7 +79,8 @@ class RegionDetailer:
             ), city_records)),
             prices=region_records.get_prices(),
             dates=region_records.us.region_history.get_dates(),
-            growth_rate=region_records.metro.region_history.avg_growth_rate
+            growth_rate=region_records.metro.region_history.avg_growth_rate,
+            breadcrumbs=region_records.get_breadcrumbs()
         )
 
     def get_city_detail(
@@ -106,7 +109,8 @@ class RegionDetailer:
             ), neighborhood_records)),
             prices=region_records.get_prices(),
             dates=region_records.us.region_history.get_dates(),
-            growth_rate=region_records.city.region_history.avg_growth_rate
+            growth_rate=region_records.city.region_history.avg_growth_rate,
+            breadcrumbs=region_records.get_breadcrumbs()
         )
 
     def get_neighborhood_detail(
@@ -127,5 +131,6 @@ class RegionDetailer:
             links=[],
             prices=region_records.get_prices(),
             dates=region_records.us.region_history.get_dates(),
-            growth_rate=region_records.neighborhood.region_history.avg_growth_rate
+            growth_rate=region_records.neighborhood.region_history.avg_growth_rate,
+            breadcrumbs=region_records.get_breadcrumbs()
         )

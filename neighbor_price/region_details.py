@@ -3,7 +3,7 @@ from datetime import datetime
 from typing import List
 
 from components.regions.region_record import RegionRecord
-from neighbor_price.region_links import RegionLink
+from neighbor_price.region_links import RegionLink, USLink, StateLink, MetroLink, CityLink, NeighborhoodLink
 
 
 @dataclass
@@ -32,6 +32,38 @@ class RegionRecords:
             neighborhood=self.neighborhood.region_history.get_prices() if self.neighborhood is not None else None,
         )
 
+    def get_breadcrumbs(self) -> List[RegionLink]:
+        breadcrumbs: List[RegionLink] = []
+        if self.us is not None:
+            breadcrumbs.append(USLink())
+        if self.state is not None:
+            breadcrumbs.append(StateLink(
+                label=self.state.region_name,
+                region_id=self.state.region_id
+            ))
+        if self.metro is not None:
+            breadcrumbs.append(MetroLink(
+                label=self.metro.region_name,
+                region_id=self.metro.region_id,
+                state_id=self.state.region_id
+            ))
+        if self.city is not None:
+            breadcrumbs.append(CityLink(
+                label=self.city.region_name,
+                region_id=self.city.region_id,
+                state_id=self.state.region_id,
+                metro_id=self.metro.region_id
+            ))
+        if self.neighborhood is not None:
+            breadcrumbs.append(NeighborhoodLink(
+                label=self.neighborhood.region_name,
+                region_id=self.neighborhood.region_id,
+                state_id=self.state.region_id,
+                metro_id=self.metro.region_id,
+                city_id=self.city.region_id
+            ))
+        return breadcrumbs
+
 
 @dataclass
 class RegionDetail:
@@ -40,6 +72,7 @@ class RegionDetail:
     prices: RegionPrices
     dates: List[datetime]
     growth_rate: List[datetime]
+    breadcrumbs: List[RegionLink]
 
 
 @dataclass

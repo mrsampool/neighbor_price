@@ -1,7 +1,9 @@
 import unittest
 
 from components.regions.region_data_gateway_mock import RegionDataGatewayMock
+from components.regions.region_record import RegionRecord
 from neighbor_price.region_detailer import RegionDetailer
+from neighbor_price.region_details import RegionRecords
 
 
 class TestRegionDetailUS(unittest.TestCase):
@@ -39,8 +41,8 @@ class TestRegionDetailUS(unittest.TestCase):
         self.assertEqual(self.region_detail.prices.us[1], 140)
 
     def test_region_detail_us_dates(self):
-        self.assertEqual(self.region_detail.dates[0].strftime("%m/%d/%Y"), "01/01/2023")
-        self.assertEqual(self.region_detail.dates[1].strftime("%m/%d/%Y"), "02/01/2023")
+        self.assertEqual(self.region_detail.dates[0], "2023-01")
+        self.assertEqual(self.region_detail.dates[1], "2023-02")
 
 
 class TestRegionDetailState(unittest.TestCase):
@@ -78,8 +80,8 @@ class TestRegionDetailState(unittest.TestCase):
         self.assertEqual(self.region_detail.prices.state[1], 160)
 
     def test_region_detail_state_dates(self):
-        self.assertEqual(self.region_detail.dates[0].strftime("%m/%d/%Y"), "01/01/2023")
-        self.assertEqual(self.region_detail.dates[1].strftime("%m/%d/%Y"), "02/01/2023")
+        self.assertEqual(self.region_detail.dates[0], "2023-01")
+        self.assertEqual(self.region_detail.dates[1], "2023-02")
 
 
 class TestRegionDetailMetro(unittest.TestCase):
@@ -124,8 +126,8 @@ class TestRegionDetailMetro(unittest.TestCase):
         self.assertEqual(self.region_detail.prices.metro[1], 180)
 
     def test_region_detail_metro_dates(self):
-        self.assertEqual(self.region_detail.dates[0].strftime("%m/%d/%Y"), "01/01/2023")
-        self.assertEqual(self.region_detail.dates[1].strftime("%m/%d/%Y"), "02/01/2023")
+        self.assertEqual(self.region_detail.dates[0], "2023-01")
+        self.assertEqual(self.region_detail.dates[1], "2023-02")
 
 
 class TestRegionDetailCity(unittest.TestCase):
@@ -181,8 +183,8 @@ class TestRegionDetailCity(unittest.TestCase):
         self.assertEqual(self.region_detail.prices.city[1], 200)
 
     def test_region_detail_city_dates(self):
-        self.assertEqual(self.region_detail.dates[0].strftime("%m/%d/%Y"), "01/01/2023")
-        self.assertEqual(self.region_detail.dates[1].strftime("%m/%d/%Y"), "02/01/2023")
+        self.assertEqual(self.region_detail.dates[0], "2023-01")
+        self.assertEqual(self.region_detail.dates[1], "2023-02")
 
 
 class TestRegionDetailNeighborhood(unittest.TestCase):
@@ -234,5 +236,80 @@ class TestRegionDetailNeighborhood(unittest.TestCase):
         self.assertEqual(self.region_detail.prices.neighborhood[1], 220)
 
     def test_region_detail_neighborhood_dates(self):
-        self.assertEqual(self.region_detail.dates[0].strftime("%m/%d/%Y"), "01/01/2023")
-        self.assertEqual(self.region_detail.dates[1].strftime("%m/%d/%Y"), "02/01/2023")
+        self.assertEqual(self.region_detail.dates[0], "2023-01")
+        self.assertEqual(self.region_detail.dates[1], "2023-02")
+
+
+class TestRegionRecords(unittest.TestCase):
+
+    def test_get_breadcrumbs_us(self):
+        records = RegionRecords(us=RegionRecord())
+        actual_breadcrumbs = records.get_breadcrumbs()
+        self.assertEqual("USA", actual_breadcrumbs[0].label)
+        self.assertEqual("/", actual_breadcrumbs[0].address)
+
+    def test_get_breadcrumbs_state(self):
+        records = RegionRecords(
+            us=RegionRecord(),
+            state=RegionRecord(region_id="1", region_name="test state"),
+        )
+        actual_breadcrumbs = records.get_breadcrumbs()
+        self.assertEqual("USA", actual_breadcrumbs[0].label)
+        self.assertEqual("test state", actual_breadcrumbs[1].label)
+
+        self.assertEqual("/", actual_breadcrumbs[0].address)
+        self.assertEqual("/state/1", actual_breadcrumbs[1].address)
+
+    def test_get_breadcrumbs_metro(self):
+        records = RegionRecords(
+            us=RegionRecord(),
+            state=RegionRecord(region_id="1", region_name="test state"),
+            metro=RegionRecord(region_id="2", region_name="test metro"),
+        )
+        actual_breadcrumbs = records.get_breadcrumbs()
+        self.assertEqual("USA", actual_breadcrumbs[0].label)
+        self.assertEqual("test state", actual_breadcrumbs[1].label)
+        self.assertEqual("test metro", actual_breadcrumbs[2].label)
+
+        self.assertEqual("/", actual_breadcrumbs[0].address)
+        self.assertEqual("/state/1", actual_breadcrumbs[1].address)
+        self.assertEqual("/state/1/metro/2", actual_breadcrumbs[2].address)
+
+    def test_get_breadcrumbs_city(self):
+        records = RegionRecords(
+            us=RegionRecord(),
+            state=RegionRecord(region_id="1", region_name="test state"),
+            metro=RegionRecord(region_id="2", region_name="test metro"),
+            city=RegionRecord(region_id="3", region_name="test city"),
+        )
+        actual_breadcrumbs = records.get_breadcrumbs()
+        self.assertEqual("USA", actual_breadcrumbs[0].label)
+        self.assertEqual("test state", actual_breadcrumbs[1].label)
+        self.assertEqual("test metro", actual_breadcrumbs[2].label)
+        self.assertEqual("test city", actual_breadcrumbs[3].label)
+
+        self.assertEqual("/", actual_breadcrumbs[0].address)
+        self.assertEqual("/state/1", actual_breadcrumbs[1].address)
+        self.assertEqual("/state/1/metro/2", actual_breadcrumbs[2].address)
+        self.assertEqual("/state/1/metro/2/city/3", actual_breadcrumbs[3].address)
+
+    def test_get_breadcrumbs_neighborhood(self):
+        records = RegionRecords(
+            us=RegionRecord(),
+            state=RegionRecord(region_id="1", region_name="test state"),
+            metro=RegionRecord(region_id="2", region_name="test metro"),
+            city=RegionRecord(region_id="3", region_name="test city"),
+            neighborhood=RegionRecord(region_id="4", region_name="test neighborhood")
+        )
+        actual_breadcrumbs = records.get_breadcrumbs()
+        self.assertEqual("USA", actual_breadcrumbs[0].label)
+        self.assertEqual("test state", actual_breadcrumbs[1].label)
+        self.assertEqual("test metro", actual_breadcrumbs[2].label)
+        self.assertEqual("test city", actual_breadcrumbs[3].label)
+        self.assertEqual("test neighborhood", actual_breadcrumbs[4].label)
+
+        self.assertEqual("/", actual_breadcrumbs[0].address)
+        self.assertEqual("/state/1", actual_breadcrumbs[1].address)
+        self.assertEqual("/state/1/metro/2", actual_breadcrumbs[2].address)
+        self.assertEqual("/state/1/metro/2/city/3", actual_breadcrumbs[3].address)
+        self.assertEqual("/state/1/metro/2/city/3/neighborhood/4", actual_breadcrumbs[4].address)

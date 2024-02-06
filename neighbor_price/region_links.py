@@ -8,6 +8,15 @@ class RegionLink:
         raise NotImplementedError
 
 
+class USLink(RegionLink):
+
+    def __init__(self):
+        super().__init__(label="USA", region_id="")
+
+    def get_address(self):
+        return f"/"
+
+
 class StateLink(RegionLink):
 
     def __init__(self, label: str, region_id: str):
