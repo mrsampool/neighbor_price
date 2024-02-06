@@ -46,22 +46,28 @@
         </div>
       </div>
     </nav>
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        {% block breadcrumbs %}{% endblock %}
+      </ol>
+    </nav>
     <main class="p-3">
         {% block header %}{% endblock %}
-
         <p>Average value growth rate: {{ region_detail.growth_rate }} / month</p>
-
-        <ul>
-            {% for link in region_detail.links %}
-                <a href="{{ link.address }}">
-                    <button type="button" class="btn btn-primary">
-                        {{ link.label }}
-                    </button>
-                </a>
-            {% endfor %}
-        </ul>
-        <div class="w100 vh-100">
-            <canvas id="region-chart"></canvas>
+        <div class="region-details px-5">
+            <div class="vh-100">
+                <canvas id="region-chart"></canvas>
+            </div>
+            <div class="region-links">
+                <h2>{% block link_header %}{% endblock %}</h2>
+                <ul class="vh-100">
+                    {% for link in region_detail.links %}
+                        <a href="{{ link.address }}">
+                            <li>{{ link.label }}</li>
+                        </a>
+                    {% endfor %}
+                </ul>
+            </div>
         </div>
     </main>
 
@@ -117,4 +123,21 @@
     );
 
 </script>
+<style>
+    .region-details{
+        display: grid;
+        grid-template-columns: auto 1fr;
+    }
+    #region-chart{
+        width: 100%!important;
+    }
+    .region-links{
+        width: max-content;
+        padding: 0 1rem;
+    }
+    .region-links ul {
+        list-style-type: none;
+        padding: 0;
+    }
+</style>
 </html>
