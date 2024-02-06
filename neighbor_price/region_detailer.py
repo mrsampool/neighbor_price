@@ -57,7 +57,8 @@ class RegionDetailer:
                 state_id=state_id
             ), metro_records)),
             prices=region_records.get_prices(),
-            dates=region_records.us.region_history.get_dates()
+            dates=region_records.us.region_history.get_dates(),
+            growth_rate=region_records.state.region_history.avg_growth_rate
         )
 
     def get_metro_detail(self, state_id: str, metro_id: str) -> RegionDetail:
@@ -75,7 +76,8 @@ class RegionDetailer:
                 metro_id=metro_id
             ), city_records)),
             prices=region_records.get_prices(),
-            dates=region_records.us.region_history.get_dates()
+            dates=region_records.us.region_history.get_dates(),
+            growth_rate=region_records.metro.region_history.avg_growth_rate
         )
 
     def get_city_detail(
@@ -103,7 +105,8 @@ class RegionDetailer:
                 city_id=city_id
             ), neighborhood_records)),
             prices=region_records.get_prices(),
-            dates=region_records.us.region_history.get_dates()
+            dates=region_records.us.region_history.get_dates(),
+            growth_rate=region_records.city.region_history.avg_growth_rate
         )
 
     def get_neighborhood_detail(
@@ -123,5 +126,6 @@ class RegionDetailer:
             region_records=region_records,
             links=[],
             prices=region_records.get_prices(),
-            dates=region_records.us.region_history.get_dates()
+            dates=region_records.us.region_history.get_dates(),
+            growth_rate=region_records.neighborhood.region_history.avg_growth_rate
         )
