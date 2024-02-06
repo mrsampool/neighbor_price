@@ -33,12 +33,12 @@
     {% block header %}{% endblock %}
     <p>Average value growth rate: {{ region_detail.growth_rate }} / month</p>
     <div class="region-details px-5">
-        <div class="vh-100">
+        <div class="vh-50 canvas-container">
             <canvas id="region-chart"></canvas>
         </div>
         <div class="region-links">
             <h2>{% block link_header %}{% endblock %}</h2>
-            <ul class="vh-100">
+            <ul>
                 {% for link in region_detail.links %}
                     <a href="{{ link.address }}">
                         <li>{{ link.label }}</li>
@@ -104,7 +104,7 @@
 <style>
     .region-details {
         display: grid;
-        grid-template-columns: auto 1fr;
+        grid-template-columns: 1fr auto;
     }
 
     #region-chart {
@@ -119,6 +119,9 @@
     .region-links ul {
         list-style-type: none;
         padding: 0;
+    }
+    .canvas-container{
+        height: 75vh;
     }
 </style>
 </html>
