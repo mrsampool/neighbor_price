@@ -50,7 +50,7 @@ class RegionHistory:
             (prices[i + 1] - prices[i]) / prices[i] * 100 for i in range(len(prices) - 1)
         ]
         average_rate_of_growth = sum(percentage_changes) / len(percentage_changes)
-        return average_rate_of_growth
+        return round(average_rate_of_growth, 2)
 
 
 class RegionRecord:
