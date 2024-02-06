@@ -42,7 +42,7 @@ def us_detail():
         PAGE_VIEWS.labels(page_type=page_type).inc()
         region_detail = region_detailer.get_us_detail()
         return render_template(
-            template_name_or_list='neighborhood_detail.html',
+            template_name_or_list='us_detail.html',
             region_detail=region_detail
         )
 
