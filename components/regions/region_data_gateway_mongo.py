@@ -51,14 +51,14 @@ class RegionDataGatewayMongo(RegionDataGateway):
         return RegionRecord(document=doc)
 
     def get_all_states(self) -> List[RegionRecord]:
-        docs = self.collection.find({"region_type": "state"}).sort("name", pymongo.ASCENDING)
+        docs = self.collection.find({"region_type": "state"}).sort("region_name", pymongo.ASCENDING)
         return list(map(lambda doc: RegionRecord(document=doc), docs))
 
     def get_all_metros_for_state(self, state_name) -> List[RegionRecord]:
         state_abbrev = get_state_abbrev_from_state_name(state_name)
         docs = self.collection.find({
             "region_type": "msa", "state_name": state_abbrev
-        }).sort("name", pymongo.ASCENDING)
+        }).sort("region_name", pymongo.ASCENDING)
         return list(map(lambda doc: RegionRecord(document=doc), docs))
 
     def get_all_cities_for_metro(self, metro_name, state_abbrev):
@@ -67,7 +67,7 @@ class RegionDataGatewayMongo(RegionDataGateway):
             "region_type": "city",
             "state_name": state_abbrev,
             "metro": {"$regex": f"{metro_without_state_abbrev}", "$options": "i"},
-        }).sort("name", pymongo.ASCENDING)
+        }).sort("region_name", pymongo.ASCENDING)
         return list(map(lambda doc: RegionRecord(document=doc), docs))
 
     def get_all_neighborhoods_for_city(self, city_name: str, state_abbrev: str):
@@ -75,7 +75,7 @@ class RegionDataGatewayMongo(RegionDataGateway):
             "region_type": "neighborhood",
             "city": city_name,
             "state": state_abbrev
-        }).sort("name", pymongo.ASCENDING)
+        }).sort("region_name", pymongo.ASCENDING)
         return list(map(lambda doc: RegionRecord(document=doc), docs))
 
 
