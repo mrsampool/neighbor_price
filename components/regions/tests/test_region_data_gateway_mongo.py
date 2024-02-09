@@ -32,13 +32,17 @@ class TestRegionDataGatewayMongo(unittest.TestCase):
             region_history=RegionHistory(
                 items=[
                     RegionHistoryItem(
-                        date=datetime.datetime(year=2000, month=1, day=31),
-                        region_value=75553.2814897809
+                        date=datetime.datetime(2000, 1, 1),
+                        region_value=100
                     ),
                     RegionHistoryItem(
-                        date=datetime.datetime(year=2000, month=2, day=29),
-                        region_value=75756.46950997740
+                        date=datetime.datetime(2000, 2, 1),
+                        region_value=200
                     ),
+                    RegionHistoryItem(
+                        date=datetime.datetime(2000, 3, 1),
+                        region_value=300
+                    )
                 ]
             )
         )
@@ -56,14 +60,21 @@ class TestRegionDataGatewayMongo(unittest.TestCase):
         self.assertEqual(actual_document["city"], "test_city")
         self.assertEqual(actual_document["metro"], "test_metro")
         self.assertEqual(actual_document["county_name"], "test_county_name")
+        self.assertEqual(actual_document["average_value_growth_rate"], 75.0)
 
         actual_history_1 = actual_document["region_history"][0]
-        self.assertEqual(datetime.date.isoformat(actual_history_1["date"]), "2000-01-31")
-        self.assertEqual(actual_history_1["region_vale"], 75553.2814897809)
+        self.assertEqual(datetime.date.isoformat(actual_history_1["date"]), "2000-01-01")
+        self.assertEqual(actual_history_1["region_vale"], 100)
 
         actual_history_2 = actual_document["region_history"][1]
-        self.assertEqual(datetime.date.isoformat(actual_history_2["date"]), "2000-02-29")
-        self.assertEqual(actual_history_2["region_vale"], 75756.46950997740)
+        self.assertEqual(datetime.date.isoformat(actual_history_2["date"]), "2000-02-01")
+        self.assertEqual(actual_history_2["region_vale"], 200)
+
+        actual_history_2 = actual_document["region_history"][2]
+        self.assertEqual(datetime.date.isoformat(actual_history_2["date"]), "2000-03-01")
+        self.assertEqual(actual_history_2["region_vale"], 300)
+
+
 
     def test_get_region_by_id(self):
         self.drop_and_seed_documents([

@@ -31,8 +31,6 @@ class RegionHistory:
                         )
                     )
 
-        self.avg_growth_rate = self.get_average_value_growth_rate()
-
     def add_item(self, item: RegionHistoryItem):
         self.history_items.append(item)
 
@@ -41,16 +39,17 @@ class RegionHistory:
 
     def get_dates(self) -> List[str]:
         return [history.date.strftime("%Y-%m") for history in self.history_items]
-    
-    def get_average_value_growth_rate(self) -> float:
-        prices = self.get_prices()
-        if len(prices) < 1:
-            return 0
-        percentage_changes = [
-            (prices[i + 1] - prices[i]) / prices[i] * 100 for i in range(len(prices) - 1)
-        ]
-        average_rate_of_growth = sum(percentage_changes) / len(percentage_changes)
-        return round(average_rate_of_growth, 2)
+
+
+def get_average_value_growth_rate(history_item) -> float:
+    prices = history_item.get_prices()
+    if len(prices) < 1:
+        return 0
+    percentage_changes = [
+        (prices[i + 1] - prices[i]) / prices[i] * 100 for i in range(len(prices) - 1)
+    ]
+    average_rate_of_growth = sum(percentage_changes) / len(percentage_changes)
+    return round(average_rate_of_growth, 2) * 12
 
 
 class RegionRecord:
@@ -69,6 +68,8 @@ class RegionRecord:
             county_name: str = None,
             region_history: RegionHistory = None,
     ):
+        self.average_value_growth_rate = None
+
         if document is not None:
             self.init_from_document(document=document)
 
@@ -87,6 +88,9 @@ class RegionRecord:
             self.county_name: str = county_name
             self.region_history: RegionHistory = region_history
 
+        if self.average_value_growth_rate is None:
+            self.average_value_growth_rate = get_average_value_growth_rate(self.region_history)
+
     def init_from_document(self, document):
         self.region_id: int = document.get("region_id")
         self.size_rank: int = document.get("size_rank")
@@ -99,6 +103,11 @@ class RegionRecord:
         self.county_name: str = document.get("county_name")
         self.region_history = []
         self.region_history = RegionHistory(doc_history=document.get("region_history"))
+        doc_growth_rate = document.get("average_value_growth_rate")
+        if doc_growth_rate is "":
+            self.average_value_growth_rate = None
+        else:
+            self.average_value_growth_rate = doc_growth_rate
 
     def init_from_pd_series(self, pd_series):
         self.region_id: int = pd_series.loc['RegionID'].iloc[0]
