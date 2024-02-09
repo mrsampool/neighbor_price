@@ -64,15 +64,15 @@ class TestRegionDataGatewayMongo(unittest.TestCase):
 
         actual_history_1 = actual_document["region_history"][0]
         self.assertEqual(datetime.date.isoformat(actual_history_1["date"]), "2000-01-01")
-        self.assertEqual(actual_history_1["region_vale"], 100)
+        self.assertEqual(actual_history_1["region_value"], 100)
 
         actual_history_2 = actual_document["region_history"][1]
         self.assertEqual(datetime.date.isoformat(actual_history_2["date"]), "2000-02-01")
-        self.assertEqual(actual_history_2["region_vale"], 200)
+        self.assertEqual(actual_history_2["region_value"], 200)
 
         actual_history_2 = actual_document["region_history"][2]
         self.assertEqual(datetime.date.isoformat(actual_history_2["date"]), "2000-03-01")
-        self.assertEqual(actual_history_2["region_vale"], 300)
+        self.assertEqual(actual_history_2["region_value"], 300)
 
 
 

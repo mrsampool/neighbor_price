@@ -25,7 +25,7 @@ class RegionDataGatewayMongo(RegionDataGateway):
         for item in record.region_history.history_items:
             item_doc = {
                 "date": item.date,
-                "region_vale": item.region_value
+                "region_value": item.region_value
             }
             doc_history.append(item_doc)
 

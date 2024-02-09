@@ -27,7 +27,7 @@ class RegionHistory:
                     self.history_items.append(
                         RegionHistoryItem(
                             date=history_item["date"],
-                            region_value=float(history_item["region_vale"])
+                            region_value=float(history_item["region_value"])
                         )
                     )
 
@@ -104,7 +104,7 @@ class RegionRecord:
         self.region_history = []
         self.region_history = RegionHistory(doc_history=document.get("region_history"))
         doc_growth_rate = document.get("average_value_growth_rate")
-        if doc_growth_rate is "":
+        if doc_growth_rate == "":
             self.average_value_growth_rate = None
         else:
             self.average_value_growth_rate = doc_growth_rate
