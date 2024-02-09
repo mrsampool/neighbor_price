@@ -18,6 +18,7 @@ class RegionDataGatewayMongo(RegionDataGateway):
             client = pymongo.MongoClient(db_uri)
             db = client[db_name]
             self.collection = db[DB_COLLECTION_REGION_RECORDS]
+        self.create_indexes()
 
     def save_region_record(self, record: RegionRecord):
         doc_history = []
@@ -78,6 +79,15 @@ class RegionDataGatewayMongo(RegionDataGateway):
             "state": state_abbrev
         }).sort("region_name", pymongo.ASCENDING)
         return list(map(lambda doc: RegionRecord(document=doc), docs))
+
+    def create_indexes(self):
+        self.collection.create_index("city")
+        self.collection.create_index("metro")
+        self.collection.create_index("region_name")
+        self.collection.create_index("region_type")
+        self.collection.create_index("state")
+        self.collection.create_index("state_name")
+
 
 
 class MongoConfig:
