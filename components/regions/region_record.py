@@ -41,15 +41,15 @@ class RegionHistory:
         return [history.date.strftime("%Y-%m") for history in self.history_items]
 
 
-def get_average_value_growth_rate(history_item) -> float:
-    prices = history_item.get_prices()
+def get_average_value_growth_rate(region_history: RegionHistory) -> float:
+    prices = region_history.get_prices()
     if len(prices) < 1:
         return 0
     percentage_changes = [
         (prices[i + 1] - prices[i]) / prices[i] * 100 for i in range(len(prices) - 1)
     ]
     average_rate_of_growth = sum(percentage_changes) / len(percentage_changes)
-    return round(average_rate_of_growth, 2) * 12
+    return round(average_rate_of_growth, 2)
 
 
 class RegionRecord:
@@ -86,7 +86,7 @@ class RegionRecord:
             self.city: str = city
             self.metro: str = metro
             self.county_name: str = county_name
-            self.region_history: RegionHistory = region_history
+            self.region_history: RegionHistory = region_history if region_history is not None else RegionHistory()
 
         if self.average_value_growth_rate is None:
             self.average_value_growth_rate = get_average_value_growth_rate(self.region_history)

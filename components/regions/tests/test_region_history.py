@@ -1,7 +1,7 @@
 import datetime
 import unittest
 
-from components.regions.region_record import RegionHistory, RegionHistoryItem
+from components.regions.region_record import RegionHistory, RegionHistoryItem, get_average_value_growth_rate
 
 
 class TestRegionHistory(unittest.TestCase):
@@ -23,7 +23,7 @@ class TestRegionHistory(unittest.TestCase):
                 )
             ]
         )
-        actual_rate = history.avg_growth_rate
+        actual_rate = get_average_value_growth_rate(region_history=history)
         expected_rate = 75.0
         self.assertEqual(expected_rate, actual_rate)
 
