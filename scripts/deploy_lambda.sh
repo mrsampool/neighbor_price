@@ -12,6 +12,7 @@ else
   echo "ERROR: Unknown function: $function_name. Exiting."
   exit 1
 fi
+echo "function_arn: $function_arn"
 
 mkdir -p package/components
 touch package/components/__init__.py
