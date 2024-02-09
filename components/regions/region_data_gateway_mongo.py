@@ -38,7 +38,8 @@ class RegionDataGatewayMongo(RegionDataGateway):
             "city": record.city,
             "metro": record.metro,
             "county_name": record.county_name,
-            "region_history": doc_history
+            "region_history": doc_history,
+            "average_value_growth_rate": record.average_value_growth_rate
         }
         self.collection.update_one({"region_id": record.region_id}, {"$set": doc}, True)
 
