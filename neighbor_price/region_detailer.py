@@ -43,7 +43,7 @@ class RegionDetailer:
             ), state_records)),
             prices=region_records.get_prices(),
             dates=region_records.us.region_history.get_dates(),
-            growth_rate=region_records.us.region_history.avg_growth_rate,
+            growth_rate=region_records.us.average_value_growth_rate,
             breadcrumbs=region_records.get_breadcrumbs()
         )
 
@@ -59,7 +59,7 @@ class RegionDetailer:
             ), metro_records)),
             prices=region_records.get_prices(),
             dates=region_records.us.region_history.get_dates(),
-            growth_rate=region_records.state.region_history.avg_growth_rate,
+            growth_rate=region_records.state.average_value_growth_rate,
             breadcrumbs=region_records.get_breadcrumbs()
         )
 
@@ -79,7 +79,7 @@ class RegionDetailer:
             ), city_records)),
             prices=region_records.get_prices(),
             dates=region_records.us.region_history.get_dates(),
-            growth_rate=region_records.metro.region_history.avg_growth_rate,
+            growth_rate=region_records.metro.average_value_growth_rate,
             breadcrumbs=region_records.get_breadcrumbs()
         )
 
@@ -109,7 +109,7 @@ class RegionDetailer:
             ), neighborhood_records)),
             prices=region_records.get_prices(),
             dates=region_records.us.region_history.get_dates(),
-            growth_rate=region_records.city.region_history.avg_growth_rate,
+            growth_rate=region_records.city.average_value_growth_rate,
             breadcrumbs=region_records.get_breadcrumbs()
         )
 
@@ -131,6 +131,6 @@ class RegionDetailer:
             links=[],
             prices=region_records.get_prices(),
             dates=region_records.us.region_history.get_dates(),
-            growth_rate=region_records.neighborhood.region_history.avg_growth_rate,
+            growth_rate=region_records.neighborhood.average_value_growth_rate,
             breadcrumbs=region_records.get_breadcrumbs()
         )
