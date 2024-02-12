@@ -11,7 +11,7 @@ def lambda_handler(event, context):
     logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=20)
     c = Config(event_queue_mode=EVENT_QUEUE_MODE_SNS)
 
-    region_data_gateway = RegionDataGatewayMongo(db_uri=c.regions_db_uri, db_name=c.regions_db_name)
+    region_data_gateway = RegionDataGatewayMongo(db_uri=c.mongo_config.db_uri, db_name=c.mongo_config.db_name)
     event_manger = EventManagerSNS(
         region_name=c.event_sns_region,
         topic_arn=c.event_sns_topic_arn
